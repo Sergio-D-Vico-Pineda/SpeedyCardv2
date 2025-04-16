@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -21,7 +21,7 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
   const pickImage = async () => {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+
       if (permissionResult.granted === false) {
         alert('Permission to access camera roll is required!');
         return;
@@ -36,7 +36,7 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImageUri = result.assets[0].uri;
-        
+
         if (currentMode === 'logo') {
           setLogoImage(selectedImageUri);
           onImageSelect(selectedImageUri);
@@ -55,7 +55,7 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
   const takePhoto = async () => {
     try {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-      
+
       if (permissionResult.granted === false) {
         alert('Permission to access camera is required!');
         return;
@@ -69,7 +69,7 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImageUri = result.assets[0].uri;
-        
+
         if (currentMode === 'logo') {
           setLogoImage(selectedImageUri);
           onImageSelect(selectedImageUri);
@@ -88,12 +88,12 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Card Images</Text>
-      
+
       <View style={styles.imageRow}>
         <View style={styles.imageContainer}>
           <Text style={styles.imageLabel}>Logo</Text>
-          <TouchableOpacity 
-            style={styles.imageButton} 
+          <TouchableOpacity
+            style={styles.imageButton}
             onPress={() => openImagePicker('logo')}
           >
             {logoImage ? (
@@ -103,11 +103,11 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
             )}
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.imageContainer}>
           <Text style={styles.imageLabel}>Profile Photo</Text>
-          <TouchableOpacity 
-            style={styles.imageButton} 
+          <TouchableOpacity
+            style={styles.imageButton}
             onPress={() => openImagePicker('profile')}
           >
             {profileImage ? (
@@ -130,17 +130,17 @@ export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUplo
             <Text style={styles.modalTitle}>
               {currentMode === 'logo' ? 'Upload Logo' : 'Upload Profile Photo'}
             </Text>
-            
+
             <TouchableOpacity style={styles.modalButton} onPress={pickImage}>
               <Text style={styles.modalButtonText}>Choose from Gallery</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.modalButton} onPress={takePhoto}>
               <Text style={styles.modalButtonText}>Take a Photo</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={[styles.modalButton, styles.cancelButton]} 
+
+            <TouchableOpacity
+              style={[styles.modalButton, styles.cancelButton]}
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
