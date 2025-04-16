@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
@@ -92,7 +93,10 @@ export default function MarketplaceScreen() {
     };
 
     const TemplateCard = ({ template }: { template: Template }) => (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity 
+            style={styles.card}
+            onPress={() => router.push(`/template/${template.id}`)}
+        >
             <LinearGradient
                 colors={['#ffffff', '#f8f9fa']}
                 style={styles.cardContent}
@@ -116,7 +120,7 @@ export default function MarketplaceScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Card Templates</Text>
+                <Text style={styles.title}>Card Extras</Text>
                 <View style={styles.searchBar}>
                     <TextInput
                         style={styles.searchInput}
