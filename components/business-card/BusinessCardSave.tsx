@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Share } from 'react-native';
 import { useCardContext } from './CardContext';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { generateCardUrl } from '@/utils/cardUrl';
 
 export function BusinessCardSave() {
   const { cardData } = useCardContext();
@@ -15,7 +16,7 @@ export function BusinessCardSave() {
       const fileName = `card_${Date.now()}.json`;
       const filePath = `${FileSystem.documentDirectory}${fileName}`;
       await FileSystem.writeAsStringAsync(filePath, JSON.stringify(cardData));
-      
+
       // Share the card
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(filePath);
@@ -38,6 +39,18 @@ export function BusinessCardSave() {
     }
   };
 
+  const shareCardUrl = async () => {
+    try {
+      const url = await generateCardUrl(cardData);
+      await Share.share({
+        message: url,
+        title: 'Business Card URL',
+      });
+    } catch (error) {
+      console.error('Error sharing card URL:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -55,6 +68,13 @@ export function BusinessCardSave() {
         onPress={shareCard}
       >
         <Text style={styles.buttonText}>Share Card</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, styles.urlButton]}
+        onPress={shareCardUrl}
+      >
+        <Text style={styles.buttonText}>Share URL</Text>
       </TouchableOpacity>
     </View>
   );
@@ -79,6 +99,9 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     backgroundColor: '#48bb78',
+  },
+  urlButton: {
+    backgroundColor: '#4CAF50',
   },
   buttonText: {
     color: '#fff',
