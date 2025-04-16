@@ -13,10 +13,8 @@ export default function CardsScreen() {
 
     function updateCardAndGotoEdit(card: MyCardData) {
         // console.log(card);
-        // updateCardData(card);
-        return () => {
-            router.push(`/(tabs)/(cards)`);
-        };
+        updateCardData(card);
+        router.push(`/(tabs)/(cards)`);
     }
 
     useEffect(() => {
