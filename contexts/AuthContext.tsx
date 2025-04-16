@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             await setDoc(doc(db, 'users', user.uid), userData);
             await setDoc(doc(db, 'cards', user.uid), {
                 card: {
-                    fuente: 'Inter-Regular', size: 15, color: 'gray', bgcolor: 'black', align: 'center', tnombre: '', tpuesto: '', tempresa: '', tphone: '', twebsite: 'page.com', urlimg: ''
+                    font: 'Inter-Regular', size: 15, color: 'gray', bgcolor: 'black', align: 'center', tname: '', tjob: '', business: '', tphone: '', twebsite: 'page.com', iprofile: '', ilogo: ''
                 }
             });
             setState(current => ({

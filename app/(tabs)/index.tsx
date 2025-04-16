@@ -68,8 +68,8 @@ export default function CardsScreen() {
                 renderItem={({ item }) => (
                     <Link href="/(tabs)/(cards)" asChild>
                         <View style={styles.cardItem}>
-                            {item.tnombre && <Text style={styles.cardTitle}>{item.tnombre}</Text>}
-                            {item.tempresa && <Text style={styles.cardDetails}>{item.tempresa}</Text>}
+                            {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
+                            {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
                         </View>
                     </Link>
                 )}

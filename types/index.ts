@@ -13,18 +13,19 @@ export interface BusinessCardData {
 }
 
 export interface MyCardData {
-  fuente: string;
+  font: string;
   size: number;
   color: string;
   bgcolor: string;
   align: 'left' | 'right' | 'center';
-  tnombre: string;
-  tpuesto: string;
+  tname: string;
+  tjob: string;
   temail: string;
-  tempresa: string;
+  tbusiness: string;
   tphone: string;
   twebsite: string;
-  turlimg: string;
+  iprofile: string;
+  ilogo: string;
 }
 
 export interface CardContextType {
@@ -44,4 +45,5 @@ export interface Template {
   style: string;
   imageUrl?: string;
   isavailable: boolean;
+  features?: Array<string>;
 };
