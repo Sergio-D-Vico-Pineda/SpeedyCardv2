@@ -1,14 +1,31 @@
 import { Link } from 'expo-router';
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Image, ActivityIndicator } from 'react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const { signIn } = useAuth();
 
-    const handleLogin = () => {
-        // Handle login logic here
-        console.log('Login attempt with:', email, password);
+    const handleLogin = async () => {
+        if (!email || !password) {
+            setError('Please fill in all fields');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        try {
+            await signIn(email, password);
+        } catch (err) {
+            setError('Failed to login. ' + err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -20,31 +37,46 @@ export default function LoginScreen() {
                 />
                 <Text style={styles.title}>Welcome Back</Text>
 
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(text) => {
+                        setEmail(text);
+                        setError('');
+                    }}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    editable={!loading}
                 />
 
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => {
+                        setPassword(text);
+                        setError('');
+                    }}
                     secureTextEntry
+                    editable={!loading}
                 />
 
                 <TouchableOpacity
-                    style={styles.loginButton}
+                    style={[styles.loginButton, loading && styles.loginButtonDisabled]}
                     onPress={handleLogin}
+                    disabled={loading}
                 >
-                    <Text style={styles.loginButtonText}>Login</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.forgotPassword}>
+                <TouchableOpacity style={styles.forgotPassword} disabled={loading}>
                     <Link style={styles.forgotPasswordText} href="/register"> Are you new here? </Link>
                 </TouchableOpacity>
             </View>
@@ -91,6 +123,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
     },
+    loginButtonDisabled: {
+        opacity: 0.7,
+    },
     loginButtonText: {
         color: '#fff',
         fontSize: 18,
@@ -108,5 +143,10 @@ const styles = StyleSheet.create({
         height: 100,
         alignSelf: 'center',
         marginBottom: 20,
+    },
+    errorText: {
+        color: '#ff3b30',
+        marginBottom: 10,
+        textAlign: 'center',
     },
 });

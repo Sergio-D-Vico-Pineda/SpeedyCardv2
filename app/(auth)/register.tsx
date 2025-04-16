@@ -1,16 +1,38 @@
 import { useState } from "react";
-import { Text, SafeAreaView, View, TextInput, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Text, SafeAreaView, View, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterScreen() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const { signUp } = useAuth();
 
-    const handleRegister = () => {
-        // Handle login logic here
-        console.log('Register attempt with:', email, password, confirmPassword, username);
+    const handleRegister = async () => {
+        if (!email || !password || !confirmPassword || !username) {
+            setError('Please fill in all fields');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        try {
+            await signUp(email, password, username);
+        } catch (err) {
+            setError('Failed to register: ' + err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -22,49 +44,75 @@ export default function RegisterScreen() {
                 />
                 <Text style={styles.title}>Register</Text>
 
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
                 <TextInput
                     style={styles.input}
                     value={username}
-                    onChangeText={setUsername}
+                    onChangeText={(text) => {
+                        setUsername(text);
+                        setError('');
+                    }}
                     placeholder="Username"
                     placeholderTextColor="#666"
+                    editable={!loading}
                 />
 
                 <TextInput
                     style={styles.input}
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(text) => {
+                        setEmail(text);
+                        setError('');
+                    }}
                     placeholder="Email"
                     placeholderTextColor="#666"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    editable={!loading}
                 />
 
                 <TextInput
                     style={styles.input}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => {
+                        setPassword(text);
+                        setError('');
+                    }}
                     placeholder="Password"
                     placeholderTextColor="#666"
                     secureTextEntry
+                    editable={!loading}
                 />
 
                 <TextInput
                     style={styles.input}
                     value={confirmPassword}
-                    onChangeText={setConfirmPassword}
+                    onChangeText={(text) => {
+                        setConfirmPassword(text);
+                        setError('');
+                    }}
                     placeholder="Confirm Password"
                     placeholderTextColor="#666"
                     secureTextEntry
+                    editable={!loading}
                 />
 
-                <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Register</Text>
+                <TouchableOpacity
+                    style={[styles.button, loading && styles.buttonDisabled]}
+                    onPress={handleRegister}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.buttonText}>Register</Text>
+                    )}
                 </TouchableOpacity>
 
                 <View style={styles.loginContainer}>
                     <Text style={styles.loginText}>Already have an account?</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity disabled={loading}>
                         <Link style={styles.loginLink} href="/login">
                             Login
                         </Link>
@@ -107,6 +155,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
+    buttonDisabled: {
+        opacity: 0.7,
+    },
     buttonText: {
         color: '#fff',
         fontSize: 16,
@@ -130,5 +181,10 @@ const styles = StyleSheet.create({
         height: 100,
         alignSelf: 'center',
         marginBottom: 20,
+    },
+    errorText: {
+        color: '#ff3b30',
+        textAlign: 'center',
+        marginBottom: 10,
     },
 });
