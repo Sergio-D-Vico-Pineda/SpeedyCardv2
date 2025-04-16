@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { BusinessCardSave } from '@/components/business-card/BusinessCardSave';
 import { BusinessCardPreview } from '@/components/business-card/BusinessCardPreview';
