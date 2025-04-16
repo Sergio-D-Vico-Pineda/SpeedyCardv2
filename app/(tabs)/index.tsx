@@ -1,12 +1,23 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Plus, RotateCw } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
+import { MyCardData } from '@/types';
+import { useCardContext } from '@/components/business-card/CardContext';
 
 export default function CardsScreen() {
+    const { updateCardData } = useCardContext();
     const { card, loading, error, refreshing, fetchCards, handleRefresh } = useCards();
+
+    function updateCardAndGotoEdit(card: MyCardData) {
+        // console.log(card);
+        // updateCardData(card);
+        return () => {
+            router.push(`/(tabs)/(cards)`);
+        };
+    }
 
     useEffect(() => {
         fetchCards();
@@ -66,12 +77,12 @@ export default function CardsScreen() {
                     </View>
                 }
                 renderItem={({ item }) => (
-                    <Link href="/(tabs)/(cards)" asChild>
+                    <TouchableOpacity onPress={() => updateCardAndGotoEdit(item)}>
                         <View style={styles.cardItem}>
                             {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
                             {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
                         </View>
-                    </Link>
+                    </TouchableOpacity>
                 )}
             />
         </SafeAreaView>
