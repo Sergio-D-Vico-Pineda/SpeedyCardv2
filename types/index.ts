@@ -34,3 +34,14 @@ export interface CardContextType {
   isFlipped: boolean;
   toggleFlip: () => void;
 }
+
+export interface Template {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  style: string;
+  imageUrl?: string;
+  isavailable: boolean;
+};

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { useAuth } from '@/contexts/AuthContext';
-import type { MyCardData } from '@/components/business-card/types';
+import type { MyCardData } from '@/types';
 
 export function useCards() {
     const { user } = useAuth();

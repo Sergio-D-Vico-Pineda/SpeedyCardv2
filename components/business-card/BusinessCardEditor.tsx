@@ -1,5 +1,5 @@
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { BusinessCardData, MyCardData } from './types';
+import { BusinessCardData, MyCardData } from '@/types';
 import { ColorPicker } from './ColorPicker';
 import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';

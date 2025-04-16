@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { BusinessCardData, CardContextType } from './types';
+import { BusinessCardData, CardContextType } from '@/types';
 
 const CardContext = createContext<CardContextType | undefined>(undefined);
 

@@ -1,4 +1,4 @@
-import { BusinessCardData } from '@/components/business-card/types';
+import { BusinessCardData } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Parameter mappings
