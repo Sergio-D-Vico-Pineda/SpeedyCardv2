@@ -1,13 +1,12 @@
-import React from 'react';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { BusinessCardData } from './types';
+import { BusinessCardData, MyCardData } from './types';
 import { ColorPicker } from './ColorPicker';
 import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';
 import { useCardContext } from './CardContext';
 import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react-native';
 
-export function BusinessCardEditor() {
+export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {
   const { cardData, updateCardData } = useCardContext();
 
   const handleChange = (field: keyof BusinessCardData, value: string) => {
