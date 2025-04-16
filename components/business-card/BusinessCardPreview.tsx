@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { useCardContext } from './CardContext';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
@@ -22,24 +21,26 @@ export function BusinessCardPreview() {
     ],
   }));
 
-  const getContentStyle = (alignment: 'left' | 'right' | 'center') => ({
-    alignItems: alignment === 'center' ? 'center' : alignment === 'left' ? 'flex-start' : 'flex-end',
-  });
-
   const getTextStyle = (alignment: 'left' | 'right' | 'center') => {
     if (alignment === 'left') return styles.textLeft;
     if (alignment === 'right') return styles.textRight;
     return styles.textCenter;
   };
 
+  const getAligment = (alignment: 'left' | 'right' | 'center') => {
+    if (alignment === 'left') return styles.contentLeft;
+    if (alignment === 'right') return styles.contentRight;
+    return styles.contentCenter;
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={toggleFlip} style={styles.container}>
       <Animated.View style={[styles.card, frontAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }]}>
+        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }, getAligment(cardData.textAlignment || 'center')]}>
           {cardData.profileImage && (
             <Image
               source={{ uri: cardData.profileImage }}
-              style={styles.profileImage}
+              style={[styles.profileImage, getTextStyle(cardData.textAlignment || 'center')]}
             />
           )}
           <Text style={[styles.name, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
@@ -55,25 +56,25 @@ export function BusinessCardPreview() {
       </Animated.View>
 
       <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }]}>
+        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }, getAligment(cardData.textAlignment || 'center')]}>
           {cardData.logo && (
             <Image
               source={{ uri: cardData.logo }}
               style={styles.logo}
             />
           )}
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
             {cardData.email}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
             {cardData.phone}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
             {cardData.website}
           </Text>
         </View>
       </Animated.View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     padding: 24,
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
   },
   profileImage: {
@@ -135,11 +136,23 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     textAlign: 'left',
+    justifyContent: 'flex-start',
   },
   textCenter: {
     textAlign: 'center',
+    justifyContent: 'center',
   },
   textRight: {
     textAlign: 'right',
+    justifyContent: 'flex-end',
+  },
+  contentLeft: {
+    alignItems: 'flex-start',
+  },
+  contentCenter: {
+    alignItems: 'center',
+  },
+  contentRight: {
+    alignItems: 'flex-end',
   },
 });
