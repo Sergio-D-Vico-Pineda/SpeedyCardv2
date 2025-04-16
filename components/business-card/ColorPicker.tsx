@@ -1,45 +1,16 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
+import { bgcolors } from '@/types';
 
 interface ColorPickerProps {
   color: string;
   onColorChange: (color: string) => void;
 }
 
-const colorOptions = [
-  '#1a365d', // Navy Blue
-  '#2a4365', // Dark Blue
-  '#2b6cb0', // Blue
-  '#3182ce', // Medium Blue
-  '#4299e1', // Light Blue
-  '#63b3ed', // Sky Blue
-  '#744210', // Brown
-  '#975a16', // Dark Amber
-  '#b7791f', // Amber
-  '#d69e2e', // Yellow
-  '#2f855a', // Dark Green
-  '#38a169', // Green
-  '#48bb78', // Light Green
-  '#68d391', // Pale Green
-  '#9b2c2c', // Dark Red
-  '#c53030', // Red
-  '#e53e3e', // Light Red
-  '#fc8181', // Pale Red
-  '#6b46c1', // Purple
-  '#805ad5', // Medium Purple
-  '#9f7aea', // Light Purple
-  '#d53f8c', // Pink
-  '#000000', // Black
-  '#1a202c', // Dark Gray
-  '#4a5568', // Gray
-  '#718096', // Medium Gray
-  '#a0aec0', // Light Gray
-  '#e2e8f0', // Pale Gray
-  '#ffffff', // White
-];
-
-export function ColorPicker({ color, onColorChange }: ColorPickerProps) {
+export function ColorPicker({ color: colorSelected, onColorChange }: ColorPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
+
+  console.log('ColorPicker rendered: ' + colorSelected);
 
   const handleColorSelect = (selectedColor: string) => {
     onColorChange(selectedColor);
@@ -53,8 +24,8 @@ export function ColorPicker({ color, onColorChange }: ColorPickerProps) {
         style={styles.colorPreview}
         onPress={() => setModalVisible(true)}
       >
-        <View style={[styles.colorSwatch, { backgroundColor: color }]} />
-        <Text style={styles.colorValue}>{color}</Text>
+        <View style={[styles.colorSwatch, { backgroundColor: colorSelected }]} />
+        <Text style={styles.colorValue}>{colorSelected}</Text>
       </TouchableOpacity>
 
       <Modal
@@ -68,13 +39,13 @@ export function ColorPicker({ color, onColorChange }: ColorPickerProps) {
             <Text style={styles.modalTitle}>Select a Color</Text>
             <ScrollView style={styles.colorGrid}>
               <View style={styles.colorList}>
-                {colorOptions.map((colorOption) => (
+                {bgcolors.map((color) => (
                   <TouchableOpacity
-                    key={colorOption}
-                    style={[styles.colorOption, { backgroundColor: colorOption }]}
-                    onPress={() => handleColorSelect(colorOption)}
+                    key={color}
+                    style={[styles.colorOption, { backgroundColor: color }]}
+                    onPress={() => handleColorSelect(color)}
                   >
-                    {colorOption === color && <View style={styles.selectedIndicator} />}
+                    {color === colorSelected && <View style={styles.selectedIndicator} />}
                   </TouchableOpacity>
                 ))}
               </View>

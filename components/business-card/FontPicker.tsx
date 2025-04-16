@@ -1,27 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
+import { fonts } from '@/types'; // Import your font options from FontOptions.tsx or where they are defined
 
 interface FontPickerProps {
   font: string;
   onFontChange: (font: string) => void;
 }
-
-const fontOptions = [
-  'Inter-Regular',
-  'Inter-Medium',
-  'Inter-Bold',
-  'Roboto-Regular',
-  'Roboto-Medium',
-  'Roboto-Bold',
-  'PlayfairDisplay-Regular',
-  'PlayfairDisplay-Bold',
-  'Montserrat-Regular',
-  'Montserrat-Medium',
-  'Montserrat-Bold',
-  'OpenSans-Regular',
-  'OpenSans-SemiBold',
-  'OpenSans-Bold',
-];
 
 export function FontPicker({ font, onFontChange }: FontPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -60,7 +44,7 @@ export function FontPicker({ font, onFontChange }: FontPickerProps) {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select a Font</Text>
             <FlatList
-              data={fontOptions}
+              data={fonts}
               renderItem={renderFontItem}
               keyExtractor={(item) => item}
               style={styles.fontList}
