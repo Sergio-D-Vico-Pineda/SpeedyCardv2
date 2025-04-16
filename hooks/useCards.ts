@@ -24,10 +24,8 @@ export function useCards() {
             if (cardsDoc.exists()) {
                 const cardData = cardsDoc.data();
                 const cardArray = cardData.card ? [cardData.card] : [];
-                console.log('Fetched card data:', cardArray);
                 setCard(cardArray);
             } else {
-                console.log('No card data found');
                 setCard([]);
             }
             setError('');
