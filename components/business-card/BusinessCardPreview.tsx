@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { useCardContext } from './CardContext';
+import { useCardContext } from '@/contexts/CardContext';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio

@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { useEffect } from 'react';
 import { Linking } from 'react-native';
 import { decodeCardUrl } from '@/utils/cardUrl';
-import { useCardContext } from '@/components/business-card/CardContext';
+import { useCardContext } from '@/contexts/CardContext';
 
 export function DeepLinkHandler() {
   const { updateCardData } = useCardContext();

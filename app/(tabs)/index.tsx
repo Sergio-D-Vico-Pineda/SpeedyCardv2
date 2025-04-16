@@ -5,7 +5,7 @@ import { Plus, RotateCw } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { MyCardData } from '@/types';
-import { useCardContext } from '@/components/business-card/CardContext';
+import { useCardContext } from '@/contexts/CardContext';
 
 export default function CardsScreen() {
     const { updateCardData } = useCardContext();

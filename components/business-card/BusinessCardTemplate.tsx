@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { useCardContext } from './CardContext';
-import { BusinessCardData } from '@/types';
+import { useCardContext } from '@/contexts/CardContext';
+import { MyCardData, bgcolors } from '@/types';
 
 const templates = [
   {

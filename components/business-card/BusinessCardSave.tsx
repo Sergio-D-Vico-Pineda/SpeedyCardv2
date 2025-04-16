@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Share } from 'react-native';
-import { useCardContext } from './CardContext';
+import { useCardContext } from '@/contexts/CardContext';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { generateCardUrl } from '@/utils/cardUrl';

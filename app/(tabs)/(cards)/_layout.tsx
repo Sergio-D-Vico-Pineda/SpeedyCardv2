@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { CardProvider } from '@/components/business-card/CardContext';
+import { CardProvider } from '@/contexts/CardContext';
 import { Edit2, CreditCard, Layout, Save } from 'lucide-react-native';
 
 export default function CardsLayout() {

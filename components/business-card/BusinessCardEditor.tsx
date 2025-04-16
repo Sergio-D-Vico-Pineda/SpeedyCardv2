@@ -3,7 +3,7 @@ import { BusinessCardData, MyCardData } from '@/types';
 import { ColorPicker } from './ColorPicker';
 import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';
-import { useCardContext } from './CardContext';
+import { useCardContext } from '@/contexts/CardContext';
 import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react-native';
 
 export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {

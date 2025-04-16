@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { CardProvider } from '@/components/business-card/CardContext';
+import { CardProvider } from '@/contexts/CardContext';
 import { DeepLinkHandler } from '@/components/DeepLinkHandler';
 
 export default function RootLayout() {
