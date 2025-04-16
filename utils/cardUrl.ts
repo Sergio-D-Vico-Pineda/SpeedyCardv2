@@ -1,4 +1,4 @@
-import { BusinessCardData } from '@/types';
+import { MyCardData } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Parameter mappings
@@ -32,15 +32,15 @@ export function generateTextId(): string {
 }
 
 // Save card data and return URL
-export async function generateCardUrl(cardData: BusinessCardData): Promise<string> {
+export async function generateCardUrl(cardData: MyCardData): Promise<string> {
     try {
         // Generate style parameters (example mapping)
         const fontParam = Object.keys(STYLE_MAPPINGS.fonts)
             .find(key => STYLE_MAPPINGS.fonts[key as keyof typeof STYLE_MAPPINGS.fonts] === cardData.font) || '0';
         const colorParam = Object.keys(STYLE_MAPPINGS.colors)
-            .find(key => STYLE_MAPPINGS.colors[key as keyof typeof STYLE_MAPPINGS.colors] === cardData.primaryColor) || '0';
+            .find(key => STYLE_MAPPINGS.colors[key as keyof typeof STYLE_MAPPINGS.colors] === cardData.bgcolor) || '0';
         const alignParam = Object.keys(STYLE_MAPPINGS.textAlign)
-            .find(key => STYLE_MAPPINGS.textAlign[key as keyof typeof STYLE_MAPPINGS.textAlign] === cardData.textAlignment) || '0';
+            .find(key => STYLE_MAPPINGS.textAlign[key as keyof typeof STYLE_MAPPINGS.textAlign] === cardData.align) || '0';
 
         // Generate hex parameters (5 characters)
         const hexParams = `${fontParam}${colorParam}${alignParam}00`;
@@ -48,12 +48,19 @@ export async function generateCardUrl(cardData: BusinessCardData): Promise<strin
         // Generate and save text data
         const textId = generateTextId();
         const textData = JSON.stringify({
-            name: cardData.name,
-            title: cardData.title,
-            company: cardData.company,
-            email: cardData.email,
-            phone: cardData.phone,
-            website: cardData.website,
+            tname: cardData.tname,
+            tjob: cardData.tjob,
+            tbusiness: cardData.tbusiness,
+            temail: cardData.temail,
+            tphone: cardData.tphone,
+            twebsite: cardData.twebsite,
+            color: cardData.color,
+            bgcolor: cardData.bgcolor,
+            ilogo: cardData.ilogo,
+            iprofile: cardData.iprofile,
+            align: cardData.align,
+            size: cardData.size,
+            font: cardData.font,
         });
 
         await AsyncStorage.setItem(`card_${textId}`, textData);
@@ -66,7 +73,7 @@ export async function generateCardUrl(cardData: BusinessCardData): Promise<strin
 }
 
 // Decode URL and return card data
-export async function decodeCardUrl(url: string): Promise<BusinessCardData | null> {
+export async function decodeCardUrl(url: string): Promise<MyCardData | null> {
     try {
         const urlRegex = /speedycard:\/\/card\/([0-9A-Fa-f]{9})/;
         const match = url.match(urlRegex);
