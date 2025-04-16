@@ -5,7 +5,7 @@ import { Edit2, CreditCard, Layout, Save } from 'lucide-react-native';
 export default function CardsLayout() {
   return (
     <CardProvider>
-      <Tabs screenOptions={{ headerShown: false }}>
+      <Tabs screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Tabs.Screen
           name="index"
           options={{
