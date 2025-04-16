@@ -1,5 +1,5 @@
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { BusinessCardData, MyCardData } from '@/types';
+import { MyCardData } from '@/types';
 import { ColorPicker } from './ColorPicker';
 import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';
@@ -9,7 +9,7 @@ import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react-native';
 export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {
   const { cardData, updateCardData } = useCardContext();
 
-  const handleChange = (field: keyof BusinessCardData, value: string) => {
+  const handleChange = (field: keyof MyCardData, value: string) => {
     updateCardData({ ...cardData, [field]: value });
   };
 
@@ -24,48 +24,47 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
       <View style={styles.section}>
         <TextInput
           style={styles.input}
-          value={cardData.name}
-          onChangeText={(value) => handleChange('name', value)}
+          value={cardData.tname}
+          onChangeText={(value) => handleChange('tname', value)}
           placeholder="Full Name"
           placeholderTextColor="#666"
         />
         <TextInput
           style={styles.input}
-          value={cardData.title}
-          onChangeText={(value) => handleChange('title', value)}
+          value={cardData.tjob}
+          onChangeText={(value) => handleChange('tjob', value)}
           placeholder="Job Title"
           placeholderTextColor="#666"
         />
         <TextInput
           style={styles.input}
-          value={cardData.company}
-          onChangeText={(value) => handleChange('company', value)}
+          value={cardData.tbusiness}
+          onChangeText={(value) => handleChange('tbusiness', value)}
           placeholder="Company"
           placeholderTextColor="#666"
         />
       </View>
-
       <View style={styles.section}>
         <TextInput
           style={styles.input}
-          value={cardData.email}
-          onChangeText={(value) => handleChange('email', value)}
+          value={cardData.temail}
+          onChangeText={(value) => handleChange('temail', value)}
           placeholder="Email"
           keyboardType="email-address"
           placeholderTextColor="#666"
         />
         <TextInput
           style={styles.input}
-          value={cardData.phone}
-          onChangeText={(value) => handleChange('phone', value)}
+          value={cardData.tphone}
+          onChangeText={(value) => handleChange('tphone', value)}
           placeholder="Phone"
           keyboardType="phone-pad"
           placeholderTextColor="#666"
         />
         <TextInput
           style={styles.input}
-          value={cardData.website}
-          onChangeText={(value) => handleChange('website', value)}
+          value={cardData.twebsite}
+          onChangeText={(value) => handleChange('twebsite', value)}
           placeholder="Website"
           keyboardType="url"
           placeholderTextColor="#666"
@@ -82,18 +81,20 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
                 key={option.value}
                 style={[
                   styles.alignmentButton,
-                  cardData.textAlignment === option.value && styles.alignmentButtonActive,
+                  cardData.align === option.value && styles.alignmentButtonActive,
                 ]}
-                onPress={() => handleChange('textAlignment', option.value)}
+                onPress={() => handleChange('align', option.value)}
               >
-                <Icon
-                  size={24}
-                  color={cardData.textAlignment === option.value ? '#fff' : '#000'}
-                />
+                <Text>
+                  <Icon
+                    size={24}
+                    color={cardData.align === option.value ? '#fff' : '#000'}
+                  />
+                </Text>
                 <Text
                   style={[
                     styles.alignmentText,
-                    cardData.textAlignment === option.value && styles.alignmentTextActive,
+                    cardData.align === option.value && styles.alignmentTextActive,
                   ]}
                 >
                   {option.label}
@@ -106,16 +107,16 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
 
       <View style={styles.section}>
         <ColorPicker
-          color={cardData.primaryColor}
-          onColorChange={(color: string) => handleChange('primaryColor', color)}
+          color={cardData.bgcolor}
+          onColorChange={(color: string) => handleChange('bgcolor', color)}
         />
         <FontPicker
           font={cardData.font}
           onFontChange={(font: string) => handleChange('font', font)}
         />
         <ImageUploader
-          onImageSelect={(uri: string) => handleChange('logo', uri)}
-          onProfileImageSelect={(uri: string) => handleChange('profileImage', uri)}
+          onImageSelect={(uri: string) => handleChange('ilogo', uri)}
+          onProfileImageSelect={(uri: string) => handleChange('iprofile', uri)}
         />
       </View>
     </ScrollView>

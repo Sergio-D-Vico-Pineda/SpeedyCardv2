@@ -7,27 +7,27 @@ const templates = [
     id: 'classic',
     name: 'Classic',
     layout: {
-      primaryColor: '#1a365d',
+      bgcolor: bgcolors[5],
       font: 'Inter-Regular',
-      textAlignment: 'center' as const,
+      align: 'center' as const,
     },
   },
   {
     id: 'modern',
     name: 'Modern',
     layout: {
-      primaryColor: '#2d3748',
+      bgcolor: bgcolors[2],
       font: 'Roboto-Regular',
-      textAlignment: 'left' as const,
+      align: 'left' as const,
     },
   },
   {
     id: 'elegant',
     name: 'Elegant',
     layout: {
-      primaryColor: '#744210',
+      bgcolor: bgcolors[14],
       font: 'PlayfairDisplay-Regular',
-      textAlignment: 'right' as const,
+      align: 'right' as const,
     },
   },
 ];
@@ -36,12 +36,7 @@ export function BusinessCardTemplate() {
   const { updateCardData } = useCardContext();
 
   const applyTemplate = (template: typeof templates[0]) => {
-    updateCardData((prev: BusinessCardData) => {
-      return {
-        ...prev,
-        ...template.layout,
-      };
-    });
+    updateCardData(template.layout as MyCardData);
   };
 
   return (
@@ -55,7 +50,7 @@ export function BusinessCardTemplate() {
           <View
             style={[
               styles.templatePreview,
-              { backgroundColor: template.layout.primaryColor },
+              { backgroundColor: template.layout.bgcolor },
             ]}
           >
             <Text style={[styles.templateName, { fontFamily: template.layout.font }]}>

@@ -31,7 +31,7 @@ export function BusinessCardSave() {
   const shareCard = async () => {
     try {
       const result = await Share.share({
-        message: `${cardData.name}\n${cardData.title}\n${cardData.company}\n${cardData.email}\n${cardData.phone}\n${cardData.website}`,
+        message: `${cardData.tname}\n${cardData.tjob}\n${cardData.tbusiness}\n${cardData.temail}\n${cardData.tphone}\n${cardData.twebsite}`,
         title: 'Business Card',
       });
     } catch (error) {

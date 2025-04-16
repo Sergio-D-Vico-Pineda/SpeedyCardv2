@@ -36,41 +36,45 @@ export function BusinessCardPreview() {
   return (
     <TouchableOpacity onPress={toggleFlip} style={styles.container}>
       <Animated.View style={[styles.card, frontAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }, getAligment(cardData.textAlignment || 'center')]}>
-          {cardData.profileImage && (
-            <Image
-              source={{ uri: cardData.profileImage }}
-              style={[styles.profileImage, getTextStyle(cardData.textAlignment || 'center')]}
-            />
-          )}
-          <Text style={[styles.name, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
-            {cardData.name}
+        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
+          <Text>
+            {cardData.iprofile && (
+              <Image
+                source={{ uri: cardData.iprofile }}
+                style={[styles.profileImage, getTextStyle(cardData.align || 'center')]}
+              />
+            )}
           </Text>
-          <Text style={[styles.title, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
-            {cardData.title}
+          <Text style={[styles.name, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+            {cardData.tname}
           </Text>
-          <Text style={[styles.company, { fontFamily: cardData.font }, getTextStyle(cardData.textAlignment || 'center')]}>
-            {cardData.company}
+          <Text style={[styles.title, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+            {cardData.tjob}
+          </Text>
+          <Text style={[styles.company, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+            {cardData.tbusiness}
           </Text>
         </View>
       </Animated.View>
 
       <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.primaryColor }, getAligment(cardData.textAlignment || 'center')]}>
-          {cardData.logo && (
-            <Image
-              source={{ uri: cardData.logo }}
-              style={styles.logo}
-            />
-          )}
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
-            {cardData.email}
+        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
+          <Text>
+            {cardData.ilogo && (
+              <Image
+                source={{ uri: cardData.ilogo }}
+                style={styles.logo}
+              />
+            )}
           </Text>
           <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
-            {cardData.phone}
+            {cardData.temail}
           </Text>
           <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
-            {cardData.website}
+            {cardData.tphone}
+          </Text>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
+            {cardData.twebsite}
           </Text>
         </View>
       </Animated.View>
