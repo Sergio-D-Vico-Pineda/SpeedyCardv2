@@ -21,7 +21,7 @@ interface AuthState {
 
 const defaultcard = {
     card: {
-        font: 'Inter-Regular', size: 15, color: 'gray', bgcolor: 'black', align: 'center', tname: 'Name', tjob: 'Job', tbusiness: 'Business', tphone: 'Phone', twebsite: 'website.com', iprofile: '', ilogo: ''
+        font: 'Inter-Regular', size: 15, color: 'gray', bgcolor: '#000000', align: 'center', tname: 'Name', tjob: 'Job', tbusiness: 'Business', tphone: 'Phone', twebsite: 'website.com', iprofile: '', ilogo: ''
     }
 };
 
