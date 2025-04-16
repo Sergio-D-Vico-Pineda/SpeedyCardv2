@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import React from 'react';
 
 export default function About() {
     return (
@@ -15,22 +14,16 @@ export default function About() {
             <View style={styles.content}>
                 <Text style={styles.sectionTitle}>Our Mission</Text>
                 <Text style={styles.text}>
-                    SpeedyCard is dedicated to providing fast and efficient card management solutions.
-                    We strive to make digital card organization simple and accessible for everyone.
-                </Text>
-
-                <Text style={styles.sectionTitle}>Features</Text>
-                <Text style={styles.text}>
-                    • Quick card scanning{'\n'}
-                    • Secure storage{'\n'}
-                    • Easy organization{'\n'}
-                    • Cross-platform sync
+                    SpeedyCard is dedicated to providing fast and efficient card management solutions.{'\n'}
+                    We strive to make digital card organization simple and accessible for everyone.{'\n'}
+                    By going digital, we help reduce paper waste and protect our environment.
                 </Text>
 
                 <Text style={styles.sectionTitle}>Contact Us</Text>
                 <Text style={styles.text}>
-                    Email: support@speedycard.com{'\n'}
-                    Phone: (555) 123-4567
+                    Email: servicpin2@alu.edu.gva.es{'\n'}
+                    Phone: +34 123 456 789{'\n'}
+                    Address: Av. Ciudad León de Nicaragua, 8, 03015 Alicante, Spain
                 </Text>
             </View>
         </ScrollView>
