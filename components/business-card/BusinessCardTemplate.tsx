@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useCardContext } from './CardContext';
 import { BusinessCardData } from './types';
@@ -11,14 +10,6 @@ const templates = [
       primaryColor: '#1a365d',
       font: 'Inter-Regular',
       textAlignment: 'center' as const,
-      name: "John Doe",
-      title: "Software Engineer",
-      company: "ABC Company",
-      email: "",
-      phone: "",
-      website: "",
-      logo: "",
-      profileImage: "",
     },
   },
   {
@@ -28,14 +19,6 @@ const templates = [
       primaryColor: '#2d3748',
       font: 'Roboto-Regular',
       textAlignment: 'left' as const,
-      name: "John Doe",
-      title: "Software Engineer",
-      company: "ABC Company",
-      email: "",
-      phone: "",
-      website: "",
-      logo: "",
-      profileImage: "",
     },
   },
   {
@@ -45,14 +28,6 @@ const templates = [
       primaryColor: '#744210',
       font: 'PlayfairDisplay-Regular',
       textAlignment: 'right' as const,
-      name: "John Doe",
-      title: "Software Engineer",
-      company: "ABC Company",
-      email: "",
-      phone: "",
-      website: "",
-      logo: "",
-      profileImage: "",
     },
   },
 ];
@@ -61,9 +36,12 @@ export function BusinessCardTemplate() {
   const { updateCardData } = useCardContext();
 
   const applyTemplate = (template: typeof templates[0]) => {
-    updateCardData(
-      template.layout
-    );
+    updateCardData((prev: BusinessCardData) => {
+      return {
+        ...prev,
+        ...template.layout,
+      };
+    });
   };
 
   return (
