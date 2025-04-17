@@ -7,6 +7,8 @@ export default {
     icon: './assets/images/icon.png',
     scheme: 'speedycard',
     userInterfaceStyle: 'automatic',
+    newArchEnabled: true,
+    package: 'com.scarpy.speedycard',
     splash: {
       image: './assets/images/splash-icon.png',
       resizeMode: 'contain',
