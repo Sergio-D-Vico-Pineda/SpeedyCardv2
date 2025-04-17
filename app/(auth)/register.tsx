@@ -81,6 +81,7 @@ export default function RegisterScreen() {
                     }}
                     placeholder="Password"
                     placeholderTextColor="#666"
+                    autoCapitalize="none"
                     secureTextEntry
                     editable={!loading}
                 />
@@ -94,6 +95,7 @@ export default function RegisterScreen() {
                     }}
                     placeholder="Confirm Password"
                     placeholderTextColor="#666"
+                    autoCapitalize="none"
                     secureTextEntry
                     editable={!loading}
                 />

@@ -60,6 +60,7 @@ export default function LoginScreen() {
                         setPassword(text);
                         setError('');
                     }}
+                    autoCapitalize="none"
                     secureTextEntry
                     editable={!loading}
                 />
