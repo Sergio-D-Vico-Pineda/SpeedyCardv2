@@ -7,6 +7,7 @@ export default {
     icon: './assets/images/icon.png',
     scheme: 'speedycard',
     userInterfaceStyle: 'automatic',
+    newArchEnabled: true,
     splash: {
       image: './assets/images/splash-icon.png',
       resizeMode: 'contain',
@@ -17,7 +18,8 @@ export default {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff'
-      }
+      },
+      package: 'com.scarpy.speedycard'
     },
     web: {
       favicon: './assets/images/favicon.png'
