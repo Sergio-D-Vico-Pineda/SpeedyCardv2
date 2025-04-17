@@ -3,11 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as 
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 import { router, useSegments, useRootNavigationState } from 'expo-router';
-
-interface UserData {
-    email: string;
-    username: string;
-}
+import type { UserData } from '@/types';
 
 interface AuthState {
     user: User | null;
@@ -78,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const signUp = useCallback(async (email: string, password: string, username: string) => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
-            const userData: UserData = { email, username };
+            const userData: UserData = { email, username, balance: 0 };
             await setDoc(doc(db, 'users', user.uid), userData);
             await setDoc(doc(db, 'cards', user.uid), defaultcard);
             setState(current => ({

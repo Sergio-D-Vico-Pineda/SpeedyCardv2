@@ -1,4 +1,4 @@
-export interface BusinessCardData {
+interface BusinessCardData {
   name: string;
   title: string;
   company: string;
@@ -12,7 +12,7 @@ export interface BusinessCardData {
   textAlignment: 'left' | 'right' | 'center';
 }
 
-export interface MyCardData {
+interface MyCardData {
   font: typeof fonts[number];
   size: number;
   color: string;
@@ -28,7 +28,7 @@ export interface MyCardData {
   ilogo: string;
 }
 
-export interface Template {
+interface Template {
   id: string;
   name: string;
   description: string;
@@ -40,7 +40,7 @@ export interface Template {
   features?: Array<string>;
 };
 
-export const fonts = [
+const fonts = [
   'Inter-Regular',
   'Inter-Medium',
   'Inter-Bold',
@@ -57,7 +57,7 @@ export const fonts = [
   'OpenSans-Bold',
 ];
 
-export const bgcolors = [
+const bgcolors = [
   '#ffffff', // White
   '#000000', // Black
   '#1a202c', // Dark Gray b
@@ -76,6 +76,22 @@ export const bgcolors = [
   '#975a16', // Dark Amber
 ];
 
-export const colors = [
+const colors = [
 
 ]
+
+interface UserData {
+  email: string;
+  username: string;
+  balance: number;
+}
+
+export {
+  BusinessCardData,
+  MyCardData,
+  Template,
+  fonts,
+  bgcolors,
+  colors,
+  UserData,
+}
