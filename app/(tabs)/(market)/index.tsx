@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Template } from '@/types';
 
 const mockTemplates: Template[] = [
@@ -93,7 +94,7 @@ export default function MarketplaceScreen() {
     };
 
     const TemplateCard = ({ template }: { template: Template }) => (
-        <TouchableOpacity 
+        <TouchableOpacity
             style={styles.card}
             onPress={() => router.push(`/template/${template.id}`)}
         >
@@ -121,6 +122,8 @@ export default function MarketplaceScreen() {
         <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Card Extras</Text>
+            </View>
+            <View style={styles.subheader}>
                 <View style={styles.searchBar}>
                     <TextInput
                         style={styles.searchInput}
@@ -155,7 +158,7 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F2F2F7',
     },
     grid: {
         padding: 16,
@@ -197,6 +200,12 @@ const styles = StyleSheet.create({
     },
     header: {
         padding: 16,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5EA',
+    },
+    subheader: {
+        padding: 16,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#e2e8f0',
@@ -204,8 +213,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#2d3748',
     },
     searchBar: {
         marginBottom: 16,
@@ -219,7 +226,6 @@ const styles = StyleSheet.create({
     },
     categoryContainer: {
         flexDirection: 'row',
-        marginBottom: 16,
     },
     categoryButton: {
         paddingHorizontal: 16,
