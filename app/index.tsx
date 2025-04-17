@@ -9,7 +9,7 @@ export default function Index() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('../assets/images/react-logo.png')}
+          source={require('@/assets/images/react-logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -36,9 +36,6 @@ export default function Index() {
           <Link style={styles.button} href="/(tabs)">
             Enter into the app
           </Link>
-          {/* <Link style={styles.button} href="/(cards)">
-            Creator
-          </Link> */}
           <Pressable onPress={signOut} style={styles.button}><Text style={styles.white}>Signout</Text></Pressable>
         </View>
       )}
