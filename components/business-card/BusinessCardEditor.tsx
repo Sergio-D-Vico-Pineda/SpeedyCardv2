@@ -5,6 +5,7 @@ import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';
 import { useCardContext } from '@/contexts/CardContext';
 import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {
   const { cardData, updateCardData } = useCardContext();
@@ -20,119 +21,139 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
   ] as const;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.section}>
-        <TextInput
-          style={styles.input}
-          value={cardData.tname}
-          onChangeText={(value) => handleChange('tname', value)}
-          placeholder="Full Name"
-          placeholderTextColor="#666"
-        />
-        <TextInput
-          style={styles.input}
-          value={cardData.tjob}
-          onChangeText={(value) => handleChange('tjob', value)}
-          placeholder="Job Title"
-          placeholderTextColor="#666"
-        />
-        <TextInput
-          style={styles.input}
-          value={cardData.tbusiness}
-          onChangeText={(value) => handleChange('tbusiness', value)}
-          placeholder="Company"
-          placeholderTextColor="#666"
-        />
+    <SafeAreaView style={styles.topcontainer}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Card editor</Text>
       </View>
-      <View style={styles.section}>
-        <TextInput
-          style={styles.input}
-          value={cardData.temail}
-          onChangeText={(value) => handleChange('temail', value)}
-          placeholder="Email"
-          keyboardType="email-address"
-          placeholderTextColor="#666"
-        />
-        <TextInput
-          style={styles.input}
-          value={cardData.tphone}
-          onChangeText={(value) => handleChange('tphone', value)}
-          placeholder="Phone"
-          keyboardType="phone-pad"
-          placeholderTextColor="#666"
-        />
-        <TextInput
-          style={styles.input}
-          value={cardData.twebsite}
-          onChangeText={(value) => handleChange('twebsite', value)}
-          placeholder="Website"
-          keyboardType="url"
-          placeholderTextColor="#666"
-        />
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Text Alignment</Text>
-        <View style={styles.alignmentContainer}>
-          {alignmentOptions.map((option) => {
-            const Icon = option.icon;
-            return (
-              <TouchableOpacity
-                key={option.value}
-                style={[
-                  styles.alignmentButton,
-                  cardData.align === option.value && styles.alignmentButtonActive,
-                ]}
-                onPress={() => handleChange('align', option.value)}
-              >
-                <Text>
-                  <Icon
-                    size={24}
-                    color={cardData.align === option.value ? '#fff' : '#000'}
-                  />
-                </Text>
-                <Text
-                  style={[
-                    styles.alignmentText,
-                    cardData.align === option.value && styles.alignmentTextActive,
-                  ]}
-                >
-                  {option.label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+      <ScrollView style={styles.container}>
+        <View style={styles.section}>
+          <TextInput
+            style={styles.input}
+            value={cardData.tname}
+            onChangeText={(value) => handleChange('tname', value)}
+            placeholder="Full Name"
+            placeholderTextColor="#666"
+          />
+          <TextInput
+            style={styles.input}
+            value={cardData.tjob}
+            onChangeText={(value) => handleChange('tjob', value)}
+            placeholder="Job Title"
+            placeholderTextColor="#666"
+          />
+          <TextInput
+            style={styles.input}
+            value={cardData.tbusiness}
+            onChangeText={(value) => handleChange('tbusiness', value)}
+            placeholder="Company"
+            placeholderTextColor="#666"
+          />
         </View>
-      </View>
+        <View style={styles.section}>
+          <TextInput
+            style={styles.input}
+            value={cardData.temail}
+            onChangeText={(value) => handleChange('temail', value)}
+            placeholder="Email"
+            keyboardType="email-address"
+            placeholderTextColor="#666"
+          />
+          <TextInput
+            style={styles.input}
+            value={cardData.tphone}
+            onChangeText={(value) => handleChange('tphone', value)}
+            placeholder="Phone"
+            keyboardType="phone-pad"
+            placeholderTextColor="#666"
+          />
+          <TextInput
+            style={styles.input}
+            value={cardData.twebsite}
+            onChangeText={(value) => handleChange('twebsite', value)}
+            placeholder="Website"
+            keyboardType="url"
+            placeholderTextColor="#666"
+          />
+        </View>
 
-      <View style={styles.section}>
-        <ColorPicker
-          color={cardData.bgcolor}
-          onColorChange={(color: string) => handleChange('bgcolor', color)}
-        />
-        <FontPicker
-          font={cardData.font}
-          onFontChange={(font: string) => handleChange('font', font)}
-        />
-        <ImageUploader
-          onImageSelect={(uri: string) => handleChange('ilogo', uri)}
-          onProfileImageSelect={(uri: string) => handleChange('iprofile', uri)}
-        />
-      </View>
-    </ScrollView>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Text Alignment</Text>
+          <View style={styles.alignmentContainer}>
+            {alignmentOptions.map((option) => {
+              const Icon = option.icon;
+              return (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.alignmentButton,
+                    cardData.align === option.value && styles.alignmentButtonActive,
+                  ]}
+                  onPress={() => handleChange('align', option.value)}
+                >
+                  <Text>
+                    <Icon
+                      size={24}
+                      color={cardData.align === option.value ? '#fff' : '#000'}
+                    />
+                  </Text>
+                  <Text
+                    style={[
+                      styles.alignmentText,
+                      cardData.align === option.value && styles.alignmentTextActive,
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <ColorPicker
+            color={cardData.bgcolor}
+            onColorChange={(color: string) => handleChange('bgcolor', color)}
+          />
+          <FontPicker
+            font={cardData.font}
+            onFontChange={(font: string) => handleChange('font', font)}
+          />
+          <ImageUploader
+            onImageSelect={(uri: string) => handleChange('ilogo', uri)}
+            onProfileImageSelect={(uri: string) => handleChange('iprofile', uri)}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  topcontainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+    paddingTop: 16,
+    backgroundColor: '#F2F2F7',
+  },
+  header: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   section: {
+    paddingInline: 16,
     marginBottom: 24,
   },
   input: {
+    backgroundColor: '#fff',
     height: 48,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -158,7 +179,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     borderRadius: 8,
     marginHorizontal: 4,
   },

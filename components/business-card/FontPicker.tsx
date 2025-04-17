@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   },
   fontPreview: {
     borderWidth: 1,
+    backgroundColor: '#fff',
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 12,

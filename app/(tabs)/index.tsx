@@ -61,6 +61,7 @@ export default function CardsScreen() {
             </View>
 
             <FlatList
+                style={styles.list}
                 data={card}
                 ListEmptyComponent={
                     <View style={styles.emptyState}>
@@ -90,12 +91,13 @@ export default function CardsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F2F2F7',
     },
     header: {
-        padding: 20,
+        padding: 16,
+        backgroundColor: '#FFFFFF',
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: '#E5E5EA',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     refreshButton: {
-        padding: 8,
+        padding: 4,
         borderRadius: 20,
     },
     refreshing: {
@@ -142,10 +144,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     cardItem: {
-        backgroundColor: '#f8f9fa',
+        // flex: 1,
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // alignItems: 'center',
+        backgroundColor: '#fff',
         padding: 20,
-        marginHorizontal: 15,
-        marginVertical: 8,
+        marginVertical: 4,
         borderRadius: 12,
         borderWidth: 1,
         borderColor: '#eee',
@@ -153,10 +158,15 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         fontWeight: '600',
-        marginBottom: 8,
+        marginBottom: 6,
     },
     cardDetails: {
         fontSize: 14,
         color: '#666',
+    },
+    list: {
+        flex: 1,
+        paddingTop: 14,
+        marginHorizontal: 16,
     },
 });

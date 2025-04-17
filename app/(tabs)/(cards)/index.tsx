@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
 import { BusinessCardEditor } from '@/components/business-card/BusinessCardEditor';
 import { useSearchParams } from 'expo-router/build/hooks';
 import type { MyCardData } from '@/types';
@@ -26,15 +27,15 @@ export default function EditScreen() {
   }, [userid]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <BusinessCardEditor />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F2F2F7',
   },
 });

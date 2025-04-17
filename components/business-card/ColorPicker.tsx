@@ -10,8 +10,6 @@ interface ColorPickerProps {
 export function ColorPicker({ color: colorSelected, onColorChange }: ColorPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  console.log('ColorPicker rendered: ' + colorSelected);
-
   const handleColorSelect = (selectedColor: string) => {
     onColorChange(selectedColor);
     setModalVisible(false);
@@ -76,6 +74,7 @@ const styles = StyleSheet.create({
   colorPreview: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,

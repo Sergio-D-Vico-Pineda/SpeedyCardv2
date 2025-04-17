@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   imageLabel: {
     fontSize: 14,
     marginBottom: 8,
-    color: '#666',
+    color: '#444',
   },
   imageButton: {
     height: 120,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff',
     overflow: 'hidden',
   },
   previewImage: {
