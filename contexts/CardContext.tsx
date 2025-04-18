@@ -1,30 +1,14 @@
 import { createContext, useContext, useState } from 'react';
-import { MyCardData, bgcolors } from '@/types';
+import { MyCardData, defaultCardData } from '@/types';
 
 interface CardContextType {
   cardData: MyCardData;
-  updateCardData: (data: Partial<MyCardData>) => void; // <-- Change here
+  updateCardData: (data: Partial<MyCardData>) => void;
   isFlipped: boolean;
   toggleFlip: () => void;
 }
 
 const CardContext = createContext<CardContextType | undefined>(undefined);
-
-const defaultCardData: MyCardData = {
-  font: 'Inter-Regular',
-  size: 15,
-  color: '#ffffff',
-  bgcolor: bgcolors[1],
-  align: 'center',
-  tname: '',
-  tjob: '',
-  temail: '',
-  tbusiness: '',
-  tphone: '',
-  twebsite: '',
-  iprofile: '',
-  ilogo: '',
-};
 
 export function CardProvider({ children }: { children: React.ReactNode }) {
   const [cardData, setCardData] = useState<MyCardData>(defaultCardData);

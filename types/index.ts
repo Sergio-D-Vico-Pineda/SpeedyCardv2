@@ -15,7 +15,7 @@ interface BusinessCardData {
 interface MyCardData {
   font: typeof fonts[number];
   size: number;
-  color: string;
+  color: typeof colors[number];
   bgcolor: typeof bgcolors[number];
   align: 'left' | 'right' | 'center';
   tname: string;
@@ -26,6 +26,7 @@ interface MyCardData {
   twebsite: string;
   iprofile: string;
   ilogo: string;
+  index?: number | null;
 }
 
 interface Template {
@@ -60,9 +61,9 @@ const fonts = [
 const bgcolors = [
   '#ffffff', // White
   '#000000', // Black
-  '#1a202c', // Dark Gray b
+  '#1a202c', // Dark Gray
   '#4a5568', // Gray
-  '#2b6cb0', // Blue c
+  '#2b6cb0', // Blue
   '#3182ce', // Medium Blue
   '#38a169', // Green
   '#48bb78', // Light Green
@@ -72,13 +73,44 @@ const bgcolors = [
   '#805ad5', // Medium Purple
   '#d53f8c', // Pink
   '#b7791f', // Amber
-  '#744210', // Brown a
+  '#744210', // Brown
   '#975a16', // Dark Amber
 ];
 
 const colors = [
-
+  '#ffffff', // White
+  '#000000', // Black
+  '#ff9800', // Orange
+  '#ff69b4', // Pastel Pink
+  '#ff5252', // Pastel Red
+  '#e53935', // Warm Red
+  '#d81b60', // Warm Pink
+  '#8e44ad', // Warm Purple
+  '#9c27b0', // Deep Purple
+  '#673ab7', // Deep Blue
+  '#4dd0e1', // Pastel Teal
+  '#009688', // Teal
+  '#64b5f6', // Light Blue
+  '#455a64', // Dark Blue
+  '#37474f', // Dark Gray Blue
+  '#666666', // Dark Gray
 ]
+
+const defaultCardData: MyCardData = {
+  font: 'Inter-Regular',
+  size: 15,
+  color: colors[0],
+  bgcolor: bgcolors[1],
+  align: 'center',
+  tname: '',
+  tjob: '',
+  temail: '',
+  tbusiness: '',
+  tphone: '',
+  twebsite: '',
+  iprofile: '',
+  ilogo: '',
+};
 
 interface UserData {
   email: string;
@@ -93,5 +125,6 @@ export {
   fonts,
   bgcolors,
   colors,
+  defaultCardData,
   UserData,
 }

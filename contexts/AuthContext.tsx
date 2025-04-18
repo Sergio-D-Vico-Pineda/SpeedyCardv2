@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as 
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 import { router, useSegments, useRootNavigationState } from 'expo-router';
-import type { UserData } from '@/types';
+import { UserData, defaultCardData } from '@/types';
 
 interface AuthState {
     user: User | null;
@@ -14,12 +14,6 @@ interface AuthState {
     signOut: () => Promise<void>;
     updateUsername: (newUsername: string) => Promise<void>;
 }
-
-const defaultcard = {
-    card: {
-        font: 'Inter-Regular', size: 15, color: 'gray', bgcolor: '#000000', align: 'center', tname: 'Name', tjob: 'Job', tbusiness: 'Business', tphone: 'Phone', twebsite: 'website.com', iprofile: '', ilogo: ''
-    }
-};
 
 const AuthContext = createContext<AuthState>({} as AuthState);
 
@@ -76,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
             const userData: UserData = { email, username, balance: 0 };
             await setDoc(doc(db, 'users', user.uid), userData);
-            await setDoc(doc(db, 'cards', user.uid), defaultcard);
+            await setDoc(doc(db, 'cards', user.uid), { cards: [defaultCardData] });
             setState(current => ({
                 ...current,
                 user,
