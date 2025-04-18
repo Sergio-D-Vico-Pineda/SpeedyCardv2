@@ -11,8 +11,8 @@ export default function CardsScreen() {
     const { updateCardData } = useCardContext();
     const { card, loading, error, refreshing, fetchCards, handleRefresh } = useCards();
 
-    function updateCardAndGotoEdit(card: MyCardData) {
-        // console.log(card);
+    function updateCardAndGotoEdit(card: MyCardData, index: number) {
+        card.index = index;
         updateCardData(card);
         router.push(`/(tabs)/(cards)`);
     }
@@ -75,11 +75,14 @@ export default function CardsScreen() {
                         </Link>
                     </View>
                 }
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => updateCardAndGotoEdit(item)}>
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity onPress={() => updateCardAndGotoEdit(item, index)}>
                         <View style={styles.cardItem}>
-                            {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
-                            {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
+                            <View>
+                                {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
+                                {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
+                            </View>
+                            {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
                         </View>
                     </TouchableOpacity>
                 )}
@@ -144,10 +147,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     cardItem: {
-        // flex: 1,
-        // flexDirection: 'row',
-        // justifyContent: 'space-between',
-        // alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         backgroundColor: '#fff',
         padding: 20,
         marginVertical: 4,
@@ -163,6 +165,9 @@ const styles = StyleSheet.create({
     cardDetails: {
         fontSize: 14,
         color: '#666',
+    },
+    cardIndex: {
+
     },
     list: {
         flex: 1,
