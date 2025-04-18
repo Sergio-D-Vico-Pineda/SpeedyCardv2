@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     boxShadow: '0px 2px 3.84px rgba(0, 0, 0, 0.25)',
   },
   cardBack: {
-    transform: [{ rotateY: '180deg' }],
+    transform: 'rotateY(180deg)',
   },
   cardContent: {
     flex: 1,
