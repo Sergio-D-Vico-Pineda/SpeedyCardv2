@@ -6,7 +6,7 @@ import type { MyCardData } from '@/types';
 
 export function useCards() {
     const { user } = useAuth();
-    const [card, setCard] = useState(Array<MyCardData>());
+    const [cards, setCards] = useState(Array<MyCardData>());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
@@ -22,18 +22,19 @@ export function useCards() {
             const cardsDoc = await getDoc(cardsRef);
 
             if (cardsDoc.exists()) {
-                // const cardData = cardsDoc.data();
-                // const cardArray = cardData.card ? [cardData.card] : [];
-                const cardArray: MyCardData[] = [
+                const cardData = cardsDoc.data();
+                // console.log(cardData.cards);
+                const cardArray = cardData.cards || [];
+                /* const cardArray: MyCardData[] = [
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                ]
-                setCard(cardArray);
+                ] */
+                setCards(cardArray);
             } else {
-                setCard([]);
+                setCards([]);
             }
             setError('');
         } catch (err) {
@@ -51,7 +52,7 @@ export function useCards() {
     };
 
     return {
-        card,
+        card: cards,
         loading,
         error,
         refreshing,
