@@ -16,7 +16,7 @@ export function DeepLinkHandler() {
       }
     };
 
-    Linking.addEventListener('url', handleUrl);
+    const subscription = Linking.addEventListener('url', handleUrl);
     Linking.getInitialURL().then(url => {
       if (url) {
         handleUrl({ url });
@@ -24,7 +24,7 @@ export function DeepLinkHandler() {
     });
 
     return () => {
-      Linking.removeAllListeners('url');
+      subscription.remove();
     };
   }, []);
 
