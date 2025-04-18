@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
-import { bgcolors } from '@/types';
+import { bgcolors, colors } from '@/types';
 
 interface ColorPickerProps {
   color: string;
   onColorChange: (color: string) => void;
+  font?: boolean;
 }
 
-export function ColorPicker({ color: colorSelected, onColorChange }: ColorPickerProps) {
+export function ColorPicker({ color: colorSelected, onColorChange, font = false }: ColorPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const arraycolors = font ? colors : bgcolors;
 
   const handleColorSelect = (selectedColor: string) => {
     onColorChange(selectedColor);
@@ -17,7 +20,7 @@ export function ColorPicker({ color: colorSelected, onColorChange }: ColorPicker
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Card Color</Text>
+      <Text style={styles.label}>{font ? 'Font Color' : 'Card Color'}</Text>
       <TouchableOpacity
         style={styles.colorPreview}
         onPress={() => setModalVisible(true)}
@@ -37,7 +40,7 @@ export function ColorPicker({ color: colorSelected, onColorChange }: ColorPicker
             <Text style={styles.modalTitle}>Select a Color</Text>
             <ScrollView style={styles.colorGrid}>
               <View style={styles.colorList}>
-                {bgcolors.map((color) => (
+                {arraycolors.map((color) => (
                   <TouchableOpacity
                     key={color}
                     style={[styles.colorOption, { backgroundColor: color }]}

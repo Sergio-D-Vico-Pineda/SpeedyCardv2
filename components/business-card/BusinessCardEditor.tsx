@@ -1,17 +1,22 @@
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { MyCardData } from '@/types';
+import { defaultCardData, MyCardData } from '@/types';
 import { ColorPicker } from './ColorPicker';
 import { FontPicker } from './FontPicker';
 import { ImageUploader } from './ImageUploader';
 import { useCardContext } from '@/contexts/CardContext';
-import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react-native';
+import { AlignLeft, AlignCenter, AlignRight, Trash } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {
   const { cardData, updateCardData } = useCardContext();
+  console.log(cardData)
 
   const handleChange = (field: keyof MyCardData, value: string) => {
     updateCardData({ ...cardData, [field]: value });
+  };
+
+  const handleReset = () => {
+    updateCardData(defaultCardData);
   };
 
   const alignmentOptions = [
@@ -23,7 +28,10 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
   return (
     <SafeAreaView style={styles.topcontainer}>
       <View style={styles.header}>
-        <Text style={styles.title}>Card editor</Text>
+        <Text style={styles.title}>Card editor - {Number(cardData.index) > -1 ? `Editing ${cardData.index}` : 'New'}</Text>
+        <TouchableOpacity onPress={handleReset}>
+          <Trash size={24} color="#007AFF" />
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.container}>
         <View style={styles.section}>
@@ -115,6 +123,11 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
             color={cardData.bgcolor}
             onColorChange={(color: string) => handleChange('bgcolor', color)}
           />
+          <ColorPicker
+            font={true}
+            color={cardData.color}
+            onColorChange={(color: string) => handleChange('color', color)}
+          />
           <FontPicker
             font={cardData.font}
             onFontChange={(font: string) => handleChange('font', font)}
@@ -143,6 +156,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
