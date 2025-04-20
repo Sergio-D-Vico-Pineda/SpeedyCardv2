@@ -9,7 +9,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function BusinessCardEditor(filleddata: MyCardData | Object | null = null) {
   const { cardData, updateCardData } = useCardContext();
-  console.log(cardData)
 
   const handleChange = (field: keyof MyCardData, value: string) => {
     updateCardData({ ...cardData, [field]: value });
@@ -28,7 +27,7 @@ export function BusinessCardEditor(filleddata: MyCardData | Object | null = null
   return (
     <SafeAreaView style={styles.topcontainer}>
       <View style={styles.header}>
-        <Text style={styles.title}>Card editor - {Number(cardData.index) > -1 ? `Editing ${cardData.index}` : 'New'}</Text>
+        <Text style={styles.title}>Card editor - {cardData.index === undefined ? 'New' : `Editing ${cardData.index}`}</Text>
         <TouchableOpacity onPress={handleReset}>
           <Trash size={24} color="#007AFF" />
         </TouchableOpacity>
