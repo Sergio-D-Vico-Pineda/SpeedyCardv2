@@ -5,16 +5,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { generateCardUrl } from '@/utils/cardUrl';
-import { db } from '@/firebase';
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
-import { defaultCardData } from '@/types';
+import { useCards } from '@/hooks/useCards';
 
 export function BusinessCardSave() {
   const { user } = useAuth();
   const { cardData } = useCardContext();
+  const { saveCard: saveCardToFirestore } = useCards();
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const saveCard = async () => {
+    setError(null);
     try {
       setSaving(true);
       // Save card data to local storage
@@ -28,54 +29,23 @@ export function BusinessCardSave() {
       }
     } catch (error) {
       console.error('Error saving card:', error);
+      setError((error as Error).message || String(error));
     } finally {
       setSaving(false);
     }
   };
 
   const saveInFirestore = async () => {
-    const index = Number(cardData.index);
+    setError(null);
     try {
       setSaving(true);
-      if (!user) {
-        console.error('User not authenticated');
-        return
-      }
-      /* -------------- */
-      const cardsCollection = collection(db, 'users');
-
-
-
-
-
-
-
-
-
-
-      /* -------------- */
-      console.log("cardData.index: " + cardData.index)
-      delete cardData.index;
-
-      const cardsRef = doc(db, 'cards', user.uid);
-      const cardsDoc = await getDoc(cardsRef);
-      console.log('-----------------------');
-      console.log('Cloud');
-      console.log(index);
-      if (!isNaN(index)) {
-        console.log(cardsDoc.data()?.cards[index]);
-      }
-      console.log('Local');
-      console.log(cardData);
-      // await setDoc(doc(db, 'cards', user.uid), defaultCardData);
-      // await setDoc(docRef, cardData);
+      await saveCardToFirestore(cardData);
     } catch (error) {
       console.error('Error saving card in Firestore:', error);
+      setError((error as Error).message || String(error));
     } finally {
-      cardData.index = index;
       setSaving(false);
     }
-
   };
 
   const shareCard = async () => {
@@ -103,6 +73,7 @@ export function BusinessCardSave() {
 
   return (
     <View style={styles.container}>
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <TouchableOpacity
         style={[styles.button, styles.saveButton]}
         onPress={saveCard}
@@ -168,5 +139,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 8,
   },
 });

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 import type { MyCardData } from '@/types';
@@ -51,12 +51,52 @@ export function useCards() {
         fetchCards();
     };
 
+    const removeCard = async (index: number) => {
+        if (!user) {
+            return;
+        }
+        const cardsRef = doc(db, 'cards', user.uid);
+        try {
+            const newCards = [...cards];
+            newCards.splice(index, 1);
+            await updateDoc(cardsRef, { cards: newCards });
+            setCards(newCards);
+        } catch (err) {
+            console.error('Error removing card:', err);
+        }
+    };
+
+    // Save or update a card in Firestore and local state
+    const saveCard = async (data: MyCardData) => {
+        if (!user) {
+            return;
+        }
+        const cardsRef = doc(db, 'cards', user.uid);
+        try {
+            // Remove index before storing
+            const { index, ...cardToStore } = data;
+            const newCards = [...cards];
+            if (index === undefined || index === null) {
+                newCards.push(cardToStore as MyCardData);
+            } else {
+                newCards[index] = cardToStore as MyCardData;
+            }
+            // Persist updated list
+            await updateDoc(cardsRef, { cards: newCards });
+            setCards(newCards);
+        } catch (err) {
+            console.error('Error saving card:', err);
+        }
+    };
+
     return {
         card: cards,
         loading,
         error,
         refreshing,
         fetchCards,
-        handleRefresh
+        handleRefresh,
+        removeCard,
+        saveCard,
     };
 }
