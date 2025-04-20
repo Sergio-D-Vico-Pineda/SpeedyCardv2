@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router } from 'expo-router';
-import { Plus, RotateCw } from 'lucide-react-native';
+import { Plus, RotateCw, Trash } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { MyCardData } from '@/types';
@@ -9,7 +9,7 @@ import { useCardContext } from '@/contexts/CardContext';
 
 export default function CardsScreen() {
     const { updateCardData } = useCardContext();
-    const { card, loading, error, refreshing, fetchCards, handleRefresh } = useCards();
+    const { card, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
@@ -82,7 +82,12 @@ export default function CardsScreen() {
                                 {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
                                 {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
                             </View>
-                            {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
+                            <View style={styles.cardActions}>
+                                {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
+                                <Pressable onPress={() => removeCard(index)}>
+                                    <Trash color="#FF3B30" size={24} />
+                                </Pressable>
+                            </View>
                         </View>
                     </TouchableOpacity>
                 )}
@@ -174,4 +179,9 @@ const styles = StyleSheet.create({
         paddingTop: 14,
         marginHorizontal: 16,
     },
+    cardActions: {
+        flexDirection: 'row',
+        gap: 8,
+        alignItems: 'center',
+    }
 });
