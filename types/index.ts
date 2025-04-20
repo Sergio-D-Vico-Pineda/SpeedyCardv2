@@ -110,6 +110,7 @@ const defaultCardData: MyCardData = {
   twebsite: '',
   iprofile: '',
   ilogo: '',
+  index: undefined,
 };
 
 interface UserData {
