@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, router } from 'expo-router';
-import { Plus, RotateCw, Trash } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { Plus, Trash } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
@@ -57,18 +57,13 @@ export default function CardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>My Business Cards</Text>
-                <Pressable
-                    style={[styles.refreshButton, refreshing && styles.refreshing]}
-                    onPress={handleRefresh}
-                    disabled={refreshing}
-                >
-                    <RotateCw size={24} color="#007AFF" />
-                </Pressable>
             </View>
 
             <FlatList
                 style={styles.list}
                 data={cards}
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
                 ListEmptyComponent={
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyTitle}>No Cards Yet</Text>
