@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
-import { MyCardData, bgcolors } from '@/types';
+import { MyCardData, bgcolors, fonts } from '@/types';
 
 const templates = [
   {
@@ -8,7 +8,7 @@ const templates = [
     name: 'Classic',
     layout: {
       bgcolor: bgcolors[5],
-      font: 'Inter-Regular',
+      font: fonts[0],
       align: 'center' as const,
     },
   },
@@ -17,7 +17,7 @@ const templates = [
     name: 'Modern',
     layout: {
       bgcolor: bgcolors[2],
-      font: 'Roboto-Regular',
+      font: fonts[3],
       align: 'left' as const,
     },
   },
@@ -26,7 +26,7 @@ const templates = [
     name: 'Elegant',
     layout: {
       bgcolor: bgcolors[14],
-      font: 'PlayfairDisplay-Regular',
+      font: fonts[6],
       align: 'right' as const,
     },
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     height: 120,
     paddingHorizontal: 16,
-    marginBottom: 24,
+    marginBottom: 14,
   },
   templateButton: {
     marginRight: 16,
