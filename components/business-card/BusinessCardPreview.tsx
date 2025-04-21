@@ -45,13 +45,13 @@ export default function BusinessCardPreview() {
               />
             )}
           </Text>
-          <Text style={[styles.name, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.name, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tname}
           </Text>
-          <Text style={[styles.title, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.title, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tjob}
           </Text>
-          <Text style={[styles.company, { fontFamily: cardData.font }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.company, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tbusiness}
           </Text>
         </View>
@@ -67,13 +67,13 @@ export default function BusinessCardPreview() {
               />
             )}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
             {cardData.temail}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
             {cardData.tphone}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font }]}>
+          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
             {cardData.twebsite}
           </Text>
         </View>
@@ -120,22 +120,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#fff',
   },
   title: {
     fontSize: 16,
     marginBottom: 4,
-    color: '#fff',
   },
   company: {
     fontSize: 18,
     marginBottom: 16,
-    color: '#fff',
   },
   contactInfo: {
     fontSize: 14,
     marginBottom: 8,
-    color: '#fff',
   },
   textLeft: {
     textAlign: 'left',
