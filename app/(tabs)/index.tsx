@@ -9,7 +9,7 @@ import { useCardContext } from '@/contexts/CardContext';
 
 export default function CardsScreen() {
     const { updateCardData } = useCardContext();
-    const { card, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
+    const { cards, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
@@ -62,7 +62,7 @@ export default function CardsScreen() {
 
             <FlatList
                 style={styles.list}
-                data={card}
+                data={cards}
                 ListEmptyComponent={
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyTitle}>No Cards Yet</Text>
