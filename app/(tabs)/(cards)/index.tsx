@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -8,12 +8,32 @@ import { useCardContext } from '@/contexts/CardContext';
 import ColorPicker from '@/components/business-card/ColorPicker';
 import FontPicker from '@/components/business-card/FontPicker';
 import ImageUploader from '@/components/business-card/ImageUploader';
-
+import { Picker } from '@react-native-picker/picker';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/firebase';
 
 export default function EditScreen() {
   const params = useSearchParams();
   const userid = params.get('id');
   const { cardData, updateCardData } = useCardContext();
+
+  const [effects, setEffects] = useState<string[]>([]);
+  const [selectedEffect, setSelectedEffect] = useState(cardData.effect || '');
+
+
+  // fetch effects once
+  useEffect(() => {
+    const fetchEffects = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, 'effects'));
+        // console.log(snapshot.docs.map(doc => doc.data()))
+        setEffects(snapshot.docs.map(doc => doc.data().name as string));
+      } catch (err) {
+        console.error('Error fetching effects:', err);
+      }
+    };
+    fetchEffects();
+  }, []);
 
   /* useEffect(() => {
     const fieldsToCheck: (keyof MyCardData)[] = [
@@ -190,6 +210,23 @@ export default function EditScreen() {
             onImageSelect={(uri: string) => handleChange('ilogo', uri)}
             onProfileImageSelect={(uri: string) => handleChange('iprofile', uri)}
           />
+          {effects.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Effect</Text>
+              <Picker
+                selectedValue={selectedEffect}
+                onValueChange={(value: any) => {
+                  setSelectedEffect(value);
+                  updateCardData({ effect: value });
+                }}
+              >
+                <Picker.Item label="Select an effect" value="" />
+                {effects.map(eff => (
+                  <Picker.Item key={eff} label={eff} value={eff} />
+                ))}
+              </Picker>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

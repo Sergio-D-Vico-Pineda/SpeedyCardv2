@@ -26,6 +26,7 @@ interface MyCardData {
   twebsite: string;
   iprofile: string;
   ilogo: string;
+  effect?: string;
   index?: number | undefined;
 }
 
@@ -116,6 +117,7 @@ const defaultCardData: MyCardData = {
   twebsite: '',
   iprofile: '',
   ilogo: '',
+  effect: '',
   index: undefined,
 };
 
