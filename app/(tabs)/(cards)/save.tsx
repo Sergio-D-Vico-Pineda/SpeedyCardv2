@@ -8,28 +8,37 @@ const isColorDark = (hex: string): boolean => {
   if (c.length === 3) {
     c = c.split('').map(ch => ch + ch).join('');
   }
-  const r = parseInt(c.substr(0, 2), 16);
-  const g = parseInt(c.substr(2, 2), 16);
-  const b = parseInt(c.substr(4, 2), 16);
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
   const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
   return brightness < 186;
 };
 
 export default function SaveScreen() {
   const { cardData } = useCardContext();
-  const previewBgColor = isColorDark(cardData.bgcolor) ? '#fff' : '#000';
+  const previewBgColor = isColorDark(cardData.bgcolor) ? '' : '#000';
 
   return (
     <SafeAreaView style={styles.topcontainer}>
       <View style={styles.header}>
         <Text style={styles.title}>{cardData.index === undefined ? 'New' : `Editing ${cardData.index}`}</Text>
-        <Text>Hola</Text>
       </View>
       <View style={styles.container}>
-        <View style={[styles.cardpreview, { backgroundColor: previewBgColor }]}>
-          <BusinessCardPreview />
-        </View>
-        <BusinessCardSave />
+        {
+          cardData.tname ? (
+            <>
+              <View style={[styles.cardpreview, { backgroundColor: previewBgColor }]}>
+                <BusinessCardPreview />
+              </View>
+              <BusinessCardSave />
+            </>
+          ) : (
+            <Text>
+              Please type your name at least
+            </Text>
+          )
+        }
       </View>
     </SafeAreaView>
   );
