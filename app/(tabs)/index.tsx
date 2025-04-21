@@ -48,6 +48,11 @@ export default function CardsScreen() {
         );
     }
 
+    function newCard(): void {
+        updateCardData(defaultCardData);
+        router.push(`/(tabs)/(cards)`);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -68,12 +73,10 @@ export default function CardsScreen() {
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyTitle}>No Cards Yet</Text>
                         <Text style={styles.emptyText}>Create your first business card to get started</Text>
-                        <Link href="/(tabs)/(cards)" asChild>
-                            <Pressable style={styles.createButton}>
-                                <Plus size={24} color="#FFFFFF" />
-                                <Text style={styles.buttonText}>Create New Card</Text>
-                            </Pressable>
-                        </Link>
+                        <Pressable style={styles.createButton} onPress={newCard}>
+                            <Plus size={24} color="#FFFFFF" />
+                            <Text style={styles.buttonText}>Create New Card</Text>
+                        </Pressable>
                     </View>
                 }
                 renderItem={({ item, index }) => (
@@ -93,6 +96,7 @@ export default function CardsScreen() {
                     </TouchableOpacity>
                 )}
             />
+            <FloatingButton onPressAction={newCard} />
         </SafeAreaView>
     );
 }
@@ -184,5 +188,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         alignItems: 'center',
-    }
+    },
 });
