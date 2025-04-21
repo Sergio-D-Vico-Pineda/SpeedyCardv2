@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   container: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    marginVertical: 24,
+    marginVertical: 14,
     alignSelf: 'center',
   },
   card: {
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     padding: 24,
-    // alignItems: 'center',
     justifyContent: 'center',
   },
   profileImage: {
