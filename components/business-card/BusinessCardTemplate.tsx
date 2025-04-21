@@ -32,7 +32,7 @@ const templates = [
   },
 ];
 
-export function BusinessCardTemplate() {
+export default function BusinessCardTemplate() {
   const { updateCardData } = useCardContext();
 
   const applyTemplate = (template: typeof templates[0]) => {

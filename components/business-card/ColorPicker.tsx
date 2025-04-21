@@ -8,7 +8,7 @@ interface ColorPickerProps {
   font?: boolean;
 }
 
-export function ColorPicker({ color: colorSelected, onColorChange, font = false }: ColorPickerProps) {
+export default function ColorPicker({ color: colorSelected, onColorChange, font = false }: ColorPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const arraycolors = font ? colors : bgcolors;

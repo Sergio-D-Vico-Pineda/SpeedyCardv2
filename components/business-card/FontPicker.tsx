@@ -7,7 +7,7 @@ interface FontPickerProps {
   onFontChange: (font: string) => void;
 }
 
-export function FontPicker({ font, onFontChange }: FontPickerProps) {
+export default function FontPicker({ font, onFontChange }: FontPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleFontSelect = (selectedFont: string) => {

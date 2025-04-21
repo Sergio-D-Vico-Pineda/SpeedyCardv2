@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { BusinessCardTemplate } from '@/components/business-card/BusinessCardTemplate';
+import BusinessCardTemplate from '@/components/business-card/BusinessCardTemplate';
 
 export default function TemplatesScreen() {
   return (

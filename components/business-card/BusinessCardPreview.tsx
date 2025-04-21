@@ -6,7 +6,7 @@ const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio
 const CARD_WIDTH = Dimensions.get('window').width - 32;
 const CARD_HEIGHT = CARD_WIDTH / CARD_ASPECT_RATIO;
 
-export function BusinessCardPreview() {
+export default function BusinessCardPreview() {
   const { cardData, isFlipped, toggleFlip } = useCardContext();
 
   const frontAnimatedStyle = useAnimatedStyle(() => ({

@@ -7,7 +7,7 @@ interface ImageUploaderProps {
   onProfileImageSelect: (uri: string) => void;
 }
 
-export function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUploaderProps) {
+export default function ImageUploader({ onImageSelect, onProfileImageSelect }: ImageUploaderProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentMode, setCurrentMode] = useState<'logo' | 'profile'>('logo');
   const [logoImage, setLogoImage] = useState<string | null>(null);

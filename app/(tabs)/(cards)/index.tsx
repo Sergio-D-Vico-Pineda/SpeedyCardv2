@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { defaultCardData, MyCardData } from '@/types';
-import { ColorPicker } from '@/components/business-card/ColorPicker';
-import { FontPicker } from '@/components/business-card/FontPicker';
-import { ImageUploader } from '@/components/business-card/ImageUploader';
-import { AlignLeft, AlignCenter, AlignRight, Trash } from 'lucide-react-native';
+import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw } from 'lucide-react-native';
 import { useCardContext } from '@/contexts/CardContext';
+import ColorPicker from '@/components/business-card/ColorPicker';
+import FontPicker from '@/components/business-card/FontPicker';
+import ImageUploader from '@/components/business-card/ImageUploader';
 
 
 export default function EditScreen() {

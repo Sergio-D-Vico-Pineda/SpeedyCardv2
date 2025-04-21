@@ -1,7 +1,7 @@
 import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
-import { BusinessCardSave } from '@/components/business-card/BusinessCardSave';
-import { BusinessCardPreview } from '@/components/business-card/BusinessCardPreview';
 import { useCardContext } from '@/contexts/CardContext';
+import BusinessCardSave from '@/components/business-card/BusinessCardSave';
+import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 
 const isColorDark = (hex: string): boolean => {
   let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;

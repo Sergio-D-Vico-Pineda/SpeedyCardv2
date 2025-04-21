@@ -4,8 +4,9 @@ import { Link, router } from 'expo-router';
 import { Plus, RotateCw, Trash } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
-import { MyCardData } from '@/types';
+import { defaultCardData, MyCardData } from '@/types';
 import { useCardContext } from '@/contexts/CardContext';
+import FloatingButton from '@/components/FloatingButton';
 
 export default function CardsScreen() {
     const { updateCardData } = useCardContext();

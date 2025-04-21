@@ -7,7 +7,7 @@ import { generateCardUrl } from '@/utils/cardUrl';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData } from '@/types';
 
-export function BusinessCardSave() {
+export default function BusinessCardSave() {
   const { cardData, updateCardData } = useCardContext();
   const { saveCardToFirestore } = useCards();
   const [saving, setSaving] = useState(false);
@@ -37,6 +37,7 @@ export function BusinessCardSave() {
   const saveInFirestore = async () => {
     setError(null);
     try {
+      console.log('Saving card...');
       setSaving(true);
       await saveCardToFirestore(cardData);
       updateCardData(defaultCardData);
@@ -45,7 +46,7 @@ export function BusinessCardSave() {
       setError((error as Error).message || String(error));
     } finally {
       if (!error) {
-        console.log('Card saved successfully');
+        console.log('Card saved successfully.');
       }
       setSaving(false);
     }
