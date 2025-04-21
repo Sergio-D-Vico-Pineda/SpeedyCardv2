@@ -2,11 +2,13 @@ import { useState, useCallback } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { useAuth } from '@/contexts/AuthContext';
-import type { MyCardData } from '@/types';
+import { defaultCardData, type MyCardData } from '@/types';
+import { useCardContext, } from '@/contexts/CardContext';
+
 
 export function useCards() {
     const { user } = useAuth();
-    const [cards, setCards] = useState(Array<MyCardData>());
+    const { updateCardData, cards, setCards } = useCardContext();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
@@ -23,7 +25,6 @@ export function useCards() {
 
             if (cardsDoc.exists()) {
                 const cardData = cardsDoc.data();
-                // console.log(cardData.cards);
                 const cardArray = cardData.cards || [];
                 /* const cardArray: MyCardData[] = [
                     { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
@@ -61,31 +62,32 @@ export function useCards() {
             newCards.splice(index, 1);
             await updateDoc(cardsRef, { cards: newCards });
             setCards(newCards);
+            updateCardData(defaultCardData);
         } catch (err) {
             console.error('Error removing card:', err);
         }
     };
 
     // Save or update a card in Firestore and local state
-    const saveCard = async (data: MyCardData) => {
+    const saveCardToFirestore = async (data: MyCardData) => {
         if (!user) {
             return;
         }
         const cardsRef = doc(db, 'cards', user.uid);
         try {
             // Remove index before storing
-            const { index, ...cardToStore } = data;
+            let { index, ...cardToStore } = data;
             const newCards = [...cards];
-            if (index === undefined || index === null) {
+            if (index === undefined) {
                 newCards.push(cardToStore as MyCardData);
+                updateCardData({ ...cardToStore, index: newCards.length - 1 } as MyCardData);
             } else {
                 newCards[index] = cardToStore as MyCardData;
             }
-            // Persist updated list
             await updateDoc(cardsRef, { cards: newCards });
             setCards(newCards);
         } catch (err) {
-            console.error('Error saving card:', err);
+            console.error('Error saving card useCards:', err);
         }
     };
 
@@ -97,6 +99,14 @@ export function useCards() {
         fetchCards,
         handleRefresh,
         removeCard,
-        saveCard,
+        saveCardToFirestore,
     };
 }
+
+function setCardData(cardToStore: { font: string; size: number; color: string; bgcolor: string; align: "left" | "right" | "center"; tname: string; tjob: string; temail: string; tbusiness: string; tphone: string; twebsite: string; iprofile: string; ilogo: string; }) {
+    throw new Error('Function not implemented.');
+}
+function updateCardData(arg0: MyCardData) {
+    throw new Error('Function not implemented.');
+}
+

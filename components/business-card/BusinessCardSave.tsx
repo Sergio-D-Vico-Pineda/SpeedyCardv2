@@ -1,20 +1,19 @@
 import { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Share } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
-import { useAuth } from '@/contexts/AuthContext';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { generateCardUrl } from '@/utils/cardUrl';
 import { useCards } from '@/hooks/useCards';
+import { defaultCardData } from '@/types';
 
 export function BusinessCardSave() {
-  const { user } = useAuth();
-  const { cardData } = useCardContext();
-  const { saveCard: saveCardToFirestore } = useCards();
+  const { cardData, updateCardData } = useCardContext();
+  const { saveCardToFirestore } = useCards();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const saveCard = async () => {
+  const saveCardinLocal = async () => {
     setError(null);
     try {
       setSaving(true);
@@ -40,10 +39,14 @@ export function BusinessCardSave() {
     try {
       setSaving(true);
       await saveCardToFirestore(cardData);
+      updateCardData(defaultCardData);
     } catch (error) {
       console.error('Error saving card in Firestore:', error);
       setError((error as Error).message || String(error));
     } finally {
+      if (!error) {
+        console.log('Card saved successfully');
+      }
       setSaving(false);
     }
   };
@@ -76,7 +79,7 @@ export function BusinessCardSave() {
       {error && <Text style={styles.errorText}>{error}</Text>}
       <TouchableOpacity
         style={[styles.button, styles.saveButton]}
-        onPress={saveCard}
+        onPress={saveCardinLocal}
         disabled={saving}
       >
         <Text style={styles.buttonText}>
