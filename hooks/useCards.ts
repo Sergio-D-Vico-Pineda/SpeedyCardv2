@@ -5,8 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { defaultCardData, type MyCardData } from '@/types';
 import { useCardContext, } from '@/contexts/CardContext';
 
-
-export function useCards() {
+function useCards() {
     const { user } = useAuth();
     const { updateCardData, cards, setCards } = useCardContext();
     const [loading, setLoading] = useState(true);
@@ -68,7 +67,6 @@ export function useCards() {
         }
     };
 
-    // Save or update a card in Firestore and local state
     const saveCardToFirestore = async (data: MyCardData) => {
         if (!user) {
             return;
@@ -92,7 +90,7 @@ export function useCards() {
     };
 
     return {
-        card: cards,
+        cards,
         loading,
         error,
         refreshing,
@@ -103,10 +101,4 @@ export function useCards() {
     };
 }
 
-function setCardData(cardToStore: { font: string; size: number; color: string; bgcolor: string; align: "left" | "right" | "center"; tname: string; tjob: string; temail: string; tbusiness: string; tphone: string; twebsite: string; iprofile: string; ilogo: string; }) {
-    throw new Error('Function not implemented.');
-}
-function updateCardData(arg0: MyCardData) {
-    throw new Error('Function not implemented.');
-}
-
+export { useCards }
