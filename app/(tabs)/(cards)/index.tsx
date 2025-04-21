@@ -93,7 +93,7 @@ export default function EditScreen() {
             value={cardData.tname}
             onChangeText={(value) => handleChange('tname', value)}
             placeholder="Full Name"
-            placeholderTextColor="#666"
+            placeholderTextColor="red"
           />
           <TextInput
             style={styles.input}
