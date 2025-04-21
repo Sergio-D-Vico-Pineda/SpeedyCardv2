@@ -15,6 +15,29 @@ export default function EditScreen() {
   const userid = params.get('id');
   const { cardData, updateCardData } = useCardContext();
 
+  /* useEffect(() => {
+    const fieldsToCheck: (keyof MyCardData)[] = [
+      'tname', 'tjob', 'tbusiness', 'temail', 'tphone', 'twebsite'
+    ];
+
+    const anyFilled: boolean = fieldsToCheck.some(
+      key => {
+        if (cardData[key] && typeof cardData[key] === 'string') {
+          return cardData[key].trim().length > 0;
+        }
+        return false;
+      }
+    );
+
+    if (anyFilled) {
+      // at least one TextInput has content
+      console.log('some field is non-empty');
+    } else {
+      console.log('no fields are non-empty');
+    }
+  }, [cardData]); */
+
+
   const handleChange = (field: keyof MyCardData, value: string) => {
     updateCardData({ ...cardData, [field]: value });
   };
@@ -31,6 +54,7 @@ export default function EditScreen() {
 
   useEffect(() => {
     const fetchCardData = async () => {
+      console.log('Fetching card data...');
       if (!userid) return;
 
       try {
@@ -39,6 +63,8 @@ export default function EditScreen() {
         // setCardData(data);
       } catch (error) {
         console.error('Error fetching card data:', error);
+      } finally {
+        console.log('Card data fetched.');
       }
     };
 
@@ -50,11 +76,18 @@ export default function EditScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Card editor - {cardData.index === undefined ? 'New' : `Editing ${cardData.index}`}</Text>
         <TouchableOpacity onPress={handleReset}>
-          <Trash size={24} color="#007AFF" />
+          {
+            cardData.index !== undefined ? (
+              <Plus size={24} color="#007AFF" />
+            ) : (
+              <RotateCcw size={24} color="#007AFF" />
+            )
+          }
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.container}>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Front</Text>
           <TextInput
             style={styles.input}
             value={cardData.tname}
@@ -78,6 +111,7 @@ export default function EditScreen() {
           />
         </View>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Back</Text>
           <TextInput
             style={styles.input}
             value={cardData.temail}
@@ -186,7 +220,7 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingInline: 16,
-    marginBottom: 24,
+    marginBottom: 5,
   },
   input: {
     backgroundColor: '#fff',
