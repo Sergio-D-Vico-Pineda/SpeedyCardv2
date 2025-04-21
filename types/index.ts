@@ -41,6 +41,12 @@ interface Template {
   features?: Array<string>;
 };
 
+interface UserData {
+  email: string;
+  username: string;
+  balance: number;
+}
+
 const fonts = [
   'Inter-Regular',
   'Inter-Medium',
@@ -113,19 +119,28 @@ const defaultCardData: MyCardData = {
   index: undefined,
 };
 
-interface UserData {
-  email: string;
-  username: string;
-  balance: number;
-}
+const fontMap: Record<string, string> = {
+  'Roboto-Regular': 'Roboto_400Regular',
+  'Roboto-Medium': 'Roboto_500Medium',
+  'Roboto-Bold': 'Roboto_700Bold',
+  'Montserrat-Regular': 'Montserrat_400Regular',
+  'Montserrat-Medium': 'Montserrat_500Medium',
+  'Montserrat-Bold': 'Montserrat_700Bold',
+  'OpenSans-Regular': 'OpenSans_400Regular',
+  'OpenSans-SemiBold': 'OpenSans_600SemiBold',
+  'OpenSans-Bold': 'OpenSans_700Bold',
+  'PlayfairDisplay-Regular': 'PlayfairDisplay_400Regular',
+  'PlayfairDisplay-Bold': 'PlayfairDisplay_700Bold',
+};
 
 export {
   BusinessCardData,
   MyCardData,
   Template,
+  UserData,
   fonts,
   bgcolors,
   colors,
   defaultCardData,
-  UserData,
+  fontMap
 }

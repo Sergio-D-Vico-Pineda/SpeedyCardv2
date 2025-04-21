@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
-import { fonts } from '@/types'; // Import your font options from FontOptions.tsx or where they are defined
+import { fonts, fontMap } from '@/types'; // Import your font options from FontOptions.tsx or where they are defined
 
 interface FontPickerProps {
   font: string;
@@ -15,14 +15,17 @@ export default function FontPicker({ font, onFontChange }: FontPickerProps) {
     setModalVisible(false);
   };
 
-  const renderFontItem = ({ item }: { item: string }) => (
-    <TouchableOpacity
-      style={[styles.fontItem, font === item && styles.selectedFont]}
-      onPress={() => handleFontSelect(item)}
-    >
-      <Text style={[styles.fontText, { fontFamily: item }]}>{item}</Text>
-    </TouchableOpacity>
-  );
+  const renderFontItem = ({ item }: { item: string }) => {
+    const fam = fontMap[item] || item;
+    return (
+      <TouchableOpacity
+        style={[styles.fontItem, font === item && styles.selectedFont]}
+        onPress={() => handleFontSelect(item)}
+      >
+        <Text style={[styles.fontText, { fontFamily: fam }]}>{item}</Text>
+      </TouchableOpacity>
+    )
+  };
 
   return (
     <View style={styles.container}>
@@ -31,7 +34,7 @@ export default function FontPicker({ font, onFontChange }: FontPickerProps) {
         style={styles.fontPreview}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={[styles.fontPreviewText, { fontFamily: font }]}>{font}</Text>
+        <Text style={[styles.fontPreviewText, { fontFamily: fontMap[font] }]}>{font}</Text>
       </TouchableOpacity>
 
       <Modal

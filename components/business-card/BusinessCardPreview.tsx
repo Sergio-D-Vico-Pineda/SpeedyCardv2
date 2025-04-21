@@ -1,6 +1,7 @@
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { fontMap } from '@/types';
 
 const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio
 const CARD_WIDTH = Dimensions.get('window').width - 32;
@@ -45,13 +46,13 @@ export default function BusinessCardPreview() {
               />
             )}
           </Text>
-          <Text style={[styles.name, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tname}
           </Text>
-          <Text style={[styles.title, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tjob}
           </Text>
-          <Text style={[styles.company, { fontFamily: cardData.font, color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
+          <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
             {cardData.tbusiness}
           </Text>
         </View>
@@ -67,13 +68,13 @@ export default function BusinessCardPreview() {
               />
             )}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
             {cardData.temail}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
             {cardData.tphone}
           </Text>
-          <Text style={[styles.contactInfo, { fontFamily: cardData.font, color: cardData.color }]}>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
             {cardData.twebsite}
           </Text>
         </View>
