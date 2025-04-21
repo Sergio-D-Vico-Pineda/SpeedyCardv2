@@ -26,7 +26,7 @@ interface MyCardData {
   twebsite: string;
   iprofile: string;
   ilogo: string;
-  index?: number | null;
+  index?: number | undefined;
 }
 
 interface Template {
