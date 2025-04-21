@@ -117,6 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             user: null,
             userData: null
         }));
+        router.replace('/app', { withAnchor: false });
     }, []);
 
     useProtectedRoute(state.user);

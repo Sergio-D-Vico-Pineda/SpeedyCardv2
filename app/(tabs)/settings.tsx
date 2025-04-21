@@ -9,6 +9,7 @@ export default function SettingsScreen() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [newUsername, setNewUsername] = useState(userData?.username || '');
 
     if (!userData) {
         return (
@@ -17,8 +18,6 @@ export default function SettingsScreen() {
             </View>
         )
     }
-
-    const [newUsername, setNewUsername] = useState(userData.username || '');
 
     return (
         <SafeAreaView style={styles.container}>
