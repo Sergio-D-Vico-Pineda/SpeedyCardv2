@@ -10,13 +10,13 @@ import ColorPicker from '@/components/business-card/ColorPicker';
 import FontPicker from '@/components/business-card/FontPicker';
 import ImageUploader from '@/components/business-card/ImageUploader';
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase';
+import { useCards } from '@/hooks/useCards';
 
 export default function EditScreen() {
   const params = useSearchParams();
   const userid = params.get('id');
   const { cardData, updateCardData } = useCardContext();
+  const { effects, fetchEffects, fetchSingleCard } = useCards();
   const nameInputRef = useRef<TextInput>(null);
 
   // Replace the existing useEffect for focus with useFocusEffect
@@ -28,41 +28,10 @@ export default function EditScreen() {
     }, [cardData.tname])
   );
 
-  const [effects, setEffects] = useState<string[]>([]);
-  const [selectedEffect, setSelectedEffect] = useState(cardData.effect || '');
-
+  // Replace the effects fetching useEffect with this:
   useEffect(() => {
-    const fetchCardData = async () => {
-      console.log('Fetching card data...');
-      if (!userid) return;
-
-      try {
-        // const response = await fetch(`https://your-firebase-url.com/cards/${userid}`);
-        // const data = await response.json();
-        // setCardData(data);
-      } catch (error) {
-        console.error('Error fetching card data:', error);
-      } finally {
-        console.log('Card data fetched.');
-      }
-    };
-
-    fetchCardData();
-  }, [userid]);
-
-  // fetch effects once
-  useEffect(() => {
-    const fetchEffects = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, 'effects'));
-        // console.log(snapshot.docs.map(doc => doc.data()))
-        setEffects(snapshot.docs.map(doc => doc.data().name as string));
-      } catch (err) {
-        console.error('Error fetching effects:', err);
-      }
-    };
     fetchEffects();
-  }, []);
+  }, [fetchEffects]);
 
   /* useEffect(() => {
     const fieldsToCheck: (keyof MyCardData)[] = [
@@ -224,13 +193,10 @@ export default function EditScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Effect</Text>
               <Picker
-                selectedValue={selectedEffect}
-                onValueChange={(value: any) => {
-                  setSelectedEffect(value);
-                  updateCardData({ effect: value });
-                }}
+                selectedValue={cardData.effect || ''}
+                onValueChange={(value: string) => handleChange('effect', value)}
               >
-                <Picker.Item label="Select an effect" value="" />
+                <Picker.Item enabled={false} label="Select an effect" value="" />
                 {effects.map(eff => (
                   <Picker.Item key={eff} label={eff} value={eff} />
                 ))}

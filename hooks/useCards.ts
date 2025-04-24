@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 import { defaultCardData, type MyCardData } from '@/types';
@@ -11,6 +11,16 @@ function useCards() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
+    const [effects, setEffects] = useState<string[]>([]);
+
+    const fetchEffects = useCallback(async () => {
+        try {
+            const snapshot = await getDocs(collection(db, 'effects'));
+            setEffects(snapshot.docs.map(doc => doc.data().name as string));
+        } catch (err) {
+            console.error('Error fetching effects:', err);
+        }
+    }, []);
 
     const fetchCards = useCallback(async () => {
         if (!user) {
@@ -46,12 +56,12 @@ function useCards() {
         }
     }, [user]);
 
-    const handleRefresh = () => {
+    const handleRefresh = (): void => {
         setRefreshing(true);
         fetchCards();
     };
 
-    const removeCard = async (index: number) => {
+    const removeCard = async (index: number): Promise<void> => {
         if (!user) {
             return;
         }
@@ -67,7 +77,7 @@ function useCards() {
         }
     };
 
-    const saveCardToFirestore = async (data: MyCardData) => {
+    const saveCardToFirestore = async (data: MyCardData): Promise<void> => {
         if (!user) {
             return;
         }
@@ -89,15 +99,42 @@ function useCards() {
         }
     };
 
+    const fetchSingleCard = async (userid: string, index: number): Promise<MyCardData | null> => {
+        if (!user) {
+            return null;
+        }
+
+        try {
+            const cardsRef = doc(db, 'cards', userid);
+            const cardsDoc = await getDoc(cardsRef);
+
+            if (cardsDoc.exists()) {
+                const cardData = cardsDoc.data();
+                const cardArray = cardData.cards || [];
+
+                if (index >= 0 && index < cardArray.length) {
+                    return cardArray[index];
+                }
+            }
+            return null;
+        } catch (err) {
+            console.error('Error fetching single card:', err);
+            return null;
+        }
+    };
+
     return {
         cards,
         loading,
         error,
         refreshing,
+        effects,
+        fetchEffects,
         fetchCards,
         handleRefresh,
         removeCard,
         saveCardToFirestore,
+        fetchSingleCard,
     };
 }
 
