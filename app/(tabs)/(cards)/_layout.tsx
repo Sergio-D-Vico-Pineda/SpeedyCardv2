@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 
 export default function CardsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false, animation: 'fade', tabBarHideOnKeyboard: true }}>
+    <Tabs screenOptions={{ headerShown: false, animation: 'fade', tabBarHideOnKeyboard: true, headerStyle: { backgroundColor: '#fff'} }}>
       <Tabs.Screen name="index" options={{ title: 'Edit', tabBarIcon: ({ color, size }) => <Edit color={color} size={size} /> }} />
       <Tabs.Screen name="templates" options={{ title: 'Templates', tabBarIcon: ({ color, size }) => <Layout color={color} size={size} /> }} />
       <Tabs.Screen
