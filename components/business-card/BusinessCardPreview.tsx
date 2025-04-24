@@ -1,14 +1,22 @@
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { fontMap } from '@/types';
+import { fontMap, MyCardData } from '@/types';
 
 const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio
 const CARD_WIDTH = Dimensions.get('window').width - 32;
 const CARD_HEIGHT = CARD_WIDTH / CARD_ASPECT_RATIO;
 
-export default function BusinessCardPreview() {
-  const { cardData, isFlipped, toggleFlip } = useCardContext();
+export default function BusinessCardPreview({ localCardData }: { localCardData?: MyCardData }) {
+  let cardData: MyCardData;
+  const { isFlipped, toggleFlip } = useCardContext();
+
+  if (!localCardData) {
+    const { cardData: ecardData } = useCardContext();
+    cardData = ecardData;
+  } else {
+    cardData = localCardData;
+  }
 
   const frontAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
