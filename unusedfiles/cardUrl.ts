@@ -2,7 +2,7 @@ import { MyCardData } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Parameter mappings
-export const STYLE_MAPPINGS = {
+const STYLE_MAPPINGS = {
     fonts: {
         '0': 'Inter-Regular',
         '1': 'Inter-Bold',
@@ -25,14 +25,14 @@ export const STYLE_MAPPINGS = {
 };
 
 // Generate a random hex ID for text storage
-export function generateTextId(): string {
+function generateTextId(): string {
     return Math.floor(Math.random() * Math.pow(16, 4))
         .toString(16)
         .padStart(4, '0');
 }
 
 // Save card data and return URL
-export async function generateCardUrl(cardData: MyCardData): Promise<string> {
+async function generateCardUrl(cardData: MyCardData): Promise<string> {
     try {
         // Generate style parameters (example mapping)
         const fontParam = Object.keys(STYLE_MAPPINGS.fonts)
@@ -73,7 +73,7 @@ export async function generateCardUrl(cardData: MyCardData): Promise<string> {
 }
 
 // Decode URL and return card data
-export async function decodeCardUrl(url: string): Promise<MyCardData | null> {
+async function decodeCardUrl(url: string): Promise<MyCardData | null> {
     try {
         const urlRegex = /speedycard:\/\/card\/([0-9A-Fa-f]{9})/;
         const match = url.match(urlRegex);

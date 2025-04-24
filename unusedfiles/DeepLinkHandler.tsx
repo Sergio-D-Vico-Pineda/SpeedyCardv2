@@ -1,19 +1,19 @@
 import { router } from "expo-router";
 import { useEffect } from 'react';
 import { Linking } from 'react-native';
-import { decodeCardUrl } from '@/utils/cardUrl';
 import { useCardContext } from '@/contexts/CardContext';
 
-export function DeepLinkHandler() {
+function DeepLinkHandler() {
   const { updateCardData } = useCardContext();
 
   useEffect(() => {
     const handleUrl = async ({ url }: { url: string }) => {
-      const cardData = await decodeCardUrl(url);
-      if (cardData) {
+      // const cardData = await decodeCardUrl(url);
+
+      /* if (cardData) {
         updateCardData(cardData);
         router.push('/(tabs)/create/index');
-      }
+      } */
     };
 
     const subscription = Linking.addEventListener('url', handleUrl);
