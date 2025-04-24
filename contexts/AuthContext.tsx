@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, onAuthStateChanged, User } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
-import { router, useSegments, useRootNavigationState } from 'expo-router';
+import { router, useSegments } from 'expo-router';
 import { UserData, defaultCardData } from '@/types';
 
 interface AuthState {
@@ -17,16 +17,21 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState>({} as AuthState);
 
+const PUBLIC_ROUTES = ['(auth)', '(public)', '', 'app'];
+
 function useProtectedRoute(user: User | null) {
     const segments = useSegments();
-    // const navigationState = useRootNavigationState();
 
     useEffect(() => {
-        const inAuthGroup = segments[0] === '(auth)' || segments.length < 1;
+        if (!segments.length) return;
 
-        if (!user && !inAuthGroup) {
+        const currentRoute = segments[0];
+        const isPublicRoute = PUBLIC_ROUTES.includes(currentRoute);
+        const isAuthRoute = currentRoute === '(auth)';
+
+        if (!user && !isPublicRoute) {
             router.replace('/login');
-        } else if (user && inAuthGroup) {
+        } else if (user && isAuthRoute) {
             router.replace('/');
         }
     }, [user, segments]);
@@ -39,18 +44,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initialized: boolean;
     }>({ user: null, userData: null, initialized: false });
 
+    // Handle auth state changes
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDocRef = doc(db, 'users', user.uid);
-                const userDoc = await getDoc(userDocRef);
-                setState(current => ({
-                    ...current,
-                    user,
-                    userData: userDoc.data() as UserData,
-                    initialized: true
-                }));
-            } else {
+            try {
+                if (user) {
+                    const userDocRef = doc(db, 'users', user.uid);
+                    const userDoc = await getDoc(userDocRef);
+
+                    if (!userDoc.exists()) {
+                        throw new Error('User document not found');
+                    }
+
+                    setState(current => ({
+                        ...current,
+                        user,
+                        userData: { ...userDoc.data(), uid: user.uid } as UserData,
+                        initialized: true
+                    }));
+                } else {
+                    setState(current => ({
+                        ...current,
+                        user: null,
+                        userData: null,
+                        initialized: true
+                    }));
+                }
+            } catch (error) {
+                console.error('Error in auth state change:', error);
                 setState(current => ({
                     ...current,
                     user: null,
@@ -66,16 +87,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const signUp = useCallback(async (email: string, password: string, username: string) => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
-            const userData: UserData = { uid: user.uid, email, username, balance: 0 };
-            await setDoc(doc(db, 'users', user.uid), { email, username, balance: 0 });
-            await setDoc(doc(db, 'cards', user.uid), { cards: [defaultCardData] });
+
+            const userData: UserData = {
+                uid: user.uid,
+                email,
+                username,
+                balance: 0
+            };
+
+            // Create user document without uid because it's set automatically
+            await setDoc(doc(db, 'users', user.uid), {
+                email,
+                username,
+                balance: 0
+            });
+
+            // Initialize cards collection for the user
+            await setDoc(doc(db, 'cards', user.uid), {
+                cards: [defaultCardData]
+            });
+
             setState(current => ({
                 ...current,
                 user,
                 userData
             }));
         } catch (error) {
-            throw new Error("#!#" + error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error during signup';
+            throw new Error(`Signup failed: ${errorMessage}`);
         }
     }, []);
 
@@ -84,38 +123,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const { user } = await signInWithEmailAndPassword(auth, email, password);
             const userDocRef = doc(db, 'users', user.uid);
             const userDoc = await getDoc(userDocRef);
+
+            if (!userDoc.exists()) {
+                throw new Error('User data not found');
+            }
+
             setState(current => ({
                 ...current,
                 user,
-                userData: {...userDoc.data(), uid: user.uid } as UserData
+                userData: { ...userDoc.data(), uid: user.uid } as UserData
             }));
         } catch (error) {
-            throw new Error('Invalid email or password: ' + error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error during signin';
+            throw new Error(`Authentication failed: ${errorMessage}`);
         }
     }, []);
 
     const updateUsername = useCallback(async (newUsername: string) => {
-        if (!state.user) throw new Error('No user logged in');
+        if (!state.user || !state.userData) {
+            throw new Error('No authenticated user found');
+        }
+
         try {
             const userDocRef = doc(db, 'users', state.user.uid);
-            await setDoc(userDocRef, { ...state.userData, username: newUsername }, { merge: true });
+            const updatedUserData = { ...state.userData, username: newUsername };
+
+            await setDoc(userDocRef, updatedUserData, { merge: true });
+
             setState(current => ({
                 ...current,
-                userData: { ...current.userData, username: newUsername } as UserData
+                userData: updatedUserData
             }));
         } catch (error) {
-            throw new Error('Failed to update username: ' + error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error during update';
+            throw new Error(`Username update failed: ${errorMessage}`);
         }
     }, [state.user, state.userData]);
 
     const signOut = useCallback(async () => {
-        await firebaseSignOut(auth);
-        setState(current => ({
-            ...current,
-            user: null,
-            userData: null
-        }));
-        router.replace('/app', { withAnchor: false });
+        try {
+            await firebaseSignOut(auth);
+            setState(current => ({
+                ...current,
+                user: null,
+                userData: null
+            }));
+            router.replace('/');
+        } catch (error) {
+            console.error('Error during sign out:', error);
+        }
     }, []);
 
     useProtectedRoute(state.user);
