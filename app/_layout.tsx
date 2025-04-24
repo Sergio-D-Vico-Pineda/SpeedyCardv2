@@ -1,7 +1,6 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CardProvider } from '@/contexts/CardContext';
-// import { DeepLinkHandler } from '@/components/DeepLinkHandler';
 import { StrictMode } from "react";
 export const unstable_settings = {
   // Ensure any route can link back to `/`
@@ -13,7 +12,6 @@ export default function RootLayout() {
     <StrictMode>
       <AuthProvider>
         <CardProvider>
-          {/* <DeepLinkHandler /> */}
           <Stack screenOptions={{ headerShown: false, headerStyle: { backgroundColor: '#25292e' } }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
