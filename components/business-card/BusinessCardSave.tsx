@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Share } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
-import { generateCardUrl } from '@/utils/cardUrl';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData } from '@/types';
+import { documentDirectory, writeAsStringAsync } from 'expo-file-system';
+import { isAvailableAsync, shareAsync } from 'expo-sharing';
 
 export default function BusinessCardSave() {
   const { cardData, updateCardData } = useCardContext();
@@ -19,12 +18,12 @@ export default function BusinessCardSave() {
       setSaving(true);
       // Save card data to local storage
       const fileName = `card_${Date.now()}.json`;
-      const filePath = `${FileSystem.documentDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(filePath, JSON.stringify(cardData));
+      const filePath = `${documentDirectory}${fileName}`;
+      await writeAsStringAsync(filePath, JSON.stringify(cardData));
 
       // Share the card
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(filePath);
+      if (await isAvailableAsync()) {
+        await shareAsync(filePath);
       }
     } catch (error) {
       console.error('Error saving card:', error);
@@ -65,9 +64,9 @@ export default function BusinessCardSave() {
 
   const shareCardUrl = async () => {
     try {
-      const url = await generateCardUrl(cardData);
+      // const url = await generateCardUrl(cardData);
       await Share.share({
-        message: url,
+        message: 'to be done',
         title: 'Business Card URL',
       });
     } catch (error) {
