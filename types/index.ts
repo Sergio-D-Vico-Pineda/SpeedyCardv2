@@ -1,4 +1,4 @@
-interface BusinessCardData {
+/* interface BusinessCardData {
   name: string;
   title: string;
   company: string;
@@ -10,7 +10,7 @@ interface BusinessCardData {
   logo?: string;
   profileImage?: string;
   textAlignment: 'left' | 'right' | 'center';
-}
+} */
 
 interface MyCardData {
   font: typeof fonts[number];
@@ -26,7 +26,7 @@ interface MyCardData {
   twebsite: string;
   iprofile: string;
   ilogo: string;
-  effect?: string;
+  effect?: typeof effects[number] | undefined;
   index?: number | undefined;
 }
 
@@ -43,6 +43,7 @@ interface Template {
 };
 
 interface UserData {
+  uid: string;
   email: string;
   username: string;
   balance: number;
@@ -103,8 +104,21 @@ const colors = [
   '#666666', // Dark Gray
 ]
 
+const effects = [
+  'stars',
+  'rainbow',
+  'glow',
+  'fire',
+  'sparkle',
+  'rain',
+]
+
+const templates: Template[] = [
+
+]
+
 const defaultCardData: MyCardData = {
-  font: 'Inter-Regular',
+  font: fonts[0],
   size: 15,
   color: colors[0],
   bgcolor: bgcolors[1],
@@ -117,7 +131,7 @@ const defaultCardData: MyCardData = {
   twebsite: '',
   iprofile: '',
   ilogo: '',
-  effect: '',
+  effect: undefined,
   index: undefined,
 };
 
@@ -136,7 +150,6 @@ const fontMap: Record<string, string> = {
 };
 
 export {
-  BusinessCardData,
   MyCardData,
   Template,
   UserData,
@@ -144,5 +157,7 @@ export {
   bgcolors,
   colors,
   defaultCardData,
-  fontMap
+  fontMap,
+  effects,
+  templates,
 }
