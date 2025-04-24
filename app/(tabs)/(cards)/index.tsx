@@ -63,6 +63,11 @@ export default function EditScreen() {
     updateCardData(defaultCardData);
   };
 
+  const goback = () => {
+    console.log('resetting');
+    router.dismissAll()
+  };
+
   const alignmentOptions = [
     { value: 'left', icon: AlignLeft, label: 'Left' },
     { value: 'center', icon: AlignCenter, label: 'Center' },
@@ -73,6 +78,9 @@ export default function EditScreen() {
     <SafeAreaView style={styles.topcontainer}>
       <View style={styles.header}>
         <Text style={styles.title}>Card editor - {cardData.index === undefined ? 'New' : `Editing ${cardData.index}`}</Text>
+        <TouchableOpacity onPress={goback}>
+          <Home size={24} color="#007AFF" />
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleReset}>
           {
             cardData.index !== undefined ? (
@@ -85,6 +93,7 @@ export default function EditScreen() {
       </View>
       <ScrollView style={styles.container}>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>'{userid}' - '{card}'</Text>
           <Text style={styles.sectionTitle}>Front</Text>
           <TextInput
             ref={nameInputRef}
