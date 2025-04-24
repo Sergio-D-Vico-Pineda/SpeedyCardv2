@@ -1,21 +1,133 @@
-import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { Plus, Trash } from 'lucide-react-native';
+import { router, useSegments, useRootNavigationState } from 'expo-router';
+import { Plus, Trash, Share2, Edit } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
 import { useCardContext } from '@/contexts/CardContext';
+import { useAuth } from '@/contexts/AuthContext';
 import FloatingButton from '@/components/FloatingButton';
 
 export default function CardsScreen() {
+    const { userData } = useAuth();
     const { updateCardData } = useCardContext();
     const { cards, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
+    const segments = useSegments();
+    const navigationState = useRootNavigationState();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
         updateCardData(card);
         router.push(`/(tabs)/(cards)`);
+    }
+
+    function handleShare(index: number) {
+        const url = userData ? `speedycard://cards/${userData.uid}/${index}` : 'Something wrong with the user';
+        // alert(segments);
+        console.log(segments[0]);
+        console.log(navigationState)
+        console.log(url);
+    }
+
+    function handleLongPress(card: MyCardData, index: number, event: any) {
+        if (Platform.OS === 'web') {
+            // For web, we'll use a custom dropdown menu
+            const dropdownContent = document.createElement('div');
+            dropdownContent.style.position = 'fixed';
+            dropdownContent.style.backgroundColor = 'white';
+            dropdownContent.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            dropdownContent.style.borderRadius = '8px';
+            dropdownContent.style.padding = '8px 0';
+            dropdownContent.style.zIndex = '1000';
+
+            // Create menu items
+            const menuItems = [
+                { text: 'Edit', onClick: () => updateCardAndGotoEdit(card, index), color: '#007AFF' },
+                { text: 'Share', onClick: () => handleShare(index), color: '#34C759' },
+                { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30' }
+            ];
+
+            menuItems.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.style.padding = '8px 16px';
+                menuItem.style.cursor = 'pointer';
+                menuItem.style.color = item.color;
+                menuItem.textContent = item.text;
+                menuItem.style.fontSize = '14px';
+
+                menuItem.addEventListener('mouseenter', () => {
+                    menuItem.style.backgroundColor = '#f5f5f5';
+                });
+                menuItem.addEventListener('mouseleave', () => {
+                    menuItem.style.backgroundColor = 'transparent';
+                });
+                menuItem.addEventListener('click', () => {
+                    item.onClick();
+                    if (document.body.contains(dropdownContent)) {
+                        document.body.removeChild(dropdownContent);
+                    }
+                });
+
+                dropdownContent.appendChild(menuItem);
+            });
+
+            // Position the dropdown near the cursor
+            const handleClickOutside = (event: MouseEvent) => {
+                if (!dropdownContent.contains(event.target as Node)) {
+                    if (document.body.contains(dropdownContent)) {
+                        document.body.removeChild(dropdownContent);
+                    }
+                    document.removeEventListener('click', handleClickOutside);
+                }
+            };
+
+            // Add to body and position
+            document.body.appendChild(dropdownContent);
+
+            // Position dropdown at cursor position using the event parameter
+            const mouseEvent = event.nativeEvent;
+            dropdownContent.style.left = `${mouseEvent.pageX}px`;
+            dropdownContent.style.top = `${mouseEvent.pageY}px`;
+
+            // Close dropdown when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', handleClickOutside);
+            }, 0);
+
+            setTimeout(() => {
+                document.removeEventListener('click', handleClickOutside);
+                if (document.body.contains(dropdownContent)) {
+                    document.body.removeChild(dropdownContent);
+                }
+            }, 2000);
+        } else {
+            Alert.alert(
+                'Card Options',
+                'What would you like to do with this card?',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'Edit',
+                        onPress: () => updateCardAndGotoEdit(card, index),
+                        style: 'default'
+                    },
+                    {
+                        text: 'Share',
+                        onPress: () => handleShare(index),
+                        style: 'default'
+                    },
+                    {
+                        text: 'Delete',
+                        onPress: () => removeCard(index),
+                        style: 'destructive'
+                    }
+                ]
+            );
+        }
     }
 
     useEffect(() => {
@@ -75,7 +187,10 @@ export default function CardsScreen() {
                     </View>
                 }
                 renderItem={({ item, index }) => (
-                    <TouchableOpacity onPress={() => updateCardAndGotoEdit(item, index)}>
+                    <TouchableOpacity
+                        onLongPress={(event) => handleLongPress(item, index, event)}
+                        delayLongPress={500}
+                    >
                         <View style={styles.cardItem}>
                             <View>
                                 {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
@@ -83,9 +198,17 @@ export default function CardsScreen() {
                             </View>
                             <View style={styles.cardActions}>
                                 {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
-                                <Pressable onPress={() => removeCard(index)}>
-                                    <Trash color="#FF3B30" size={24} />
+                                <Pressable onPress={() => updateCardAndGotoEdit(item, index)}>
+                                    <Edit color="#007AFF" size={24} />
                                 </Pressable>
+                                <Pressable onPress={() => handleShare(index)}>
+                                    <Share2 color="#34C759" size={26} />
+                                </Pressable>
+                                {Platform.OS === 'web' && (
+                                    <Pressable onPress={() => removeCard(index)}>
+                                        <Trash color="#FF3B30" size={22} />
+                                    </Pressable>
+                                )}
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -181,7 +304,7 @@ const styles = StyleSheet.create({
     },
     cardActions: {
         flexDirection: 'row',
-        gap: 8,
+        gap: 15,
         alignItems: 'center',
     },
 });
