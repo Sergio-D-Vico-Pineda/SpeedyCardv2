@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { useSearchParams } from 'expo-router/build/hooks';
+import { router, useLocalSearchParams } from 'expo-router';
 import { defaultCardData, MyCardData } from '@/types';
-import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw } from 'lucide-react-native';
+import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw, Home } from 'lucide-react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import ColorPicker from '@/components/business-card/ColorPicker';
 import FontPicker from '@/components/business-card/FontPicker';
@@ -13,8 +13,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useCards } from '@/hooks/useCards';
 
 export default function EditScreen() {
-  const params = useSearchParams();
-  const userid = params.get('id');
+  const { userid, card = 0 } = useLocalSearchParams();
   const { cardData, updateCardData } = useCardContext();
   const { effects, fetchEffects, fetchSingleCard } = useCards();
   const nameInputRef = useRef<TextInput>(null);
