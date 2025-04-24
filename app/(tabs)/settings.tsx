@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
     },
     aboutTitle: {
         fontSize: 20,
-        fontFamily: 'Inter-Bold',
         color: '#333',
         marginBottom: 4,
     },
@@ -153,14 +152,12 @@ const styles = StyleSheet.create({
     },
     aboutSectionTitle: {
         fontSize: 16,
-        fontFamily: 'Inter-Bold',
         color: '#333',
         marginTop: 10,
         marginBottom: 6,
     },
     aboutText: {
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
         color: '#666',
         marginBottom: 8,
         lineHeight: 20,
@@ -172,7 +169,6 @@ const styles = StyleSheet.create({
         borderColor: '#E5E7EB',
         borderRadius: 8,
         paddingHorizontal: 12,
-        fontFamily: 'Inter-Regular',
         fontSize: 16,
         color: '#111827',
     },
@@ -202,12 +198,10 @@ const styles = StyleSheet.create({
     editText: {
         color: '#3B82F6',
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
     },
     errorText: {
         color: '#EF4444',
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
         marginTop: 4,
     },
     container: {
@@ -232,8 +226,8 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 16,
-        fontFamily: 'Inter-Bold',
-        color: '#4B5563',
+        fontWeight: '600',
+        color: '#333',
         marginBottom: 8,
     },
     sectionContent: {
@@ -262,7 +256,6 @@ const styles = StyleSheet.create({
     },
     userEmail: {
         fontSize: 16,
-        fontFamily: 'Inter-Regular',
         color: '#111827',
     },
     logoutIcon: {
@@ -277,12 +270,10 @@ const styles = StyleSheet.create({
     },
     optionTitle: {
         fontSize: 16,
-        fontFamily: 'Inter-Regular',
         color: '#111827',
     },
     optionDescription: {
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
         color: '#6B7280',
         marginTop: 2,
     },
