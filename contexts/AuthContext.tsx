@@ -19,11 +19,9 @@ const AuthContext = createContext<AuthState>({} as AuthState);
 
 function useProtectedRoute(user: User | null) {
     const segments = useSegments();
-    const navigationState = useRootNavigationState();
+    // const navigationState = useRootNavigationState();
 
     useEffect(() => {
-        if (!navigationState?.key) return;
-
         const inAuthGroup = segments[0] === '(auth)' || segments.length < 1;
 
         if (!user && !inAuthGroup) {
@@ -31,7 +29,7 @@ function useProtectedRoute(user: User | null) {
         } else if (user && inAuthGroup) {
             router.replace('/');
         }
-    }, [user, segments, navigationState?.key]);
+    }, [user, segments]);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -68,8 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const signUp = useCallback(async (email: string, password: string, username: string) => {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
-            const userData: UserData = { email, username, balance: 0 };
-            await setDoc(doc(db, 'users', user.uid), userData);
+            const userData: UserData = { uid: user.uid, email, username, balance: 0 };
+            await setDoc(doc(db, 'users', user.uid), { email, username, balance: 0 });
             await setDoc(doc(db, 'cards', user.uid), { cards: [defaultCardData] });
             setState(current => ({
                 ...current,
@@ -89,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setState(current => ({
                 ...current,
                 user,
-                userData: userDoc.data() as UserData
+                userData: {...userDoc.data(), uid: user.uid } as UserData
             }));
         } catch (error) {
             throw new Error('Invalid email or password: ' + error);
