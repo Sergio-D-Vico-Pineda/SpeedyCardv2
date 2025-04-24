@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -16,10 +17,38 @@ export default function EditScreen() {
   const params = useSearchParams();
   const userid = params.get('id');
   const { cardData, updateCardData } = useCardContext();
+  const nameInputRef = useRef<TextInput>(null);
+
+  // Replace the existing useEffect for focus with useFocusEffect
+  useFocusEffect(
+    useCallback(() => {
+      if (nameInputRef.current && cardData.tname === '') {
+        nameInputRef.current.focus();
+      }
+    }, [cardData.tname])
+  );
 
   const [effects, setEffects] = useState<string[]>([]);
   const [selectedEffect, setSelectedEffect] = useState(cardData.effect || '');
 
+  useEffect(() => {
+    const fetchCardData = async () => {
+      console.log('Fetching card data...');
+      if (!userid) return;
+
+      try {
+        // const response = await fetch(`https://your-firebase-url.com/cards/${userid}`);
+        // const data = await response.json();
+        // setCardData(data);
+      } catch (error) {
+        console.error('Error fetching card data:', error);
+      } finally {
+        console.log('Card data fetched.');
+      }
+    };
+
+    fetchCardData();
+  }, [userid]);
 
   // fetch effects once
   useEffect(() => {
@@ -57,7 +86,6 @@ export default function EditScreen() {
     }
   }, [cardData]); */
 
-
   const handleChange = (field: keyof MyCardData, value: string) => {
     updateCardData({ ...cardData, [field]: value });
   };
@@ -71,25 +99,6 @@ export default function EditScreen() {
     { value: 'center', icon: AlignCenter, label: 'Center' },
     { value: 'right', icon: AlignRight, label: 'Right' },
   ] as const;
-
-  useEffect(() => {
-    const fetchCardData = async () => {
-      console.log('Fetching card data...');
-      if (!userid) return;
-
-      try {
-        // const response = await fetch(`https://your-firebase-url.com/cards/${userid}`);
-        // const data = await response.json();
-        // setCardData(data);
-      } catch (error) {
-        console.error('Error fetching card data:', error);
-      } finally {
-        console.log('Card data fetched.');
-      }
-    };
-
-    fetchCardData();
-  }, [userid]);
 
   return (
     <SafeAreaView style={styles.topcontainer}>
@@ -109,6 +118,7 @@ export default function EditScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Front</Text>
           <TextInput
+            ref={nameInputRef}
             style={styles.input}
             value={cardData.tname}
             onChangeText={(value) => handleChange('tname', value)}
