@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useSegments } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -19,7 +19,6 @@ const isColorDark = (hex: string): boolean => {
 };
 
 export default function ViewScreen() {
-    const segments = useSegments();
     const { userid, card = 0 } = useLocalSearchParams();
     const { fetchSingleCard } = useCards();
     const [localCardData, setlocalCardData] = useState<MyCardData>();
@@ -49,7 +48,7 @@ export default function ViewScreen() {
         fetchCardData();
     }, []);
 
-    const toggleFullscreen = async () => {
+    const toggleFullscreen = async (): Promise<void> => {
         if (isFullscreen) {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
             setIsFullscreen(false);
@@ -68,6 +67,14 @@ export default function ViewScreen() {
             styles.topcontainer,
             isFullscreen && styles.fullscreenContainer
         ]}>
+            {!isFullscreen && (
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => router.replace('/')}
+                >
+                    <Text style={styles.backButtonText}>← Back</Text>
+                </TouchableOpacity>
+            )}
             <View style={[
                 styles.container,
                 isFullscreen && styles.fullscreenContent
@@ -131,6 +138,19 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     fullscreenButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    backButton: {
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        zIndex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: 10,
+        borderRadius: 8,
+    },
+    backButtonText: {
         color: '#fff',
         fontSize: 16,
     }
