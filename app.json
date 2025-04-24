@@ -1,18 +1,19 @@
 {
   "expo": {
-    "name": "SpeedyCardv2",
-    "slug": "SpeedyCardv2",
-    "version": "1.0.0",
+    "name": "SpeedyCard",
+    "slug": "SpeedyCard",
+    "version": "0.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "speedycard",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.scarpy.speedycard"
     },
     "web": {
       "bundler": "metro",
