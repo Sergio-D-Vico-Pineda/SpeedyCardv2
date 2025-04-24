@@ -8,15 +8,11 @@ const CARD_WIDTH = Dimensions.get('window').width - 32;
 const CARD_HEIGHT = CARD_WIDTH / CARD_ASPECT_RATIO;
 
 export default function BusinessCardPreview({ localCardData }: { localCardData?: MyCardData }) {
-  let cardData: MyCardData;
-  const { isFlipped, toggleFlip } = useCardContext();
-
-  if (!localCardData) {
-    const { cardData: ecardData } = useCardContext();
-    cardData = ecardData;
-  } else {
-    cardData = localCardData;
-  }
+  // Move all hooks to the top level
+  const { isFlipped, toggleFlip, cardData: contextCardData } = useCardContext();
+  
+  // Use a constant instead of reassigning
+  const cardData = localCardData || contextCardData;
 
   const frontAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
