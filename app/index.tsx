@@ -36,7 +36,7 @@ export default function Index() {
           <Link style={styles.button} href="/(tabs)">
             Enter into the app
           </Link>
-          <Link style={styles.button} href="/(tabs)/(cards)/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1">
+          <Link style={styles.button} href="/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1">
             View a card
           </Link>
           <Pressable onPress={signOut} style={styles.button}><Text style={styles.white}>Signout</Text></Pressable>
