@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CardProvider } from '@/contexts/CardContext';
-import { DeepLinkHandler } from '@/components/DeepLinkHandler';
+// import { DeepLinkHandler } from '@/components/DeepLinkHandler';
 import { StrictMode } from "react";
 
 export default function RootLayout() {
@@ -9,7 +9,7 @@ export default function RootLayout() {
     <StrictMode>
       <AuthProvider>
         <CardProvider>
-          <DeepLinkHandler />
+          {/* <DeepLinkHandler /> */}
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
