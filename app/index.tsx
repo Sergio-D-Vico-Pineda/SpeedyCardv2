@@ -9,7 +9,7 @@ export default function Index() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('@/assets/images/react-logo.png')}
+          source={require('@/assets/images/samira.png')}
           style={styles.logo}
           resizeMode="contain"
         />
