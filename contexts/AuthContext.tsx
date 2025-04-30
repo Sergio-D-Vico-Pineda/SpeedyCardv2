@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, onAuthStateChanged, User } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase';
+import { auth, db } from '@/firebaselogic';
 import { router, useSegments } from 'expo-router';
 import { UserData, defaultCardData } from '@/types';
 
