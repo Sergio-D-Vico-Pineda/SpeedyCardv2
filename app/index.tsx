@@ -1,15 +1,40 @@
 import { Link } from 'expo-router';
-import { Text, View, StyleSheet, Pressable, Image } from 'react-native';
+import { Text, View, StyleSheet, Pressable, Image, Modal } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { CameraView, Camera } from 'expo-camera';
 
 export default function Index() {
   const { user, signOut } = useAuth();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [scanned, setScanned] = useState(false);
+
+  useEffect(() => {
+    if (modalVisible) {
+      (async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === 'granted');
+      })();
+    }
+  }, [modalVisible]);
+
+  const handleBarCodeScanned = ({ type, data }: { type: string, data: string }) => {
+    setScanned(true);
+    if (data.startsWith('speedycard://')) {
+      setModalVisible(false);
+      
+      alert('Valid SpeedyCard QR scanned:\n' + data);
+    } else {
+      alert('Invalid QR code. Only SpeedyCard QR codes are accepted.');
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('@/assets/images/samira.png')}
+          source={require('@/assets/images/logo-icon.png')}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -36,10 +61,50 @@ export default function Index() {
           <Link style={styles.button} href="/(tabs)">
             Enter into the app
           </Link>
-          <Link style={styles.button} href="/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1">
-            View a card
-          </Link>
+          <Pressable
+            style={styles.button}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.white}>Scan QR</Text>
+          </Pressable>
           <Pressable onPress={signOut} style={styles.button}><Text style={styles.white}>Signout</Text></Pressable>
+          <Modal
+            visible={modalVisible}
+            animationType="slide"
+            onRequestClose={() => setModalVisible(false)}
+            transparent={false}
+          >
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#25292e' }}>
+              <Text style={{ color: '#fff', marginBottom: 10 }}>Scan a SpeedyCard QR Code</Text>
+              {hasPermission === null ? (
+                <Text style={{ color: '#fff' }}>Requesting camera permission...</Text>
+              ) : hasPermission === false ? (
+                <Text style={{ color: '#fff' }}>No access to camera</Text>
+              ) : (
+                <CameraView
+                  onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+                  barcodeScannerSettings={{
+                    barcodeTypes: ['qr'],
+                  }}
+                  style={{ width: 300, height: 300 }}
+                />
+              )}
+              {scanned && (
+                <Pressable
+                  style={[styles.button, { marginTop: 20 }]}
+                  onPress={() => setScanned(false)}
+                >
+                  <Text style={styles.white}>Tap to Scan Again</Text>
+                </Pressable>
+              )}
+              <Pressable
+                style={[styles.button, { marginTop: 20 }]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.white}>Close</Text>
+              </Pressable>
+            </View>
+          </Modal>
         </View>
       )}
     </View >
@@ -56,6 +121,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 200,
     height: 200,
+    borderRadius: 25,
   },
   header: {
     fontSize: 24,
