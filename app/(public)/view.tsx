@@ -1,7 +1,7 @@
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import { lockAsync, OrientationLock } from 'expo-screen-orientation';
 import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
@@ -50,10 +50,10 @@ export default function ViewScreen() {
 
     const toggleFullscreen = async (): Promise<void> => {
         if (isFullscreen) {
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+            await lockAsync(OrientationLock.PORTRAIT_UP);
             setIsFullscreen(false);
         } else {
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+            await lockAsync(OrientationLock.LANDSCAPE);
             setIsFullscreen(true);
         }
     };
