@@ -2,6 +2,7 @@
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { Platform } from "react-native";
 import firebaseConfig from "./firebase";
 
 const app = initializeApp(firebaseConfig);
@@ -9,7 +10,7 @@ const db = getFirestore(app);
 
 let auth;
 
-if (typeof window !== "undefined") {
+if (Platform.OS === 'web') {
     // Web: use default getAuth
     auth = getAuth(app);
 } else {
