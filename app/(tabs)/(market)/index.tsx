@@ -1,63 +1,29 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl } from 'react-native';
 import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebaselogic';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Template } from '@/types';
-
-const mockTemplates: Template[] = [
-    {
-        id: '1',
-        name: 'Modern Minimalist',
-        description: 'Clean and professional design with emphasis on typography',
-        category: 'Professional',
-        price: 10.99,
-        style: 'Minimalist',
-        isavailable: true
-    },
-    {
-        id: '2',
-        name: 'Creative Portfolio',
-        description: 'Bold and artistic layout perfect for creative professionals',
-        category: 'Creative',
-        price: 15.99,
-        style: 'Modern',
-        isavailable: true
-    },
-    {
-        id: '3',
-        name: 'Corporate Executive',
-        description: 'Traditional business card design with a contemporary twist',
-        category: 'Business',
-        price: 20.99,
-        style: 'Classic',
-        isavailable: true
-    },
-    {
-        id: '4',
-        name: 'Dynamic Fade',
-        description: 'Elegant fade-in animations and smooth transitions between elements',
-        category: 'Effects',
-        price: 24.99,
-        style: 'Animated',
-        isavailable: true
-    }
-];
+import { Template, templates as mockTemplates, categories } from '@/types';
+import FloatingButton from '@/components/FloatingButton';
 
 export default function MarketplaceScreen() {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
-
-    const categories = ['All', 'Professional', 'Creative', 'Business', 'Effects'];
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
-        fetchTemplates();
-        /* fetchProducts(); */
+        // fetchTemplates();
+        fetchProducts();
     }, []);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchProducts();
+        setRefreshing(false);
+    };
 
     const filteredTemplates = templates.filter(template => {
         const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -68,19 +34,26 @@ export default function MarketplaceScreen() {
 
     const fetchProducts = async () => {
         try {
-            const productsRef = collection(db, 'products');
+            const productsRef = collection(db, 'categories');
             const productsSnapshot = await getDocs(productsRef);
-            const productsList = productsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as Template[];
-            setTemplates(productsList);
+            const productList = productsSnapshot.docs.flatMap(doc =>
+                doc.data().items.map((item: any) => ({
+                    id: item.name.toLowerCase().replace(/\s+/g, '-'),
+                    ...item,
+                    category: doc.id
+                }))
+            );
+            setTemplates(productList);
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
             setLoading(false);
         }
     };
+
+    const newItem = function () {
+        router.push('/newitem');
+    }
 
     const fetchTemplates = async () => {
         try {
@@ -105,7 +78,6 @@ export default function MarketplaceScreen() {
                 <Text style={styles.templateName}>{template.name}</Text>
                 <Text style={styles.templateDescription}>{template.description}</Text>
                 <Text style={styles.templatePrice}>${template.price}</Text>
-                <Text style={styles.templateStyle}>{template.style}</Text>
             </LinearGradient>
         </TouchableOpacity>
     );
@@ -119,39 +91,61 @@ export default function MarketplaceScreen() {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Card Extras</Text>
-            </View>
-            <View style={styles.subheader}>
-                <View style={styles.searchBar}>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search templates..."
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
+        <SafeAreaView style={styles.container}>
+            <ScrollView
+                style={styles.container}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={['#4299e1']}
+                        tintColor="#4299e1"
                     />
+                }
+            >
+                <View style={styles.header}>
+                    <Text style={styles.title}>Marketplace</Text>
                 </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                    {categories.map(category => (
+                <View style={styles.subheader}>
+                    <View style={styles.searchBar}>
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search templates..."
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                        />
+                    </View>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
                         <TouchableOpacity
-                            key={category}
-                            style={[styles.categoryButton, selectedCategory === category && styles.categoryButtonActive]}
-                            onPress={() => setSelectedCategory(category)}
+                            key='All'
+                            style={[styles.categoryButton, selectedCategory === 'All' && styles.categoryButtonActive]}
+                            onPress={() => setSelectedCategory('All')}
                         >
-                            <Text style={[styles.categoryText, selectedCategory === category && styles.categoryTextActive]}>
-                                {category}
+                            <Text style={[styles.categoryText, selectedCategory === 'All' && styles.categoryTextActive]}>
+                                All
                             </Text>
                         </TouchableOpacity>
+                        {categories.map(category => (
+                            <TouchableOpacity
+                                key={category}
+                                style={[styles.categoryButton, selectedCategory === category && styles.categoryButtonActive]}
+                                onPress={() => setSelectedCategory(category)}
+                            >
+                                <Text style={[styles.categoryText, selectedCategory === category && styles.categoryTextActive]}>
+                                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+                <View style={styles.grid}>
+                    {filteredTemplates.map(template => (
+                        <TemplateCard key={template.id} template={template} />
                     ))}
-                </ScrollView>
-            </View>
-            <View style={styles.grid}>
-                {filteredTemplates.map(template => (
-                    <TemplateCard key={template.id} template={template} />
-                ))}
-            </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
+            <FloatingButton onPressAction={newItem} />
+        </SafeAreaView>
     );
 }
 
