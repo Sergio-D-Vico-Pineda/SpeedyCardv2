@@ -5,6 +5,7 @@ import { lockAsync, OrientationLock } from 'expo-screen-orientation';
 import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
+import { Save } from 'lucide-react-native';
 
 const isColorDark = (hex: string): boolean => {
     let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;
@@ -20,9 +21,10 @@ const isColorDark = (hex: string): boolean => {
 
 export default function ViewScreen() {
     const { userid, card = 0 } = useLocalSearchParams();
-    const { fetchSingleCard } = useCards();
+    const { fetchSingleCard, saveToSavedCards } = useCards();
     const [localCardData, setlocalCardData] = useState<MyCardData>();
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         const fetchCardData = async () => {
@@ -55,6 +57,19 @@ export default function ViewScreen() {
         } else {
             await lockAsync(OrientationLock.LANDSCAPE);
             setIsFullscreen(true);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!localCardData) return;
+        try {
+            setSaving(true);
+            await saveToSavedCards(localCardData);
+            router.replace('/');
+        } catch (error) {
+            console.error('Error saving card:', error);
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -94,12 +109,40 @@ export default function ViewScreen() {
                         {isFullscreen ? 'Exit Fullscreen' : 'View Fullscreen'}
                     </Text>
                 </TouchableOpacity>
+                {!isFullscreen && (
+                    <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={handleSave}
+                        disabled={saving}
+                    >
+                        <Save color="#fff" size={24} />
+                        <Text style={styles.saveButtonText}>
+                            {saving ? 'Saving...' : 'Save Card'}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    saveButton: {
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        backgroundColor: '#4299e1',
+        padding: 10,
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
     topcontainer: {
         flex: 1,
         backgroundColor: '#F2F2F7',
