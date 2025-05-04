@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Share } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Share, Platform } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData } from '@/types';
@@ -19,7 +19,12 @@ export default function BusinessCardSave() {
       // Save card data to local storage
       const fileName = `card_${Date.now()}.json`;
       const filePath = `${documentDirectory}${fileName}`;
-      await writeAsStringAsync(filePath, JSON.stringify(cardData));
+
+      if (Platform.OS === 'web') {
+        alert(JSON.stringify(cardData));
+      } else {
+        await writeAsStringAsync(filePath, JSON.stringify(cardData));
+      }
 
       // Share the card
       if (await isAvailableAsync()) {
