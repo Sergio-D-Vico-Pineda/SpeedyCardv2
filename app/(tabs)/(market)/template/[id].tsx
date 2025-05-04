@@ -1,71 +1,12 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useState, useEffect } from 'react';
+import { ArrowLeft } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template } from '@/types';
-
-const mockTemplates: Record<string, Template> = {
-    '1': {
-        id: '1',
-        name: 'Modern Minimalist',
-        description: 'Clean and professional design with emphasis on typography',
-        category: 'Professional',
-        price: 10.99,
-        style: 'Minimalist',
-        isavailable: true,
-        features: [
-            'Clean typography',
-            'Professional layout',
-            'Minimalist design',
-            'Easy customization'
-        ]
-    },
-    '2': {
-        id: '2',
-        name: 'Creative Portfolio',
-        description: 'Bold and artistic layout perfect for creative professionals',
-        category: 'Creative',
-        price: 15.99,
-        style: 'Modern',
-        isavailable: true,
-        features: [
-            'Bold typography',
-            'Artistic elements',
-            'Modern layout',
-            'Creative freedom'
-        ]
-    },
-    '3': {
-        id: '3',
-        name: 'Corporate Executive',
-        description: 'Traditional business card design with a contemporary twist',
-        category: 'Business',
-        price: 20.99,
-        style: 'Classic',
-        isavailable: true,
-        features: [
-            'Professional design',
-            'Traditional elements',
-            'Contemporary style',
-            'Business-focused'
-        ]
-    },
-    '4': {
-        id: '4',
-        name: 'Dynamic Fade',
-        description: 'Elegant fade-in animations and smooth transitions between elements',
-        category: 'Effects',
-        price: 24.99,
-        style: 'Animated',
-        isavailable: true,
-        features: [
-            'Smooth animations',
-            'Elegant transitions',
-            'Dynamic elements',
-            'Modern effects'
-        ]
-    }
-};
+import { collection, getDocs } from 'firebase/firestore';
+import { router } from 'expo-router';
+import { db } from '@/firebaselogic';
 
 export default function TemplateDetailsScreen() {
     const params = useSearchParams();
@@ -73,10 +14,38 @@ export default function TemplateDetailsScreen() {
     const [template, setTemplate] = useState<Template | null>(null);
 
     useEffect(() => {
-        if (id) {
-            // In a real app, fetch from Firebase
-            setTemplate(mockTemplates[id as keyof typeof mockTemplates]);
-        }
+        const fetchTemplateDetails = async () => {
+            if (!id) return;
+
+            try {
+                const categoriesRef = collection(db, 'categories');
+                const snapshot = await getDocs(categoriesRef);
+
+                for (const doc of snapshot.docs) {
+                    const items = doc.data().items || [];
+                    const foundTemplate = items.find((item: any) =>
+                        item.name.toLowerCase().replace(/\s+/g, '-') === id
+                    );
+
+                    if (foundTemplate) {
+                        setTemplate({
+                            id: foundTemplate.name.toLowerCase().replace(/\s+/g, '-'),
+                            name: foundTemplate.name,
+                            price: foundTemplate.price,
+                            description: foundTemplate.description,
+                            features: foundTemplate.features,
+                            category: doc.id,
+                            isavailable: foundTemplate.isavailable
+                        });
+                        break;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching template details:', error);
+            }
+        };
+
+        fetchTemplateDetails();
     }, [id]);
 
     const handlePurchase = () => {
@@ -94,12 +63,20 @@ export default function TemplateDetailsScreen() {
 
     return (
         <ScrollView style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => router.back()}
+                >
+                    <ArrowLeft size={24} color="#4299e1" />
+                </TouchableOpacity>
+                <Text style={styles.title}>{template.name}</Text>
+            </View>
             <LinearGradient
                 colors={['#ffffff', '#f8f9fa']}
                 style={styles.previewCard}
             >
-                <Text style={styles.templateName}>{template.name}</Text>
-                <Text style={styles.templateStyle}>{template.style}</Text>
+                <Text style={styles.templateName}>Effect {template.name}</Text>
             </LinearGradient>
 
             <View style={styles.detailsSection}>
@@ -131,6 +108,36 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    header: {
+        padding: 16,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E5EA',
+        flexDirection: 'row',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    backButton: {
+        marginRight: 12,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: '#4299e1',
+        fontWeight: '500',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#2d3748',
+        flex: 1,
     },
     previewCard: {
         height: 200,
