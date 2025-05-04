@@ -28,6 +28,7 @@ interface MyCardData {
   ilogo: string;
   effect?: typeof effects[number] | undefined;
   index?: number | undefined;
+  style?: string | undefined;
 }
 
 interface Template {
@@ -35,8 +36,7 @@ interface Template {
   name: string;
   description: string;
   price: number;
-  category: string;
-  style: string;
+  category: typeof categories[number];
   imageUrl?: string;
   isavailable: boolean;
   features?: Array<string>;
@@ -48,6 +48,8 @@ interface UserData {
   username: string;
   balance: number;
 }
+
+const categories = ['professional', 'creative', 'business', 'effects'];
 
 const fonts = [
   'Inter-Regular',
@@ -114,7 +116,62 @@ const effects = [
 ]
 
 const templates: Template[] = [
-
+  {
+    id: '1',
+    name: 'Modern Minimalist',
+    description: 'Clean and professional design with emphasis on typography',
+    price: 10.99,
+    category: 'Professional',
+    isavailable: true,
+    features: [
+      'Clean typography',
+      'Professional layout',
+      'Minimalist design',
+      'Easy customization'
+    ]
+  },
+  {
+    id: '2',
+    name: 'Creative Portfolio',
+    description: 'Bold and artistic layout perfect for creative professionals',
+    price: 15.99,
+    category: 'Creative',
+    isavailable: true,
+    features: [
+      'Bold typography',
+      'Artistic elements',
+      'Modern layout',
+      'Creative freedom'
+    ]
+  },
+  {
+    id: '3',
+    name: 'Corporate Executive',
+    description: 'Traditional business card design with a contemporary twist',
+    price: 20.99,
+    category: 'Business',
+    isavailable: true,
+    features: [
+      'Professional design',
+      'Traditional elements',
+      'Contemporary style',
+      'Business-focused'
+    ]
+  },
+  {
+    id: '4',
+    name: 'Dynamic Fade',
+    description: 'Elegant fade-in animations and transitions between elements',
+    price: 24.99,
+    category: 'Effects',
+    isavailable: true,
+    features: [
+      'Smooth animations',
+      'Elegant transitions',
+      'Dynamic elements',
+      'Modern effects'
+    ]
+  }
 ]
 
 const defaultCardData: MyCardData = {
@@ -133,6 +190,7 @@ const defaultCardData: MyCardData = {
   ilogo: '',
   effect: undefined,
   index: undefined,
+  style: undefined,
 };
 
 const fontMap: Record<string, string> = {
@@ -153,6 +211,7 @@ export {
   MyCardData,
   Template,
   UserData,
+  categories,
   fonts,
   bgcolors,
   colors,
