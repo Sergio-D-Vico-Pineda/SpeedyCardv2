@@ -10,7 +10,7 @@ const CARD_HEIGHT = CARD_WIDTH / CARD_ASPECT_RATIO;
 export default function BusinessCardPreview({ localCardData }: { localCardData?: MyCardData }) {
   // Move all hooks to the top level
   const { isFlipped, toggleFlip, cardData: contextCardData } = useCardContext();
-  
+
   // Use a constant instead of reassigning
   const cardData = localCardData || contextCardData;
 
@@ -38,40 +38,108 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
     return styles.contentCenter;
   };
 
-  return (
-    <TouchableOpacity onPress={toggleFlip} style={styles.container}>
-      <Animated.View style={[styles.card, frontAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
-          <Text>
+  const getCardStyle = () => {
+    switch (cardData.style) {
+      case 'minimalist':
+        return styles.minimalistCard;
+      case 'modern':
+        return styles.modernCard;
+      default:
+        return styles.defaultCard;
+    }
+  };
+
+  const renderFrontContent = () => {
+    switch (cardData.style) {
+      case 'minimalist':
+        return (
+          <>
+            {cardData.iprofile ? (
+              <View style={styles.minimalistHeader}>
+                <Image
+                  source={{ uri: cardData.iprofile }}
+                  style={styles.minimalistProfile}
+                />
+              </View>
+            ) : null}
+            <View style={styles.minimalistInfo}>
+              <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
+                {cardData.tname}
+              </Text>
+              <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
+                {cardData.tjob}
+              </Text>
+              <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
+                {cardData.tbusiness}
+              </Text>
+            </View>
+          </>
+        );
+      case 'modern':
+        return (
+          <>
+            <View style={styles.modernHeader}>
+              <Text style={[styles.modernName, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+                {cardData.tname}
+              </Text>
+              {cardData.iprofile && (
+                <Image
+                  source={{ uri: cardData.iprofile }}
+                  style={styles.modernProfile}
+                />
+              )}
+            </View>
+            <View style={styles.modernInfo}>
+              <Text style={[styles.modernTitle, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+                {cardData.tjob}
+              </Text>
+              <Text style={[styles.modernCompany, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+                {cardData.tbusiness}
+              </Text>
+            </View>
+          </>
+        );
+      default:
+        return (
+          <View style={styles.defaultContent}>
             {cardData.iprofile && (
               <Image
                 source={{ uri: cardData.iprofile }}
-                style={[styles.profileImage, getTextStyle(cardData.align || 'center')]}
+                style={styles.profileImage}
               />
             )}
-          </Text>
-          <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
-            {cardData.tname}
-          </Text>
-          <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
-            {cardData.tjob}
-          </Text>
-          <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }, getTextStyle(cardData.align || 'center')]}>
-            {cardData.tbusiness}
-          </Text>
+            <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+              {cardData.tname}
+            </Text>
+            <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+              {cardData.tjob}
+            </Text>
+            <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
+              {cardData.tbusiness}
+            </Text>
+          </View>
+        );
+    }
+  };
+
+  return (
+    <TouchableOpacity onPress={toggleFlip} style={styles.container}>
+      <Animated.View style={[styles.card, frontAnimatedStyle, getCardStyle()]}>
+        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }]}>
+          {renderFrontContent()}
         </View>
       </Animated.View>
 
-      <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
+      <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle, getCardStyle()]}>
         <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
-          <Text>
-            {cardData.ilogo && (
+          {cardData.ilogo ? (
+            <View>
               <Image
                 source={{ uri: cardData.ilogo }}
                 style={styles.logo}
               />
-            )}
-          </Text>
+            </View>
+          ) : null}
           <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
             {cardData.temail}
           </Text>
@@ -158,5 +226,92 @@ const styles = StyleSheet.create({
   },
   contentRight: {
     alignItems: 'flex-end',
+  },
+  // Default card style (current style)
+  defaultCard: {
+    borderRadius: 8,
+    elevation: 5,
+    boxShadow: '0px 2px 3.84px rgba(0, 0, 0, 0.25)',
+  },
+
+  // Minimalist style
+  minimalistCard: {
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    borderRadius: 0,
+    elevation: 0,
+    boxShadow: 'none',
+  },
+  minimalistContent: {
+    padding: 32,
+    flexDirection: 'column',
+    alignItems: 'flex-end', // Changed to align content to the right
+  },
+  minimalistHeader: {
+    marginBottom: 24,
+    width: '100%',
+    alignItems: 'flex-end', // Changed to align profile image to the right
+  },
+  minimalistProfile: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  minimalistInfo: {
+    alignItems: 'flex-end', // Changed to align text to the right
+    width: '100%',
+  },
+  minimalistText: {
+    textAlign: 'right', // Added to ensure text alignment is right
+  },
+
+  // Modern style
+  modernCard: {
+    borderRadius: 16,
+    elevation: 8,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    overflow: 'hidden',
+  },
+  // Default style updates
+  defaultContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  // Modern style updates
+  modernContent: {
+    padding: 24,
+    flex: 1,
+  },
+  modernHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 32,
+    width: '100%',
+  },
+  modernProfile: {
+    width: 70,
+    height: 70,
+    borderRadius: 8,
+  },
+  modernInfo: {
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  modernName: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    flex: 1,
+    marginRight: 16,
+  },
+  modernTitle: {
+    fontSize: 18,
+    marginBottom: 8,
+    opacity: 0.9,
+  },
+  modernCompany: {
+    fontSize: 16,
+    opacity: 0.8,
   },
 });
