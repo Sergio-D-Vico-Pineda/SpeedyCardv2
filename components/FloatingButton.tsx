@@ -1,5 +1,5 @@
+import { Pressable, StyleSheet } from "react-native";
 import { Plus } from "lucide-react-native";
-import { Pressable, StyleSheet, Text } from "react-native";
 
 interface Floating {
     onPressAction: () => void;
