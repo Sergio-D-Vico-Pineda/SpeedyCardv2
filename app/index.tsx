@@ -1,8 +1,8 @@
 import { Link } from 'expo-router';
-import { Text, View, StyleSheet, Pressable, Image, Modal } from 'react-native';
+import { Text, View, StyleSheet, Pressable, Image } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
-import ScanQRModal from '@/modals/scanqr'; // Add this import
+import ScanQRModal from '@/modals/scanqr';
 
 export default function Index() {
   const { user, signOut } = useAuth();
