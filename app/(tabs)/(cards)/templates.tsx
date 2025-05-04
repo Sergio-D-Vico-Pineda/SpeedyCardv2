@@ -60,14 +60,14 @@ const cardStyles = [
 ]
 
 export default function TemplatesScreen() {
-  const { setStyle } = useCardContext();
+  const { updateCardData } = useCardContext();
 
   /* const applyTemplate = (template: typeof templates[0]) => {
     updateCardData(template.layout as MyCardData);
   }; */
 
   const applyStyle = (style: string) => {
-    setStyle(style);
+    updateCardData({ style } as MyCardData);
   };
 
   return (
