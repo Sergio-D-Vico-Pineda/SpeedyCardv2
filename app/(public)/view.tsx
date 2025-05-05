@@ -6,6 +6,7 @@ import BusinessCardPreview from '@/components/business-card/BusinessCardPreview'
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
 import { Save } from 'lucide-react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 const isColorDark = (hex: string): boolean => {
     let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;
@@ -22,6 +23,7 @@ const isColorDark = (hex: string): boolean => {
 export default function ViewScreen() {
     const { userid, card = 0 } = useLocalSearchParams();
     const { fetchSingleCard, saveToSavedCards } = useCards();
+    const { user } = useAuth();
     const [localCardData, setlocalCardData] = useState<MyCardData>();
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -109,7 +111,7 @@ export default function ViewScreen() {
                         {isFullscreen ? 'Exit Fullscreen' : 'View Fullscreen'}
                     </Text>
                 </TouchableOpacity>
-                {!isFullscreen && (
+                {!isFullscreen && user && (
                     <TouchableOpacity
                         style={styles.saveButton}
                         onPress={handleSave}
