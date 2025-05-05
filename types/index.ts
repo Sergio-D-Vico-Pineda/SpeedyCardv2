@@ -28,7 +28,7 @@ interface MyCardData {
   ilogo: string;
   effect?: typeof effects[number] | undefined;
   index?: number | undefined;
-  style?: string | undefined;
+  style?: typeof styles[number] | undefined;
 }
 
 interface Template {
@@ -113,6 +113,12 @@ const effects = [
   'fire',
   'sparkle',
   'rain',
+]
+
+const styles = [
+  'default',
+  'modern',
+  'minimalist',
 ]
 
 const templates: Template[] = [

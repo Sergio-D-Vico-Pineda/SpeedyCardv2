@@ -11,7 +11,6 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
   // Move all hooks to the top level
   const { isFlipped, toggleFlip, cardData: contextCardData } = useCardContext();
 
-  // Use a constant instead of reassigning
   const cardData = localCardData || contextCardData;
 
   const frontAnimatedStyle = useAnimatedStyle(() => ({
@@ -26,27 +25,16 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
     ],
   }));
 
-  const getTextStyle = (alignment: 'left' | 'right' | 'center') => {
+  /* const getTextStyle = (alignment: 'left' | 'right' | 'center') => {
     if (alignment === 'left') return styles.textLeft;
     if (alignment === 'right') return styles.textRight;
     return styles.textCenter;
-  };
+  }; */
 
   const getAligment = (alignment: 'left' | 'right' | 'center') => {
     if (alignment === 'left') return styles.contentLeft;
     if (alignment === 'right') return styles.contentRight;
     return styles.contentCenter;
-  };
-
-  const getCardStyle = () => {
-    switch (cardData.style) {
-      case 'minimalist':
-        return styles.minimalistCard;
-      case 'modern':
-        return styles.modernCard;
-      default:
-        return styles.defaultCard;
-    }
   };
 
   const renderFrontContent = () => {
@@ -108,13 +96,13 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
 
   return (
     <TouchableOpacity onPress={toggleFlip} style={styles.container}>
-      <Animated.View style={[styles.card, frontAnimatedStyle, getCardStyle()]}>
+      <Animated.View style={[styles.card, frontAnimatedStyle]}>
         <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }]}>
           {renderFrontContent()}
         </View>
       </Animated.View>
 
-      <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle, getCardStyle()]}>
+      <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
         <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
           {cardData.ilogo ? (
             <View>
@@ -205,21 +193,6 @@ const styles = StyleSheet.create({
   contentRight: {
     alignItems: 'flex-end',
   },
-  // Default card style (current style)
-  defaultCard: {
-    borderRadius: 8,
-    elevation: 5,
-    boxShadow: '0px 2px 3.84px rgba(0, 0, 0, 0.25)',
-  },
-
-  // Minimalist style
-  minimalistCard: {
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-    borderRadius: 0,
-    elevation: 0,
-    boxShadow: 'none',
-  },
   minimalistContent: {
     padding: 32,
     flexDirection: 'column',
@@ -241,14 +214,6 @@ const styles = StyleSheet.create({
   },
   minimalistText: {
     textAlign: 'right', // Added to ensure text alignment is right
-  },
-
-  // Modern style
-  modernCard: {
-    borderRadius: 16,
-    elevation: 8,
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-    overflow: 'hidden',
   },
   // Default style updates
   defaultContent: {

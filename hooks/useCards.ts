@@ -145,10 +145,6 @@ function useCards() {
     };
 
     const fetchSingleCard = async (userid: string, index: number): Promise<MyCardData | null> => {
-        if (!user) {
-            return null;
-        }
-
         try {
             const cardsRef = doc(db, 'cards', userid);
             const cardsDoc = await getDoc(cardsRef);
