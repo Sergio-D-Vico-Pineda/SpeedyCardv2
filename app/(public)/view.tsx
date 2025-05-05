@@ -7,6 +7,7 @@ import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
 import { Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSavedCards } from '@/hooks/useSavedCards';
 
 const isColorDark = (hex: string): boolean => {
     let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;
@@ -22,7 +23,8 @@ const isColorDark = (hex: string): boolean => {
 
 export default function ViewScreen() {
     const { userid, card = 0 } = useLocalSearchParams();
-    const { fetchSingleCard, saveToSavedCards } = useCards();
+    const { fetchSingleCard } = useCards();
+    const { saveToSavedCards } = useSavedCards();
     const { user } = useAuth();
     const [localCardData, setlocalCardData] = useState<MyCardData>();
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -66,8 +68,10 @@ export default function ViewScreen() {
         if (!localCardData) return;
         try {
             setSaving(true);
-            await saveToSavedCards(localCardData);
-            router.replace('/');
+            console.log('Saving card...');
+            console.log(`/view?userid=${userid}&card=${card}`);
+            await saveToSavedCards(localCardData, { userid: userid as string, card: card as number });
+            // router.replace('/');
         } catch (error) {
             console.error('Error saving card:', error);
         } finally {

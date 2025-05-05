@@ -12,34 +12,6 @@ function useCards() {
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const [effects, setEffects] = useState<string[]>([]);
-    const [savedCards, setSavedCards] = useState<MyCardData[]>([]);
-
-    const fetchSavedCards = useCallback(async () => {
-        if (!user) {
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const cardsRef = doc(db, 'cards', user.uid);
-            const cardsDoc = await getDoc(cardsRef);
-
-            if (cardsDoc.exists()) {
-                const cardData = cardsDoc.data();
-                const savedCardArray = cardData.savedCards || [];
-                console.log(savedCardArray);
-                setSavedCards(savedCardArray);
-            } else {
-                setSavedCards([]);
-            }
-        } catch (err) {
-            console.error('Error fetching saved cards:', err);
-            setError("something went wrong. saved cards");
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    }, [user]);
 
     const fetchEffects = useCallback(async () => {
         try {
@@ -85,6 +57,8 @@ function useCards() {
     }, [user]);
 
     const handleRefresh = (): void => {
+        console.log("refreshing");
+        setLoading(true);
         setRefreshing(true);
         fetchCards();
     };
@@ -102,23 +76,6 @@ function useCards() {
             updateCardData(defaultCardData);
         } catch (err) {
             console.error('Error removing card:', err);
-        }
-    };
-
-    const saveToSavedCards = async (data: MyCardData): Promise<void> => {
-        if (!user) {
-            return;
-        }
-        const cardsRef = doc(db, 'cards', user.uid);
-        try {
-            // Remove index before storing
-            let { index, ...cardToStore } = data;
-            const newSavedCards = [...savedCards];
-            newSavedCards.push(cardToStore as MyCardData);
-            await updateDoc(cardsRef, { savedCards: newSavedCards });
-            setSavedCards(newSavedCards);
-        } catch (err) {
-            console.error('Error saving to saved cards:', err);
         }
     };
 
@@ -166,18 +123,15 @@ function useCards() {
 
     return {
         cards,
-        savedCards,
         loading,
         error,
         refreshing,
         effects,
         fetchEffects,
         fetchCards,
-        fetchSavedCards,
         handleRefresh,
         removeCard,
         saveCardToFirestore,
-        saveToSavedCards,
         fetchSingleCard,
     };
 }

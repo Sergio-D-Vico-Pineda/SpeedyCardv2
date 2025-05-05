@@ -2,9 +2,9 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, Pr
 import FloatingButton from '@/components/FloatingButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Trash, Share2, QrCode } from 'lucide-react-native';
+import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { useCards } from '@/hooks/useCards';
+import { useSavedCards } from '@/hooks/useSavedCards';
 import { MyCardData } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import ScanQRModal from '@/modals/scanqr';
@@ -12,7 +12,7 @@ import ScanQRModal from '@/modals/scanqr';
 export default function SavedCardsScreen() {
     const { userData } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
-    const { savedCards, loading, error, refreshing, fetchSavedCards, handleRefresh, removeCard } = useCards();
+    const { savedCards, loading, error, refreshing, handleRefresh, fetchSavedCards, removeSavedCard } = useSavedCards();
 
     function handleShare(index: number) {
         // const url = userData ? `speedycard://cards/${userData.uid}/${index}` : 'Something wrong with the user';
@@ -32,7 +32,7 @@ export default function SavedCardsScreen() {
 
             const menuItems = [
                 { text: 'Share', onClick: () => handleShare(index), color: '#34C759' },
-                { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30' }
+                { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30' }
             ];
 
             menuItems.forEach(item => {
@@ -89,7 +89,7 @@ export default function SavedCardsScreen() {
                     },
                     {
                         text: 'Delete',
-                        onPress: () => removeCard(index),
+                        onPress: () => removeSavedCard(index),
                         style: 'destructive'
                     }
                 ]
@@ -131,6 +131,15 @@ export default function SavedCardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Saved Cards</Text>
+                {Platform.OS === 'web' && (
+                    <Pressable
+                        style={[styles.refreshButton, refreshing && styles.refreshing]}
+                        onPress={handleRefresh}
+                        disabled={refreshing}
+                    >
+                        <RefreshCw size={24} color={'#007AFF'} />
+                    </Pressable>
+                )}
             </View>
 
             <FlatList
@@ -164,7 +173,7 @@ export default function SavedCardsScreen() {
                                     <Share2 color="#34C759" size={26} />
                                 </Pressable>
                                 {Platform.OS === 'web' && (
-                                    <Pressable onPress={() => removeCard(index)}>
+                                    <Pressable onPress={() => removeSavedCard(index)}>
                                         <Trash color="#FF3B30" size={22} />
                                     </Pressable>
                                 )}
@@ -265,5 +274,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    refreshButton: {
+        padding: 4,
+        borderRadius: 20,
+    },
+    refreshing: {
+        opacity: 0.5,
     },
 });

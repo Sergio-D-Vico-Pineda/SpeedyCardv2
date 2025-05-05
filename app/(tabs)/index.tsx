@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router, useSegments, useRootNavigationState } from 'expo-router';
-import { Plus, Trash, Share2, Edit } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { Plus, Trash, Share2, Edit, RefreshCw } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
@@ -13,8 +13,6 @@ export default function CardsScreen() {
     const { userData } = useAuth();
     const { updateCardData } = useCardContext();
     const { cards, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
-    const segments = useSegments();
-    const navigationState = useRootNavigationState();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
@@ -23,14 +21,20 @@ export default function CardsScreen() {
     }
 
     function handleShare(index: number) {
-        const url = userData ? `speedycard://cards/${userData.uid}/${index}` : 'Something wrong with the user';
-        // alert(segments);
-        console.log(segments[0]);
-        console.log(navigationState)
+        const url = userData ? `speedycard://view?userid=${userData.uid}&card=${index}` : 'Something wrong with the user';
         console.log(url);
+        alert(url);
     }
 
     function handleLongPress(card: MyCardData, index: number, event: any) {
+        // Create menu items
+        const menuItems = [
+            { text: 'View', onClick: () => router.push(`/view?userid=${userData?.uid}&card=${index}`), color: '#007AFF', style: 'default' },
+            { text: 'Edit', onClick: () => updateCardAndGotoEdit(card, index), color: '#007AFF', style: 'default' },
+            { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
+            { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30', style: 'destructive' },
+        ];
+
         if (Platform.OS === 'web') {
             // For web, we'll use a custom dropdown menu
             const dropdownContent = document.createElement('div');
@@ -39,14 +43,8 @@ export default function CardsScreen() {
             dropdownContent.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
             dropdownContent.style.borderRadius = '8px';
             dropdownContent.style.padding = '8px 0';
-            dropdownContent.style.zIndex = '1000';
+            dropdownContent.style.zIndex = '100';
 
-            // Create menu items
-            const menuItems = [
-                { text: 'Edit', onClick: () => updateCardAndGotoEdit(card, index), color: '#007AFF' },
-                { text: 'Share', onClick: () => handleShare(index), color: '#34C759' },
-                { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30' }
-            ];
 
             menuItems.forEach(item => {
                 const menuItem = document.createElement('div');
@@ -108,23 +106,13 @@ export default function CardsScreen() {
                 [
                     {
                         text: 'Cancel',
-                        style: 'cancel'
+                        style: 'cancel',
                     },
-                    {
-                        text: 'Edit',
-                        onPress: () => updateCardAndGotoEdit(card, index),
-                        style: 'default'
-                    },
-                    {
-                        text: 'Share',
-                        onPress: () => handleShare(index),
-                        style: 'default'
-                    },
-                    {
-                        text: 'Delete',
-                        onPress: () => removeCard(index),
-                        style: 'destructive'
-                    }
+                    ...menuItems.map(item => ({
+                        text: item.text,
+                        onPress: item.onClick,
+                        style: item.style as 'default' | 'destructive' | 'cancel'
+                    }))
                 ]
             );
         }
@@ -169,6 +157,15 @@ export default function CardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>My Business Cards</Text>
+                {Platform.OS === 'web' && (
+                    <Pressable
+                        style={[styles.refreshButton, refreshing && styles.refreshing]}
+                        onPress={handleRefresh}
+                        disabled={refreshing}
+                    >
+                        <RefreshCw size={24} color={'#007AFF'} />
+                    </Pressable>
+                )}
             </View>
 
             <FlatList
