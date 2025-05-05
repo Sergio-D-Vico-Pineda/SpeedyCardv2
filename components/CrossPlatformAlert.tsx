@@ -82,10 +82,7 @@ const styles = StyleSheet.create({
     padding: 24,
     minWidth: 280,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)',
     elevation: 5,
   },
   title: {

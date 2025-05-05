@@ -116,13 +116,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E5E5EA',
         flexDirection: 'row',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
+        boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.1)',
         elevation: 3,
     },
     backButton: {
