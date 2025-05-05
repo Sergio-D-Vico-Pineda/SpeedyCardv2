@@ -63,15 +63,9 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
               </View>
             ) : null}
             <View style={styles.minimalistInfo}>
-              <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
-                {cardData.tname}
-              </Text>
-              <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
-                {cardData.tjob}
-              </Text>
-              <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>
-                {cardData.tbusiness}
-              </Text>
+              <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>{cardData.tname}</Text>
+              <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>{cardData.tjob}</Text>
+              <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }, styles.minimalistText]}>{cardData.tbusiness}</Text>
             </View>
           </>
         );
@@ -82,41 +76,31 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
               <Text style={[styles.modernName, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
                 {cardData.tname}
               </Text>
-              {cardData.iprofile && (
+              {cardData.iprofile ? (
                 <Image
                   source={{ uri: cardData.iprofile }}
                   style={styles.modernProfile}
                 />
-              )}
+              ) : null}
             </View>
             <View style={styles.modernInfo}>
-              <Text style={[styles.modernTitle, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-                {cardData.tjob}
-              </Text>
-              <Text style={[styles.modernCompany, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-                {cardData.tbusiness}
-              </Text>
+              <Text style={[styles.modernTitle, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tjob}</Text>
+              <Text style={[styles.modernCompany, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tbusiness}</Text>
             </View>
           </>
         );
       default:
         return (
           <View style={styles.defaultContent}>
-            {cardData.iprofile && (
+            {cardData.iprofile ? (
               <Image
                 source={{ uri: cardData.iprofile }}
                 style={styles.profileImage}
               />
-            )}
-            <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-              {cardData.tname}
-            </Text>
-            <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-              {cardData.tjob}
-            </Text>
-            <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-              {cardData.tbusiness}
-            </Text>
+            ) : null}
+            <Text style={[styles.name, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tname}</Text>
+            <Text style={[styles.title, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tjob}</Text>
+            <Text style={[styles.company, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tbusiness}</Text>
           </View>
         );
     }
@@ -140,15 +124,9 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
               />
             </View>
           ) : null}
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-            {cardData.temail}
-          </Text>
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-            {cardData.tphone}
-          </Text>
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>
-            {cardData.twebsite}
-          </Text>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.temail}</Text>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tphone}</Text>
+          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.twebsite}</Text>
         </View>
       </Animated.View>
     </TouchableOpacity>
