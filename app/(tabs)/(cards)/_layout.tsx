@@ -1,5 +1,5 @@
 import { router, Tabs } from 'expo-router';
-import { Edit, Layout, Save } from 'lucide-react-native';
+import { Edit, Save } from 'lucide-react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import { TouchableOpacity } from 'react-native';
 
@@ -7,7 +7,6 @@ export default function CardsLayout() {
   return (
     <Tabs screenOptions={{ headerShown: false, animation: 'fade', tabBarHideOnKeyboard: true, headerStyle: { backgroundColor: '#fff' } }}>
       <Tabs.Screen name="index" options={{ title: 'Edit', tabBarIcon: ({ color, size }) => <Edit color={color} size={size} /> }} />
-      <Tabs.Screen name="templates" options={{ title: 'Templates', tabBarIcon: ({ color, size }) => <Layout color={color} size={size} /> }} />
       <Tabs.Screen
         name="save"
         options={{
@@ -29,8 +28,6 @@ export default function CardsLayout() {
           },
         }}
       />
-      {/* <Tabs.Screen name="view" options={{ tabBarStyle: { display: 'none' }, tabBarButton: () => { return <></> } }} /> */}
-      {/* <Tabs.Screen name="view" options={{ title: 'View', tabBarIcon: ({ color, size }) => <Layout color={color} size={size} /> }} /> */}
     </Tabs>
   );
 }
