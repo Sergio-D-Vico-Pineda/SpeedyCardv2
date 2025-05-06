@@ -22,13 +22,24 @@ const isColorDark = (hex: string): boolean => {
 };
 
 export default function ViewScreen() {
-    const { userid, card = 0 } = useLocalSearchParams();
+    const { userid, card = 0, from } = useLocalSearchParams();
     const { fetchSingleCard } = useCards();
     const { saveToSavedCards } = useSavedCards();
     const { user } = useAuth();
     const [localCardData, setlocalCardData] = useState<MyCardData>();
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    const handleBack = () => {
+        if (from === 'saved') {
+            router.replace('/savedcards')
+        } else if (from === 'cards') {
+            router.replace('/(tabs)')
+        } else {
+            router.replace('/');
+        }
+    }
+
 
     useEffect(() => {
         const fetchCardData = async () => {
@@ -91,7 +102,7 @@ export default function ViewScreen() {
             {!isFullscreen && (
                 <TouchableOpacity
                     style={styles.backButton}
-                    onPress={() => router.replace('/')}
+                    onPress={handleBack}
                 >
                     <Text style={styles.backButtonText}>← Back</Text>
                 </TouchableOpacity>
@@ -115,7 +126,7 @@ export default function ViewScreen() {
                         {isFullscreen ? 'Exit Fullscreen' : 'View Fullscreen'}
                     </Text>
                 </TouchableOpacity>
-                {!isFullscreen && user && (
+                {!isFullscreen && user && from != 'saved' && from != 'cards' && (
                     <TouchableOpacity
                         style={styles.saveButton}
                         onPress={handleSave}
