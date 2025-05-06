@@ -1,13 +1,16 @@
 import { createContext, useContext, useState } from 'react';
-import { MyCardData, defaultCardData } from '@/types';
+import { MyCardData, defaultCardData, SavedCard } from '@/types';
 
 interface CardContextType {
   cardData: MyCardData;
   cards: MyCardData[];
+  savedCards: SavedCard[];
   setCards: (cards: MyCardData[]) => void;
+  setSavedCards: (savedCards: SavedCard[]) => void;
   updateCardData: (data: Partial<MyCardData>) => void;
   isFlipped: boolean;
   toggleFlip: () => void;
+  changeDatainCard: (field: keyof MyCardData, value: string | undefined) => void;
 }
 
 const CardContext = createContext<CardContextType | undefined>(undefined);
@@ -16,6 +19,11 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   const [cardData, setCardData] = useState<MyCardData>(defaultCardData);
   const [isFlipped, setIsFlipped] = useState(false);
   const [cards, setCards] = useState<MyCardData[]>([]);
+  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+
+  const changeDatainCard = (field: keyof MyCardData, value: string | undefined) => {
+    updateCardData({ [field]: value });
+  };
 
   const updateCardData = (newData: Partial<MyCardData>) => {
     setCardData(prev =>
@@ -30,7 +38,7 @@ export function CardProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <CardContext.Provider value={{ cardData, updateCardData, isFlipped, toggleFlip, cards, setCards }}>
+    <CardContext.Provider value={{ cardData, updateCardData, isFlipped, toggleFlip, cards, setCards, savedCards, setSavedCards, changeDatainCard }}>
       {children}
     </CardContext.Provider>
   );
