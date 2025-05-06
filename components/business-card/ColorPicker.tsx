@@ -66,6 +66,7 @@ export default function ColorPicker({ color: colorSelected, onColorChange, font 
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginBottom: 16,
   },
   label: {
