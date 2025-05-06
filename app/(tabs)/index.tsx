@@ -191,7 +191,7 @@ export default function CardsScreen() {
                         <View style={styles.cardItem}>
                             <View>
                                 {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
-                                {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
+                                {item.tbusiness ? <Text style={styles.cardDetails}>{item.tbusiness}</Text> : null}
                             </View>
                             <View style={styles.cardActions}>
                                 {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
