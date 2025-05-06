@@ -1,18 +1,63 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, Pressable } from 'react-native';
 import FloatingButton from '@/components/FloatingButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
 import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
-import { MyCardData } from '@/types';
+import { defaultCardData, MyCardData, SavedCard } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import ScanQRModal from '@/modals/scanqr';
+import { router } from 'expo-router';
 
 export default function SavedCardsScreen() {
     const { userData } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
-    const { savedCards, loading, error, refreshing, handleRefresh, fetchSavedCards, removeSavedCard } = useSavedCards();
+    const { savedCards, loading, error, refreshing, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
+    const [cardStates, setCardStates] = useState<Record<string, MyCardData>>({});
+
+    useEffect(() => {
+        const fetchCards = async () => {
+            const newCardStates: Record<string, MyCardData> = {};
+            for (const item of savedCards) {
+                if (item) {
+                    const cardData = await fetchDataCard(item);
+                    if (cardData) {
+                        newCardStates[`${item.userid}-${item.card}`] = cardData;
+                    }
+                }
+            }
+            setCardStates(newCardStates);
+        };
+
+        fetchCards();
+    }, [savedCards, fetchDataCard]);
+
+    function renderCardItem(item: SavedCard, index: number) {
+        if (!item) {
+            return null;
+        }
+        const card = cardStates[`${item.userid}-${item.card}`];
+
+        return (
+            <View style={styles.cardItem}>
+                <View style={{ width: 200 }}>
+                    {card?.tname ? <Text numberOfLines={1} style={styles.cardTitle}>{card.tname}</Text> : null}
+                    {card?.tbusiness ? <Text style={styles.cardDetails}>{card.tbusiness}</Text> : null}
+                </View>
+                <View style={styles.cardActions}>
+                    {item ? <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text> : null}
+                    <Pressable onPress={() => handleShare(index)}>
+                        <Share2 color="#34C759" size={26} />
+                    </Pressable>
+                    {Platform.OS === 'web' ? (
+                        <Pressable onPress={() => removeSavedCard(index)}>
+                            <Trash color="#FF3B30" size={22} />
+                        </Pressable>
+                    ) : null}
+                </View>
+            </View>
+        );
+    }
 
     function handleShare(index: number) {
         // const url = userData ? `speedycard://cards/${userData.uid}/${index}` : 'Something wrong with the user';
@@ -20,20 +65,23 @@ export default function SavedCardsScreen() {
         console.log(url);
     }
 
-    function handleLongPress(card: MyCardData, index: number, event: any) {
+    function handleLongPress(card: SavedCard, index: number, event: any) {
+
+        const menuItems = [
+            { text: 'View', onClick: () => router.push(`/view?userid=${card.userid}&card=${card.card}&from=saved`), color: '#007AFF', style: 'default' },
+            { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
+            { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30', style: 'destructive' },
+        ];
+
         if (Platform.OS === 'web') {
-            const dropdownContent = document.createElement('div');
+            alert('Web not supported yet');
+            /* const dropdownContent = document.createElement('div');
             dropdownContent.style.position = 'fixed';
             dropdownContent.style.backgroundColor = 'white';
             dropdownContent.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
             dropdownContent.style.borderRadius = '8px';
             dropdownContent.style.padding = '8px 0';
             dropdownContent.style.zIndex = '1000';
-
-            const menuItems = [
-                { text: 'Share', onClick: () => handleShare(index), color: '#34C759' },
-                { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30' }
-            ];
 
             menuItems.forEach(item => {
                 const menuItem = document.createElement('div');
@@ -51,7 +99,10 @@ export default function SavedCardsScreen() {
                 });
                 menuItem.addEventListener('click', () => {
                     item.onClick();
-                    document.body.removeChild(dropdownContent);
+                    if (document.body.contains(dropdownContent)) {
+                        document.body.removeChild(dropdownContent);
+                    }
+                    // document.body.removeChild(dropdownContent);
                 });
 
                 dropdownContent.appendChild(menuItem);
@@ -72,7 +123,7 @@ export default function SavedCardsScreen() {
                     document.body.removeChild(dropdownContent);
                     document.removeEventListener('click', handleClickOutside);
                 }
-            };
+            }; */
         } else {
             Alert.alert(
                 'Card Options',
@@ -82,16 +133,11 @@ export default function SavedCardsScreen() {
                         text: 'Cancel',
                         style: 'cancel'
                     },
-                    {
-                        text: 'Share',
-                        onPress: () => handleShare(index),
-                        style: 'default'
-                    },
-                    {
-                        text: 'Delete',
-                        onPress: () => removeSavedCard(index),
-                        style: 'destructive'
-                    }
+                    ...menuItems.map(item => ({
+                        text: item.text,
+                        onPress: item.onClick,
+                        style: item.style as 'default' | 'destructive' | 'cancel'
+                    }))
                 ]
             );
         }
@@ -131,7 +177,7 @@ export default function SavedCardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Saved Cards</Text>
-                {Platform.OS === 'web' && (
+                {Platform.OS === 'web' ? (
                     <Pressable
                         style={[styles.refreshButton, refreshing && styles.refreshing]}
                         onPress={handleRefresh}
@@ -139,7 +185,7 @@ export default function SavedCardsScreen() {
                     >
                         <RefreshCw size={24} color={'#007AFF'} />
                     </Pressable>
-                )}
+                ) : null}
             </View>
 
             <FlatList
@@ -159,26 +205,11 @@ export default function SavedCardsScreen() {
                 }
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
+                        onPress={() => router.push(`/view?userid=${item.userid}&card=${item.card}&from=saved`)}
                         onLongPress={(event) => handleLongPress(item, index, event)}
                         delayLongPress={500}
                     >
-                        <View style={styles.cardItem}>
-                            <View>
-                                {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
-                                {item.tbusiness && <Text style={styles.cardDetails}>{item.tbusiness}</Text>}
-                            </View>
-                            <View style={styles.cardActions}>
-                                {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
-                                <Pressable onPress={() => handleShare(index)}>
-                                    <Share2 color="#34C759" size={26} />
-                                </Pressable>
-                                {Platform.OS === 'web' && (
-                                    <Pressable onPress={() => removeSavedCard(index)}>
-                                        <Trash color="#FF3B30" size={22} />
-                                    </Pressable>
-                                )}
-                            </View>
-                        </View>
+                        {renderCardItem(item, index)}
                     </TouchableOpacity>
                 )}
             />
@@ -186,9 +217,9 @@ export default function SavedCardsScreen() {
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
             />
-            {savedCards.length > 0 && (
+            {savedCards.length > 0 ? (
                 <FloatingButton onPressAction={() => setModalVisible(true)} />
-            )}
+            ) : null}
         </SafeAreaView>
     );
 }

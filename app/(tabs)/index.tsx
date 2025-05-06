@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Plus, Trash, Share2, Edit, RefreshCw } from 'lucide-react-native';
+import { Plus, Trash, Share2, Edit, RefreshCw, Home } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
@@ -29,14 +29,15 @@ export default function CardsScreen() {
     function handleLongPress(card: MyCardData, index: number, event: any) {
         // Create menu items
         const menuItems = [
-            { text: 'View', onClick: () => router.push(`/view?userid=${userData?.uid}&card=${index}`), color: '#007AFF', style: 'default' },
+            { text: 'View', onClick: () => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`), color: '#007AFF', style: 'default' },
             { text: 'Edit', onClick: () => updateCardAndGotoEdit(card, index), color: '#007AFF', style: 'default' },
             { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
             { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30', style: 'destructive' },
         ];
 
         if (Platform.OS === 'web') {
-            // For web, we'll use a custom dropdown menu
+            alert('Web not supported yet');
+            /* // For web, we'll use a custom dropdown menu
             const dropdownContent = document.createElement('div');
             dropdownContent.style.position = 'fixed';
             dropdownContent.style.backgroundColor = 'white';
@@ -98,7 +99,7 @@ export default function CardsScreen() {
                 if (document.body.contains(dropdownContent)) {
                     document.body.removeChild(dropdownContent);
                 }
-            }, 2000);
+            }, 2000); */
         } else {
             Alert.alert(
                 'Card Options',
@@ -158,13 +159,21 @@ export default function CardsScreen() {
             <View style={styles.header}>
                 <Text style={styles.title}>My Business Cards</Text>
                 {Platform.OS === 'web' && (
-                    <Pressable
-                        style={[styles.refreshButton, refreshing && styles.refreshing]}
-                        onPress={handleRefresh}
-                        disabled={refreshing}
-                    >
-                        <RefreshCw size={24} color={'#007AFF'} />
-                    </Pressable>
+                    <>
+                        <Pressable onPress={() => {
+                            console.log('resetting');
+                            router.dismissAll()
+                        }}>
+                            <Home size={24} color="#007AFF" />
+                        </Pressable>
+                        <Pressable
+                            style={[styles.refreshButton, refreshing && styles.refreshing]}
+                            onPress={handleRefresh}
+                            disabled={refreshing}
+                        >
+                            <RefreshCw size={24} color={'#007AFF'} />
+                        </Pressable>
+                    </>
                 )}
             </View>
 
@@ -185,6 +194,7 @@ export default function CardsScreen() {
                 }
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
+                        onPress={() => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`)}
                         onLongPress={(event) => handleLongPress(item, index, event)}
                         delayLongPress={500}
                     >
