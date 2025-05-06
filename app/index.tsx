@@ -46,9 +46,6 @@ export default function Index() {
         >
           <Text style={styles.white}>Scan QR</Text>
         </Pressable>
-        <Link style={styles.button} href="/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1">
-          View a card
-        </Link>
         <ScanQRModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}

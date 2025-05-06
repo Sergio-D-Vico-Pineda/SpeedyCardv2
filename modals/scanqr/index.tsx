@@ -100,6 +100,16 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
                 >
                     <Text style={styles.buttonText}>Close</Text>
                 </Pressable>
+                <Pressable
+                    style={styles.button}
+                    onPress={() => {
+                        setReadyToScan(false);
+                        onClose();
+                        router.push('/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1')
+                    }}
+                >
+                    <Text style={styles.buttonText}>View a card</Text>
+                </Pressable>
             </View>
         </Modal>
     );
