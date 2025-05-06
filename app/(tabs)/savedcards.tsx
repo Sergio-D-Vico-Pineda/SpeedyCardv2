@@ -2,7 +2,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, Pr
 import FloatingButton from '@/components/FloatingButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
 import { defaultCardData, MyCardData, SavedCard } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,22 +15,26 @@ export default function SavedCardsScreen() {
     const { savedCards, loading, error, refreshing, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
     const [cardStates, setCardStates] = useState<Record<string, MyCardData>>({});
 
-    useEffect(() => {
-        const fetchCards = async () => {
-            const newCardStates: Record<string, MyCardData> = {};
-            for (const item of savedCards) {
-                if (item) {
-                    const cardData = await fetchDataCard(item);
-                    if (cardData) {
-                        newCardStates[`${item.userid}-${item.card}`] = cardData;
-                    }
+    const memoizedFetchCards = useCallback(async () => {
+        if (!savedCards.length) return;
+        
+        const newCardStates: Record<string, MyCardData> = {};
+        const promises = savedCards
+            .filter(item => item)
+            .map(async item => {
+                const cardData = await fetchDataCard(item);
+                if (cardData) {
+                    newCardStates[`${item.userid}-${item.card}`] = cardData;
                 }
-            }
-            setCardStates(newCardStates);
-        };
+            });
 
-        fetchCards();
-    }, [savedCards, fetchDataCard]);
+        await Promise.all(promises);
+        setCardStates(newCardStates);
+    }, [savedCards]);
+
+    useEffect(() => {
+        memoizedFetchCards();
+    }, [memoizedFetchCards]);
 
     function renderCardItem(item: SavedCard, index: number) {
         if (!item) {
