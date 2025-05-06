@@ -2,14 +2,15 @@ import { useState, useCallback } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaselogic';
 import { useAuth } from '@/contexts/AuthContext';
-import { type MyCardData } from '@/types';
+import { useCardContext } from '@/contexts/CardContext';
+import { SavedCard, type MyCardData } from '@/types';
 
 function useSavedCards() {
+    const { savedCards, setSavedCards } = useCardContext();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
-    const [savedCards, setSavedCards] = useState<any>([]);
 
     const fetchSavedCards = useCallback(async () => {
         if (!user) {
@@ -23,7 +24,6 @@ function useSavedCards() {
 
             if (cardsDoc.exists()) {
                 const cardData = cardsDoc.data();
-                console.log(cardData.savedcards);
                 const savedCardArray = cardData.savedcards || [];
                 setSavedCards(savedCardArray);
             } else {
@@ -38,7 +38,8 @@ function useSavedCards() {
         }
     }, [user]);
 
-    const saveToSavedCards = async (data: MyCardData, url: { userid: string, card: number }): Promise<void> => {
+    // this doesn't work, it just saves the last one, it doesn't save all the cards
+    const saveToSavedCards = async (data: MyCardData, url: SavedCard): Promise<void> => {
         console.log('saving to savedcards');
         if (!user) {
             return;
@@ -84,6 +85,26 @@ function useSavedCards() {
         fetchSavedCards();
     };
 
+    async function fetchDataCard(savedCard: SavedCard): Promise<MyCardData | null> {
+        try {
+            const cardsRef = doc(db, 'cards', savedCard.userid);
+            const cardsDoc = await getDoc(cardsRef);
+
+            if (cardsDoc.exists()) {
+                const cardData = cardsDoc.data();
+                const card = cardData.cards[savedCard.card] as MyCardData;
+                return card;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (err) {
+            console.error('Error fetching cards:', err);
+            return null;
+        }
+    }
+
     return {
         savedCards,
         loading,
@@ -94,6 +115,7 @@ function useSavedCards() {
         fetchSavedCards,
         saveToSavedCards,
         removeSavedCard,
+        fetchDataCard
     };
 }
 

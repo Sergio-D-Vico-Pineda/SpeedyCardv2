@@ -1,20 +1,5 @@
-/* interface BusinessCardData {
-  name: string;
-  title: string;
-  company: string;
-  email: string;
-  phone: string;
-  website: string;
-  primaryColor: string;
-  font: string;
-  logo?: string;
-  profileImage?: string;
-  textAlignment: 'left' | 'right' | 'center';
-} */
-
 interface MyCardData {
   font: typeof fonts[number];
-  size: number;
   color: typeof colors[number];
   bgcolor: typeof bgcolors[number];
   align: 'left' | 'right' | 'center';
@@ -29,6 +14,11 @@ interface MyCardData {
   effect?: typeof effects[number] | undefined;
   index?: number | undefined;
   style?: typeof styles[number] | undefined;
+}
+
+interface SavedCard {
+  userid: string;
+  card: number;
 }
 
 interface Template {
@@ -52,58 +42,58 @@ interface UserData {
 const categories = ['professional', 'creative', 'business', 'effects'];
 
 const fonts = [
-  'Inter-Regular',
-  'Inter-Medium',
-  'Inter-Bold',
-  'Roboto-Regular',
-  'Roboto-Medium',
-  'Roboto-Bold',
-  'PlayfairDisplay-Regular',
-  'PlayfairDisplay-Bold',
-  'Montserrat-Regular',
-  'Montserrat-Medium',
-  'Montserrat-Bold',
-  'OpenSans-Regular',
-  'OpenSans-SemiBold',
-  'OpenSans-Bold',
+  'Inter-Regular', // 0
+  'Inter-Medium', // 1
+  'Inter-Bold', // 2
+  'Roboto-Regular', // 3
+  'Roboto-Medium', // 4
+  'Roboto-Bold', // 5
+  'PlayfairDisplay-Regular', // 6
+  'PlayfairDisplay-Bold', // 7
+  'Montserrat-Regular', // 8
+  'Montserrat-Medium', // 9
+  'Montserrat-Bold', // 10
+  'OpenSans-Regular', // 11
+  'OpenSans-SemiBold', // 12
+  'OpenSans-Bold', // 13
 ];
 
 const bgcolors = [
-  '#ffffff', // White
-  '#000000', // Black
-  '#1a202c', // Dark Gray
-  '#4a5568', // Gray
-  '#2b6cb0', // Blue
-  '#3182ce', // Medium Blue
-  '#38a169', // Green
-  '#48bb78', // Light Green
-  '#c53030', // Red
-  '#e53e3e', // Light Red
-  '#6b46c1', // Purple
-  '#805ad5', // Medium Purple
-  '#d53f8c', // Pink
-  '#b7791f', // Amber
-  '#744210', // Brown
-  '#975a16', // Dark Amber
+  '#ffffff', // White 0
+  '#000000', // Black 1
+  '#1a202c', // Dark Gray 2
+  '#4a5568', // Gray 3
+  '#2b6cb0', // Blue 4
+  '#3182ce', // Medium Blue 5
+  '#38a169', // Green 6
+  '#48bb78', // Light Green 7
+  '#c53030', // Red 8
+  '#e53e3e', // Light Red 9
+  '#6b46c1', // Purple 10
+  '#805ad5', // Medium Purple 11
+  '#d53f8c', // Pink 12
+  '#b7791f', // Amber 13
+  '#744210', // Brown 14
+  '#975a16', // Dark Amber 15
 ];
 
 const colors = [
-  '#ffffff', // White
-  '#000000', // Black
-  '#ff9800', // Orange
-  '#ff69b4', // Pastel Pink
-  '#ff5252', // Pastel Red
-  '#e53935', // Warm Red
-  '#d81b60', // Warm Pink
-  '#8e44ad', // Warm Purple
-  '#9c27b0', // Deep Purple
-  '#673ab7', // Deep Blue
-  '#4dd0e1', // Pastel Teal
-  '#009688', // Teal
-  '#64b5f6', // Light Blue
-  '#455a64', // Dark Blue
-  '#37474f', // Dark Gray Blue
-  '#666666', // Dark Gray
+  '#ffffff', // White 0
+  '#000000', // Black 1
+  '#ff9800', // Orange 2
+  '#ff69b4', // Pastel Pink 3
+  '#ff5252', // Pastel Red 4
+  '#e53935', // Warm Red 5
+  '#d81b60', // Warm Pink 6
+  '#8e44ad', // Warm Purple 7
+  '#9c27b0', // Deep Purple 8
+  '#673ab7', // Deep Blue 9
+  '#4dd0e1', // Pastel Teal 10
+  '#009688', // Teal 11
+  '#64b5f6', // Light Blue 12
+  '#455a64', // Dark Blue 13
+  '#37474f', // Dark Gray Blue 14
+  '#666666', // Dark Gray 15
 ]
 
 const effects = [
@@ -116,7 +106,6 @@ const effects = [
 ]
 
 const styles = [
-  'default',
   'modern',
   'minimalist',
 ]
@@ -182,7 +171,6 @@ const templates: Template[] = [
 
 const defaultCardData: MyCardData = {
   font: fonts[0],
-  size: 15,
   color: colors[0],
   bgcolor: bgcolors[1],
   align: 'center',
@@ -196,7 +184,7 @@ const defaultCardData: MyCardData = {
   ilogo: '',
   effect: undefined,
   index: undefined,
-  style: undefined,
+  style: 'default',
 };
 
 const fontMap: Record<string, string> = {
@@ -215,6 +203,7 @@ const fontMap: Record<string, string> = {
 
 export {
   MyCardData,
+  SavedCard,
   Template,
   UserData,
   categories,

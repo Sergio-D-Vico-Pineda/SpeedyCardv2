@@ -3,7 +3,14 @@ import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore'
 import { db } from '@/firebaselogic';
 import { useAuth } from '@/contexts/AuthContext';
 import { defaultCardData, type MyCardData } from '@/types';
-import { useCardContext, } from '@/contexts/CardContext';
+import { useCardContext } from '@/contexts/CardContext';
+
+interface Effects {
+    id: string;
+    layout: {
+        bgcolor: string;
+    };
+}
 
 function useCards() {
     const { user } = useAuth();
@@ -12,6 +19,22 @@ function useCards() {
     const [error, setError] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const [effects, setEffects] = useState<string[]>([]);
+    const [cstyles, setCstyles] = useState<Effects[]>([]);
+
+    const fetchStyles = useCallback(async () => {
+        try {
+            const stylesRef = doc(db, 'styles', 'styles');
+            const stylesDoc = await getDoc(stylesRef);
+
+            if (stylesDoc.exists()) {
+                const stylesData = stylesDoc.data();
+                setCstyles(stylesData.items);
+            }
+
+        } catch (err) {
+            console.error('Error fetching styles:', err);
+        }
+    }, []);
 
     const fetchEffects = useCallback(async () => {
         try {
@@ -23,6 +46,7 @@ function useCards() {
     }, []);
 
     const fetchCards = useCallback(async () => {
+        console.log('fetching cards');
         if (!user) {
             setLoading(false);
             return;
@@ -35,13 +59,6 @@ function useCards() {
             if (cardsDoc.exists()) {
                 const cardData = cardsDoc.data();
                 const cardArray = cardData.cards || [];
-                /* const cardArray: MyCardData[] = [
-                    { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                    { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                    { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                    { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                    { "align": "center", "bgcolor": "black", "color": "gray", "font": "Inter-Regular", "ilogo": "", "iprofile": "", "size": 15, "tbusiness": "SpeedyCard", "temail": "a@a.c", "tjob": "Developer", "tname": "Scarpy", "tphone": "123456789", "twebsite": "page.com" },
-                ] */
                 setCards(cardArray);
             } else {
                 setCards([]);
@@ -86,8 +103,14 @@ function useCards() {
         const cardsRef = doc(db, 'cards', user.uid);
         try {
             // Remove index before storing
-            let { index, ...cardToStore } = data;
+            let { index, effect, style, ...cardToStore } = data;
             const newCards = [...cards];
+            if (effect !== undefined) {
+                cardToStore = { ...cardToStore, effect } as MyCardData;
+            }
+            if (style !== undefined) {
+                cardToStore = { ...cardToStore, style } as MyCardData;
+            }
             if (index === undefined) {
                 newCards.push(cardToStore as MyCardData);
                 updateCardData({ ...cardToStore, index: newCards.length - 1 } as MyCardData);
@@ -127,6 +150,8 @@ function useCards() {
         error,
         refreshing,
         effects,
+        cstyles,
+        fetchStyles,
         fetchEffects,
         fetchCards,
         handleRefresh,
