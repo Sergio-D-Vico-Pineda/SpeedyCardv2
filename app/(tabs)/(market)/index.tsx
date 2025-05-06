@@ -1,70 +1,24 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl } from 'react-native';
 import { router } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/firebaselogic';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Template, templates as mockTemplates, categories } from '@/types';
+import { Template, categories } from '@/types';
 import FloatingButton from '@/components/FloatingButton';
+import { useMarket } from '@/contexts/MarketContext';
+import { useState } from 'react';
 
 export default function MarketplaceScreen() {
-    const [templates, setTemplates] = useState<Template[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, refreshProducts, filteredTemplates } = useMarket();
     const [refreshing, setRefreshing] = useState(false);
-
-    useEffect(() => {
-        // fetchTemplates();
-        fetchProducts();
-    }, []);
 
     const onRefresh = async () => {
         setRefreshing(true);
-        await fetchProducts();
+        await refreshProducts();
         setRefreshing(false);
-    };
-
-    const filteredTemplates = templates.filter(template => {
-        const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            template.description.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === 'All' || template.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
-
-    const fetchProducts = async () => {
-        try {
-            const productsRef = collection(db, 'categories');
-            const productsSnapshot = await getDocs(productsRef);
-            const productList = productsSnapshot.docs.flatMap(doc =>
-                doc.data().items.map((item: any) => ({
-                    id: item.name.toLowerCase().replace(/\s+/g, '-'),
-                    ...item,
-                    category: doc.id
-                }))
-            );
-            setTemplates(productList);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
-            setLoading(false);
-        }
     };
 
     const newItem = function () {
         router.push('/newitem');
     }
-
-    const fetchTemplates = async () => {
-        try {
-            // Using mock data instead of Firebase for now
-            setTemplates(mockTemplates);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const TemplateCard = ({ template }: { template: Template }) => (
         <TouchableOpacity
