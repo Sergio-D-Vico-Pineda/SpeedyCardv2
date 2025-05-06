@@ -1,7 +1,9 @@
-import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import BusinessCardSave from '@/components/business-card/BusinessCardSave';
 import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
+import { useEffect } from 'react';
+import { useCards } from '@/hooks/useCards';
 
 const isColorDark = (hex: string): boolean => {
   let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;
@@ -16,8 +18,13 @@ const isColorDark = (hex: string): boolean => {
 };
 
 export default function SaveScreen() {
-  const { cardData } = useCardContext();
+  const { cardData, changeDatainCard } = useCardContext();
   const previewBgColor = isColorDark(cardData.bgcolor) ? '' : '#000';
+  const { cstyles, fetchStyles } = useCards();
+
+  useEffect(() => {
+    fetchStyles();
+  }, [fetchStyles]);
 
   return (
     <SafeAreaView style={styles.topcontainer}>
@@ -32,6 +39,26 @@ export default function SaveScreen() {
                 <BusinessCardPreview />
               </View>
               <BusinessCardSave />
+              <ScrollView horizontal contentContainerStyle={styles.contenttemplatecontainer} style={styles.templateContainer}>
+                {cstyles.map((template) => (
+                  <TouchableOpacity
+                    key={template.id}
+                    style={styles.templateButton}
+                    onPress={() => changeDatainCard('style', template.id)}
+                  >
+                    <View
+                      style={[
+                        styles.templatePreview,
+                        { backgroundColor: template.layout.bgcolor },
+                      ]}
+                    >
+                      <Text style={styles.templateName}>
+                        {template.id}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </>
           ) : (
             <Text>
@@ -53,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 8,
     paddingHorizontal: 6,
   },
   header: {
@@ -71,5 +99,32 @@ const styles = StyleSheet.create({
   cardpreview: {
     width: '100%',
     borderRadius: 12,
-  }
+  },
+  contenttemplatecontainer: {
+    gap: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  templateContainer: {
+    marginTop: 8,
+    flexGrow: 0,
+    width: '90%'
+  },
+  templateButton: {
+    marginBottom: 16,
+  },
+  templatePreview: {
+    width: 160,
+    aspectRatio: 16 / 9,
+    borderRadius: 8,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  templateName: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
