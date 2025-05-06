@@ -3,16 +3,16 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template, categories } from '@/types';
 import FloatingButton from '@/components/FloatingButton';
-import { useMarket } from '@/contexts/MarketContext';
+import { useMarketContext } from '@/contexts/MarketContext';
 import { useState } from 'react';
 
 export default function MarketplaceScreen() {
-    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, refreshProducts, filteredTemplates } = useMarket();
+    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, fetchProducts, filteredTemplates } = useMarketContext();
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = async () => {
         setRefreshing(true);
-        await refreshProducts();
+        await fetchProducts();
         setRefreshing(false);
     };
 
