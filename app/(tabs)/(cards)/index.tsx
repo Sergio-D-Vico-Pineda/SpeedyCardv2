@@ -2,20 +2,19 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { defaultCardData, MyCardData } from '@/types';
+import { defaultCardData } from '@/types';
 import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw, Home } from 'lucide-react-native';
 import { useCardContext } from '@/contexts/CardContext';
+import { useCards } from '@/hooks/useCards';
 import ColorPicker from '@/components/business-card/ColorPicker';
 import FontPicker from '@/components/business-card/FontPicker';
+import EffectPicker from '@/components/business-card/EffectPicker';
 import ImageUploader from '@/components/business-card/ImageUploader';
-import { Picker } from '@react-native-picker/picker';
-import { useCards } from '@/hooks/useCards';
 
 export default function EditScreen() {
-  const { userid, card = 0 } = useLocalSearchParams();
-  const { cardData, updateCardData } = useCardContext();
-  const { effects, fetchEffects, fetchSingleCard } = useCards();
+  // const { userid, card = 0 } = useLocalSearchParams(); // this is for editing via link, it will discarded
+  const { cardData, updateCardData, changeDatainCard } = useCardContext();
+  const { effects, fetchEffects } = useCards();
   const nameInputRef = useRef<TextInput>(null);
 
   // Replace the existing useEffect for focus with useFocusEffect
@@ -27,44 +26,12 @@ export default function EditScreen() {
     }, [cardData.tname])
   );
 
-  // Replace the effects fetching useEffect with this:
   useEffect(() => {
     fetchEffects();
   }, [fetchEffects]);
 
-  /* useEffect(() => {
-    const fieldsToCheck: (keyof MyCardData)[] = [
-      'tname', 'tjob', 'tbusiness', 'temail', 'tphone', 'twebsite'
-    ];
-
-    const anyFilled: boolean = fieldsToCheck.some(
-      key => {
-        if (cardData[key] && typeof cardData[key] === 'string') {
-          return cardData[key].trim().length > 0;
-        }
-        return false;
-      }
-    );
-
-    if (anyFilled) {
-      // at least one TextInput has content
-      console.log('some field is non-empty');
-    } else {
-      console.log('no fields are non-empty');
-    }
-  }, [cardData]); */
-
-  const handleChange = (field: keyof MyCardData, value: string) => {
-    updateCardData({ ...cardData, [field]: value });
-  };
-
   const handleReset = () => {
     updateCardData(defaultCardData);
-  };
-
-  const goback = () => {
-    console.log('resetting');
-    router.dismissAll()
   };
 
   const alignmentOptions = [
@@ -76,10 +43,7 @@ export default function EditScreen() {
   return (
     <SafeAreaView style={styles.topcontainer}>
       <View style={styles.header}>
-        <Text style={styles.title}>Card editor - {cardData.index === undefined ? 'New' : `Editing ${cardData.index}`}</Text>
-        <TouchableOpacity onPress={goback}>
-          <Home size={24} color="#007AFF" />
-        </TouchableOpacity>
+        <Text style={styles.title}>{cardData.index === undefined ? 'New Card' : `Editing Card ${cardData.index}`}</Text>
         <TouchableOpacity onPress={handleReset}>
           {
             cardData.index !== undefined ? (
@@ -92,27 +56,27 @@ export default function EditScreen() {
       </View>
       <ScrollView style={styles.container}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>'{userid}' - '{card}'</Text>
+          {/* <Text style={styles.sectionTitle}>'{userid}' - '{card}'</Text> */}
           <Text style={styles.sectionTitle}>Front</Text>
           <TextInput
             ref={nameInputRef}
             style={styles.input}
             value={cardData.tname}
-            onChangeText={(value) => handleChange('tname', value)}
+            onChangeText={(value) => changeDatainCard('tname', value)}
             placeholder="Full Name"
             placeholderTextColor="red"
           />
           <TextInput
             style={styles.input}
             value={cardData.tjob}
-            onChangeText={(value) => handleChange('tjob', value)}
+            onChangeText={(value) => changeDatainCard('tjob', value)}
             placeholder="Job Title"
             placeholderTextColor="#666"
           />
           <TextInput
             style={styles.input}
             value={cardData.tbusiness}
-            onChangeText={(value) => handleChange('tbusiness', value)}
+            onChangeText={(value) => changeDatainCard('tbusiness', value)}
             placeholder="Company"
             placeholderTextColor="#666"
           />
@@ -122,7 +86,7 @@ export default function EditScreen() {
           <TextInput
             style={styles.input}
             value={cardData.temail}
-            onChangeText={(value) => handleChange('temail', value)}
+            onChangeText={(value) => changeDatainCard('temail', value)}
             placeholder="Email"
             keyboardType="email-address"
             placeholderTextColor="#666"
@@ -130,7 +94,7 @@ export default function EditScreen() {
           <TextInput
             style={styles.input}
             value={cardData.tphone}
-            onChangeText={(value) => handleChange('tphone', value)}
+            onChangeText={(value) => changeDatainCard('tphone', value)}
             placeholder="Phone"
             keyboardType="phone-pad"
             placeholderTextColor="#666"
@@ -138,7 +102,7 @@ export default function EditScreen() {
           <TextInput
             style={styles.input}
             value={cardData.twebsite}
-            onChangeText={(value) => handleChange('twebsite', value)}
+            onChangeText={(value) => changeDatainCard('twebsite', value)}
             placeholder="Website"
             keyboardType="url"
             placeholderTextColor="#666"
@@ -146,7 +110,7 @@ export default function EditScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Text Alignment</Text>
+          <Text style={styles.sectionTitle}>Text Back Alignment</Text>
           <View style={styles.alignmentContainer}>
             {alignmentOptions.map((option) => {
               const Icon = option.icon;
@@ -157,7 +121,7 @@ export default function EditScreen() {
                     styles.alignmentButton,
                     cardData.align === option.value && styles.alignmentButtonActive,
                   ]}
-                  onPress={() => handleChange('align', option.value)}
+                  onPress={() => changeDatainCard('align', option.value)}
                 >
                   <Text>
                     <Icon
@@ -179,37 +143,32 @@ export default function EditScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.section2}>
           <ColorPicker
             color={cardData.bgcolor}
-            onColorChange={(color: string) => handleChange('bgcolor', color)}
+            onColorChange={(color: string) => changeDatainCard('bgcolor', color)}
           />
           <ColorPicker
             font={true}
             color={cardData.color}
-            onColorChange={(color: string) => handleChange('color', color)}
+            onColorChange={(color: string) => changeDatainCard('color', color)}
           />
+        </View>
+
+        <View style={styles.section}>
           <FontPicker
             font={cardData.font}
-            onFontChange={(font: string) => handleChange('font', font)}
+            onFontChange={(font: string) => changeDatainCard('font', font)}
           />
           <ImageUploader
-            onImageSelect={(uri: string) => handleChange('ilogo', uri)}
-            onProfileImageSelect={(uri: string) => handleChange('iprofile', uri)}
+            onImageSelect={(uri: string) => changeDatainCard('ilogo', uri)}
+            onProfileImageSelect={(uri: string) => changeDatainCard('iprofile', uri)}
           />
           {effects.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Effect</Text>
-              <Picker
-                selectedValue={cardData.effect || ''}
-                onValueChange={(value: string) => handleChange('effect', value)}
-              >
-                <Picker.Item enabled={false} label="Select an effect" value="" />
-                {effects.map(eff => (
-                  <Picker.Item key={eff} label={eff} value={eff} />
-                ))}
-              </Picker>
-            </View>
+            <EffectPicker
+              effect={cardData.effect}
+              onEffectChange={(effect: string | undefined) => changeDatainCard('effect', effect)}
+            />
           )}
         </View>
       </ScrollView>
@@ -242,6 +201,14 @@ const styles = StyleSheet.create({
   section: {
     paddingInline: 16,
     marginBottom: 5,
+  },
+  section2: {
+    columnGap: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingInline: 16,
+    // marginBottom: 5,
   },
   input: {
     backgroundColor: '#fff',
