@@ -12,7 +12,7 @@ import FloatingButton from '@/components/FloatingButton';
 export default function CardsScreen() {
     const { userData } = useAuth();
     const { updateCardData } = useCardContext();
-    const { cards, loading, error, refreshing, fetchCards, handleRefresh, removeCard } = useCards();
+    const { cards, loading, error, fetchCards, handleRefresh, removeCard } = useCards();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
@@ -154,9 +154,9 @@ export default function CardsScreen() {
                             <Home size={24} color="#007AFF" />
                         </Pressable>
                         <Pressable
-                            style={[styles.refreshButton, refreshing && styles.refreshing]}
+                            style={[styles.refreshButton, loading && styles.refreshing]}
                             onPress={handleRefresh}
-                            disabled={refreshing}
+                            disabled={loading}
                         >
                             <RefreshCw size={24} color={'#007AFF'} />
                         </Pressable>
@@ -172,7 +172,7 @@ export default function CardsScreen() {
                 <FlatList
                     style={styles.list}
                     data={cards}
-                    refreshing={refreshing}
+                    refreshing={loading}
                     onRefresh={handleRefresh}
                     ListEmptyComponent={
                         <View style={styles.emptyState}>

@@ -17,7 +17,6 @@ function useCards() {
     const { updateCardData, cards, setCards } = useCardContext();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [refreshing, setRefreshing] = useState(false);
     const [effects, setEffects] = useState<string[]>([]);
     const [cstyles, setCstyles] = useState<Effects[]>([]);
 
@@ -69,14 +68,12 @@ function useCards() {
             setError("something went wrong");
         } finally {
             setLoading(false);
-            setRefreshing(false);
         }
     }, [user]);
 
     const handleRefresh = (): void => {
         console.log("refreshing");
         setLoading(true);
-        setRefreshing(true);
         fetchCards();
     };
 
@@ -148,7 +145,6 @@ function useCards() {
         cards,
         loading,
         error,
-        refreshing,
         effects,
         cstyles,
         fetchStyles,
