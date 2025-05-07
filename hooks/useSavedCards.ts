@@ -10,7 +10,6 @@ function useSavedCards() {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [refreshing, setRefreshing] = useState(false);
 
     const fetchSavedCards = useCallback(async () => {
         if (!user) {
@@ -34,11 +33,10 @@ function useSavedCards() {
             setError("something went wrong. saved cards");
         } finally {
             setLoading(false);
-            setRefreshing(false);
         }
     }, [user]);
 
-    // this doesn't work, it just saves the last one, it doesn't save all the cards
+    // this doesn't work, it just saves the last one, it doesn't save all the cards, idk now it just works
     const saveToSavedCards = async (data: MyCardData, url: SavedCard): Promise<void> => {
         console.log('saving to savedcards');
         if (!user) {
@@ -47,10 +45,6 @@ function useSavedCards() {
         await fetchSavedCards();
         const cardsRef = doc(db, 'cards', user.uid);
         try {
-            // Remove index before storing
-            // let { index, ...cardToStore } = data;
-            // save only url
-            // TODO this removes all the array, just let one card saved
             let newOne = url;
             const newSavedCards = [...savedCards];
             console.log('bruh ', newSavedCards);
@@ -80,7 +74,6 @@ function useSavedCards() {
 
     const handleRefresh = () => {
         console.log('refreshing savedcard');
-        setRefreshing(true);
         setLoading(true);
         fetchSavedCards();
     };
@@ -109,9 +102,7 @@ function useSavedCards() {
         savedCards,
         loading,
         error,
-        refreshing,
         handleRefresh,
-        setRefreshing,
         fetchSavedCards,
         saveToSavedCards,
         removeSavedCard,
