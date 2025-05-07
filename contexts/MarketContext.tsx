@@ -49,6 +49,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     };
 
     const fetchOwnedProducts = async () => {
+        setLoading(true);
         if (!user) {
             setLoading(false);
             return;
