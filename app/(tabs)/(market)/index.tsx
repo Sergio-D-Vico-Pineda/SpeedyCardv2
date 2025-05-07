@@ -6,11 +6,11 @@ import FloatingButton from '@/components/FloatingButton';
 import { useMarketContext } from '@/contexts/MarketContext';
 
 export default function MarketplaceScreen() {
-    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, fetchProducts, filteredTemplates, ownedTemplates } = useMarketContext();
+    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, refreshAll, filteredTemplates, ownedTemplates } = useMarketContext();
 
     const onRefresh = async () => {
-        console.log('Refreshing...');
-        await fetchProducts();
+        console.log('refreshin market');
+        await refreshAll();
     };
 
     const newItem = function () {
@@ -28,7 +28,11 @@ export default function MarketplaceScreen() {
             >
                 <Text style={styles.templateName}>{template.name}</Text>
                 <Text style={styles.templateDescription}>{template.description}</Text>
-                <Text style={styles.templatePrice}>${template.price}</Text>
+                {ownedTemplates.includes(template.id) ? (
+                    <Text style={styles.ownedLabel}>Already Owned</Text>
+                ) : (
+                    <Text style={styles.templatePrice}>${template.price}</Text>
+                )}
             </LinearGradient>
         </TouchableOpacity>
     );
@@ -40,12 +44,6 @@ export default function MarketplaceScreen() {
                 {Platform.OS === 'web' && (
                     <TouchableOpacity
                         onPress={onRefresh}
-                        style={{
-                            padding: 8,
-                            position: 'absolute',
-                            right: 16,
-                            top: 16,
-                        }}
                     >
                         <Text style={{ color: '#4299e1', fontWeight: '500' }}>
                             Refresh
@@ -138,8 +136,8 @@ const styles = StyleSheet.create({
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
     },
     cardContent: {
+        flex: 1,
         padding: 16,
-        height: 160,
     },
     templateName: {
         fontSize: 16,
@@ -162,6 +160,9 @@ const styles = StyleSheet.create({
         color: '#4299e1',
     },
     header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 16,
         backgroundColor: '#FFFFFF',
         borderBottomWidth: 1,
@@ -210,4 +211,9 @@ const styles = StyleSheet.create({
     categoryTextActive: {
         color: '#ffffff',
     },
+    ownedLabel: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#00bf00',
+    }
 });

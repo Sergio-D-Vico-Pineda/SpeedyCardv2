@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react-native';
@@ -7,11 +7,14 @@ import { Template } from '@/types';
 import { collection, getDocs } from 'firebase/firestore';
 import { router } from 'expo-router';
 import { db } from '@/firebaselogic';
+import { useMarketContext } from '@/contexts/MarketContext';
 
 export default function TemplateDetailsScreen() {
     const params = useSearchParams();
     const id = params.get('id');
-    const [template, setTemplate] = useState<Template | null>(null);
+    const [template, setTemplate] = useState<Template>();
+    const { ownedTemplates } = useMarketContext();
+    const isOwned = ownedTemplates.includes(template?.id || '');
 
     useEffect(() => {
         const fetchTemplateDetails = async () => {
@@ -49,6 +52,10 @@ export default function TemplateDetailsScreen() {
     }, [id]);
 
     const handlePurchase = () => {
+        if (isOwned) {
+            alert(`You already own the template: ${template?.name}`);
+            return;
+        }
         // Implement purchase logic here
         alert(`Processing purchase for ${template?.name}`);
     };
@@ -56,13 +63,24 @@ export default function TemplateDetailsScreen() {
     if (!template) {
         return (
             <View style={styles.container}>
-                <Text>Loading template details...</Text>
+                <View style={styles.header}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => router.back()}
+                    >
+                        <ArrowLeft size={24} color="#4299e1" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Loading...</Text>
+                </View>
+                <View style={styles.emptyContainer}>
+                    <Text>Loading...</Text>
+                </View>
             </View>
         );
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity
                     style={styles.backButton}
@@ -93,14 +111,18 @@ export default function TemplateDetailsScreen() {
                     ))}
                 </View>
 
-                <TouchableOpacity
-                    style={styles.purchaseButton}
-                    onPress={handlePurchase}
-                >
-                    <Text style={styles.purchaseButtonText}>Purchase Template</Text>
-                </TouchableOpacity>
+                {isOwned ? (
+                    <Text style={styles.ownedLabel}>This item is already purchased</Text>
+                ) : (
+                    <TouchableOpacity
+                        style={styles.purchaseButton}
+                        onPress={handlePurchase}
+                    >
+                        <Text style={styles.purchaseButtonText}>Purchase Template</Text>
+                    </TouchableOpacity>
+                )}
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -187,13 +209,25 @@ const styles = StyleSheet.create({
     },
     purchaseButton: {
         backgroundColor: '#4299e1',
-        paddingVertical: 16,
+        padding: 12,
         borderRadius: 8,
         alignItems: 'center',
     },
     purchaseButtonText: {
-        color: '#ffffff',
         fontSize: 18,
+        color: '#fff',
         fontWeight: 'bold',
+    },
+    ownedLabel: {
+        textAlign: 'center',
+        fontSize: 18,
+        color: '#38a169',
+        fontWeight: 'bold',
+        marginTop: 16,
+    },
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });

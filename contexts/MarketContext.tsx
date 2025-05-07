@@ -16,6 +16,7 @@ interface MarketContextType {
     setSelectedCategory: (category: string) => void;
     fetchProducts: () => Promise<void>;
     filteredTemplates: Template[];
+    refreshAll: () => Promise<void>;
 }
 
 const MarketContext = createContext<MarketContextType | undefined>(undefined);
@@ -73,11 +74,16 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const refreshAll = async () => {
+        await fetchProducts();
+        await fetchOwnedProducts();
+    };
+
     useEffect(() => {
         fetchProducts();
         fetchOwnedProducts();
     }, [user]);
-    
+
     const filteredTemplates = templates.filter(template => {
         const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             template.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -97,6 +103,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         setSelectedCategory,
         fetchProducts,
         filteredTemplates,
+        refreshAll
     };
 
     return (
