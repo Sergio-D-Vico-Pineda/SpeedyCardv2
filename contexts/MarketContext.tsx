@@ -29,6 +29,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
 
     const fetchProducts = async () => {
+        setLoading(true);
         try {
             const productsRef = collection(db, 'categories');
             const productsSnapshot = await getDocs(productsRef);

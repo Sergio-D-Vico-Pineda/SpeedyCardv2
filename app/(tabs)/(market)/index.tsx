@@ -1,19 +1,16 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template, categories } from '@/types';
 import FloatingButton from '@/components/FloatingButton';
 import { useMarketContext } from '@/contexts/MarketContext';
-import { useState } from 'react';
 
 export default function MarketplaceScreen() {
-    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, fetchProducts, filteredTemplates } = useMarketContext();
-    const [refreshing, setRefreshing] = useState(false);
+    const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, fetchProducts, filteredTemplates, ownedTemplates } = useMarketContext();
 
     const onRefresh = async () => {
-        setRefreshing(true);
+        console.log('Refreshing...');
         await fetchProducts();
-        setRefreshing(false);
     };
 
     const newItem = function () {
@@ -36,74 +33,92 @@ export default function MarketplaceScreen() {
         </TouchableOpacity>
     );
 
-    if (loading) {
-        return (
-            <View style={styles.container}>
-                <Text>Loading products...</Text>
-            </View>
-        );
-    }
-
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView
-                style={styles.container}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={['#4299e1']}
-                        tintColor="#4299e1"
+            <View style={styles.header}>
+                <Text style={styles.title}>Marketplace</Text>
+                {Platform.OS === 'web' && (
+                    <TouchableOpacity
+                        onPress={onRefresh}
+                        style={{
+                            padding: 8,
+                            position: 'absolute',
+                            right: 16,
+                            top: 16,
+                        }}
+                    >
+                        <Text style={{ color: '#4299e1', fontWeight: '500' }}>
+                            Refresh
+                        </Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+            <View style={styles.subheader}>
+                <View style={styles.searchBar}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search templates..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
                     />
-                }
-            >
-                <View style={styles.header}>
-                    <Text style={styles.title}>Marketplace</Text>
                 </View>
-                <View style={styles.subheader}>
-                    <View style={styles.searchBar}>
-                        <TextInput
-                            style={styles.searchInput}
-                            placeholder="Search templates..."
-                            value={searchQuery}
-                            onChangeText={setSearchQuery}
-                        />
-                    </View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
+                    <TouchableOpacity
+                        key='All'
+                        style={[styles.categoryButton, selectedCategory === 'All' && styles.categoryButtonActive]}
+                        onPress={() => setSelectedCategory('All')}
+                    >
+                        <Text style={[styles.categoryText, selectedCategory === 'All' && styles.categoryTextActive]}>
+                            All
+                        </Text>
+                    </TouchableOpacity>
+                    {categories.map(category => (
                         <TouchableOpacity
-                            key='All'
-                            style={[styles.categoryButton, selectedCategory === 'All' && styles.categoryButtonActive]}
-                            onPress={() => setSelectedCategory('All')}
+                            key={category}
+                            style={[styles.categoryButton, selectedCategory === category && styles.categoryButtonActive]}
+                            onPress={() => setSelectedCategory(category)}
                         >
-                            <Text style={[styles.categoryText, selectedCategory === 'All' && styles.categoryTextActive]}>
-                                All
+                            <Text style={[styles.categoryText, selectedCategory === category && styles.categoryTextActive]}>
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
                             </Text>
                         </TouchableOpacity>
-                        {categories.map(category => (
-                            <TouchableOpacity
-                                key={category}
-                                style={[styles.categoryButton, selectedCategory === category && styles.categoryButtonActive]}
-                                onPress={() => setSelectedCategory(category)}
-                            >
-                                <Text style={[styles.categoryText, selectedCategory === category && styles.categoryTextActive]}>
-                                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-                <View style={styles.grid}>
-                    {filteredTemplates.map(template => (
-                        <TemplateCard key={template.id} template={template} />
                     ))}
+                </ScrollView>
+            </View>
+            {loading ? (
+                <View style={styles.emptyState}>
+                    <Text>Loading products...</Text>
                 </View>
-            </ScrollView>
+            ) : (
+                <ScrollView
+                    style={styles.container}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={loading}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                >
+                    <View style={styles.grid}>
+                        {filteredTemplates.map(template => (
+                            <TemplateCard key={template.id} template={template} />
+                        ))}
+                    </View>
+                </ScrollView>
+            )
+            }
             <FloatingButton onPressAction={newItem} />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    emptyState: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+    },
     container: {
         flex: 1,
         backgroundColor: '#F2F2F7',

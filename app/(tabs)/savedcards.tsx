@@ -17,7 +17,7 @@ export default function SavedCardsScreen() {
 
     const memoizedFetchCards = useCallback(async () => {
         if (!savedCards.length) return;
-        
+
         const newCardStates: Record<string, MyCardData> = {};
         const promises = savedCards
             .filter(item => item)
@@ -151,19 +151,6 @@ export default function SavedCardsScreen() {
         fetchSavedCards();
     }, [fetchSavedCards]);
 
-    if (loading) {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Saved Cards</Text>
-                </View>
-                <View style={styles.emptyState}>
-                    <Text>Loading cards...</Text>
-                </View>
-            </SafeAreaView>
-        );
-    }
-
     if (error) {
         return (
             <SafeAreaView style={styles.container}>
@@ -192,31 +179,38 @@ export default function SavedCardsScreen() {
                 ) : null}
             </View>
 
-            <FlatList
-                style={styles.list}
-                data={savedCards}
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-                ListEmptyComponent={
-                    <View style={styles.emptyState}>
-                        <Text style={styles.emptyTitle}>No Saved Cards</Text>
-                        <Text style={styles.emptyText}>Scan a QR code to save a card</Text>
-                        <Pressable style={styles.scanButton} onPress={() => setModalVisible(true)}>
-                            <QrCode color="#FFFFFF" size={24} />
-                            <Text style={styles.buttonText}>Scan QR Code</Text>
-                        </Pressable>
-                    </View>
-                }
-                renderItem={({ item, index }) => (
-                    <TouchableOpacity
-                        onPress={() => router.push(`/view?userid=${item.userid}&card=${item.card}&from=saved`)}
-                        onLongPress={(event) => handleLongPress(item, index, event)}
-                        delayLongPress={500}
-                    >
-                        {renderCardItem(item, index)}
-                    </TouchableOpacity>
-                )}
-            />
+            {loading ? (
+                <View style={styles.emptyState}>
+                    <Text>Loading cards...</Text>
+                </View>
+            ) : (
+
+                <FlatList
+                    style={styles.list}
+                    data={savedCards}
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                    ListEmptyComponent={
+                        <View style={styles.emptyState}>
+                            <Text style={styles.emptyTitle}>No Saved Cards</Text>
+                            <Text style={styles.emptyText}>Scan a QR code to save a card</Text>
+                            <Pressable style={styles.scanButton} onPress={() => setModalVisible(true)}>
+                                <QrCode color="#FFFFFF" size={24} />
+                                <Text style={styles.buttonText}>Scan QR Code</Text>
+                            </Pressable>
+                        </View>
+                    }
+                    renderItem={({ item, index }) => (
+                        <TouchableOpacity
+                            onPress={() => router.push(`/view?userid=${item.userid}&card=${item.card}&from=saved`)}
+                            onLongPress={(event) => handleLongPress(item, index, event)}
+                            delayLongPress={500}
+                        >
+                            {renderCardItem(item, index)}
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
             <ScanQRModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}

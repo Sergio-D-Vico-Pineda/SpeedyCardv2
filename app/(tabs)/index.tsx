@@ -123,19 +123,6 @@ export default function CardsScreen() {
         fetchCards();
     }, [fetchCards]);
 
-    if (loading) {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>My Business Cards</Text>
-                </View>
-                <View style={styles.emptyState}>
-                    <Text>Loading cards...</Text>
-                </View>
-            </SafeAreaView>
-        );
-    }
-
     if (error) {
         return (
             <SafeAreaView style={styles.container}>
@@ -177,50 +164,57 @@ export default function CardsScreen() {
                 )}
             </View>
 
-            <FlatList
-                style={styles.list}
-                data={cards}
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-                ListEmptyComponent={
-                    <View style={styles.emptyState}>
-                        <Text style={styles.emptyTitle}>No Cards Yet</Text>
-                        <Text style={styles.emptyText}>Create your first business card to get started</Text>
-                        <Pressable style={styles.createButton} onPress={newCard}>
-                            <Plus size={24} color="#FFFFFF" />
-                            <Text style={styles.buttonText}>Create New Card</Text>
-                        </Pressable>
-                    </View>
-                }
-                renderItem={({ item, index }) => (
-                    <TouchableOpacity
-                        onPress={() => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`)}
-                        onLongPress={(event) => handleLongPress(item, index, event)}
-                        delayLongPress={500}
-                    >
-                        <View style={styles.cardItem}>
-                            <View>
-                                {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
-                                {item.tbusiness ? <Text style={styles.cardDetails}>{item.tbusiness}</Text> : null}
-                            </View>
-                            <View style={styles.cardActions}>
-                                {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
-                                <Pressable onPress={() => updateCardAndGotoEdit(item, index)}>
-                                    <Edit color="#007AFF" size={24} />
-                                </Pressable>
-                                <Pressable onPress={() => handleShare(index)}>
-                                    <Share2 color="#34C759" size={26} />
-                                </Pressable>
-                                {Platform.OS === 'web' && (
-                                    <Pressable onPress={() => removeCard(index)}>
-                                        <Trash color="#FF3B30" size={22} />
-                                    </Pressable>
-                                )}
-                            </View>
+            {loading ? (
+                <View style={styles.emptyState}>
+                    <Text>Loading cards...</Text>
+                </View>
+            ) : (
+                <FlatList
+                    style={styles.list}
+                    data={cards}
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                    ListEmptyComponent={
+                        <View style={styles.emptyState}>
+                            <Text style={styles.emptyTitle}>No Cards Yet</Text>
+                            <Text style={styles.emptyText}>Create your first business card to get started</Text>
+                            <Pressable style={styles.createButton} onPress={newCard}>
+                                <Plus size={24} color="#FFFFFF" />
+                                <Text style={styles.buttonText}>Create New Card</Text>
+                            </Pressable>
                         </View>
-                    </TouchableOpacity>
-                )}
-            />
+                    }
+
+                    renderItem={({ item, index }) => (
+                        <TouchableOpacity
+                            onPress={() => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`)}
+                            onLongPress={(event) => handleLongPress(item, index, event)}
+                            delayLongPress={500}
+                        >
+                            <View style={styles.cardItem}>
+                                <View>
+                                    {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
+                                    {item.tbusiness ? <Text style={styles.cardDetails}>{item.tbusiness}</Text> : null}
+                                </View>
+                                <View style={styles.cardActions}>
+                                    {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
+                                    <Pressable onPress={() => updateCardAndGotoEdit(item, index)}>
+                                        <Edit color="#007AFF" size={24} />
+                                    </Pressable>
+                                    <Pressable onPress={() => handleShare(index)}>
+                                        <Share2 color="#34C759" size={26} />
+                                    </Pressable>
+                                    {Platform.OS === 'web' && (
+                                        <Pressable onPress={() => removeCard(index)}>
+                                            <Trash color="#FF3B30" size={22} />
+                                        </Pressable>
+                                    )}
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
             <FloatingButton onPressAction={newCard} />
         </SafeAreaView>
     );
