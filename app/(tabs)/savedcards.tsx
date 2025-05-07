@@ -1,10 +1,10 @@
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Platform, Pressable } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, Pressable } from 'react-native';
 import FloatingButton from '@/components/FloatingButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
-import { defaultCardData, MyCardData, SavedCard } from '@/types';
+import { MyCardData, SavedCard } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import ScanQRModal from '@/modals/scanqr';
 import { router } from 'expo-router';
@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 export default function SavedCardsScreen() {
     const { userData } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
-    const { savedCards, loading, error, refreshing, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
+    const { savedCards, loading, error, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
     const [cardStates, setCardStates] = useState<Record<string, MyCardData>>({});
 
     const memoizedFetchCards = useCallback(async () => {
@@ -77,74 +77,8 @@ export default function SavedCardsScreen() {
             { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30', style: 'destructive' },
         ];
 
-        if (Platform.OS === 'web') {
-            alert('Web not supported yet');
-            /* const dropdownContent = document.createElement('div');
-            dropdownContent.style.position = 'fixed';
-            dropdownContent.style.backgroundColor = 'white';
-            dropdownContent.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            dropdownContent.style.borderRadius = '8px';
-            dropdownContent.style.padding = '8px 0';
-            dropdownContent.style.zIndex = '1000';
+        // Make the menu appear at the touch point like effect
 
-            menuItems.forEach(item => {
-                const menuItem = document.createElement('div');
-                menuItem.style.padding = '8px 16px';
-                menuItem.style.cursor = 'pointer';
-                menuItem.style.color = item.color;
-                menuItem.textContent = item.text;
-                menuItem.style.fontSize = '14px';
-
-                menuItem.addEventListener('mouseenter', () => {
-                    menuItem.style.backgroundColor = '#f5f5f5';
-                });
-                menuItem.addEventListener('mouseleave', () => {
-                    menuItem.style.backgroundColor = 'transparent';
-                });
-                menuItem.addEventListener('click', () => {
-                    item.onClick();
-                    if (document.body.contains(dropdownContent)) {
-                        document.body.removeChild(dropdownContent);
-                    }
-                    // document.body.removeChild(dropdownContent);
-                });
-
-                dropdownContent.appendChild(menuItem);
-            });
-
-            document.body.appendChild(dropdownContent);
-
-            const mouseEvent = event.nativeEvent;
-            dropdownContent.style.left = `${mouseEvent.pageX}px`;
-            dropdownContent.style.top = `${mouseEvent.pageY}px`;
-
-            setTimeout(() => {
-                document.addEventListener('click', handleClickOutside);
-            }, 0);
-
-            const handleClickOutside = (event: MouseEvent) => {
-                if (!dropdownContent.contains(event.target as Node)) {
-                    document.body.removeChild(dropdownContent);
-                    document.removeEventListener('click', handleClickOutside);
-                }
-            }; */
-        } else {
-            Alert.alert(
-                'Card Options',
-                'What would you like to do with this card?',
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel'
-                    },
-                    ...menuItems.map(item => ({
-                        text: item.text,
-                        onPress: item.onClick,
-                        style: item.style as 'default' | 'destructive' | 'cancel'
-                    }))
-                ]
-            );
-        }
     }
 
     useEffect(() => {
@@ -170,9 +104,9 @@ export default function SavedCardsScreen() {
                 <Text style={styles.title}>Saved Cards</Text>
                 {Platform.OS === 'web' ? (
                     <Pressable
-                        style={[styles.refreshButton, refreshing && styles.refreshing]}
+                        style={[styles.refreshButton, loading && styles.refreshing]}
                         onPress={handleRefresh}
-                        disabled={refreshing}
+                        disabled={loading}
                     >
                         <RefreshCw size={24} color={'#007AFF'} />
                     </Pressable>
@@ -184,11 +118,10 @@ export default function SavedCardsScreen() {
                     <Text>Loading cards...</Text>
                 </View>
             ) : (
-
                 <FlatList
                     style={styles.list}
                     data={savedCards}
-                    refreshing={refreshing}
+                    refreshing={loading}
                     onRefresh={handleRefresh}
                     ListEmptyComponent={
                         <View style={styles.emptyState}>

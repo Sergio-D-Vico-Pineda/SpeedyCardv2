@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Plus, Trash, Share2, Edit, RefreshCw, Home } from 'lucide-react-native';
@@ -35,88 +35,8 @@ export default function CardsScreen() {
             { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30', style: 'destructive' },
         ];
 
-        if (Platform.OS === 'web') {
-            alert('Web not supported yet');
-            /* // For web, we'll use a custom dropdown menu
-            const dropdownContent = document.createElement('div');
-            dropdownContent.style.position = 'fixed';
-            dropdownContent.style.backgroundColor = 'white';
-            dropdownContent.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            dropdownContent.style.borderRadius = '8px';
-            dropdownContent.style.padding = '8px 0';
-            dropdownContent.style.zIndex = '100';
+        // Make the menu appear at the touch point like effect
 
-
-            menuItems.forEach(item => {
-                const menuItem = document.createElement('div');
-                menuItem.style.padding = '8px 16px';
-                menuItem.style.cursor = 'pointer';
-                menuItem.style.color = item.color;
-                menuItem.textContent = item.text;
-                menuItem.style.fontSize = '14px';
-
-                menuItem.addEventListener('mouseenter', () => {
-                    menuItem.style.backgroundColor = '#f5f5f5';
-                });
-                menuItem.addEventListener('mouseleave', () => {
-                    menuItem.style.backgroundColor = 'transparent';
-                });
-                menuItem.addEventListener('click', () => {
-                    item.onClick();
-                    if (document.body.contains(dropdownContent)) {
-                        document.body.removeChild(dropdownContent);
-                    }
-                });
-
-                dropdownContent.appendChild(menuItem);
-            });
-
-            // Position the dropdown near the cursor
-            const handleClickOutside = (event: MouseEvent) => {
-                if (!dropdownContent.contains(event.target as Node)) {
-                    if (document.body.contains(dropdownContent)) {
-                        document.body.removeChild(dropdownContent);
-                    }
-                    document.removeEventListener('click', handleClickOutside);
-                }
-            };
-
-            // Add to body and position
-            document.body.appendChild(dropdownContent);
-
-            // Position dropdown at cursor position using the event parameter
-            const mouseEvent = event.nativeEvent;
-            dropdownContent.style.left = `${mouseEvent.pageX}px`;
-            dropdownContent.style.top = `${mouseEvent.pageY}px`;
-
-            // Close dropdown when clicking outside
-            setTimeout(() => {
-                document.addEventListener('click', handleClickOutside);
-            }, 0);
-
-            setTimeout(() => {
-                document.removeEventListener('click', handleClickOutside);
-                if (document.body.contains(dropdownContent)) {
-                    document.body.removeChild(dropdownContent);
-                }
-            }, 2000); */
-        } else {
-            Alert.alert(
-                'Card Options',
-                'What would you like to do with this card?',
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    ...menuItems.map(item => ({
-                        text: item.text,
-                        onPress: item.onClick,
-                        style: item.style as 'default' | 'destructive' | 'cancel'
-                    }))
-                ]
-            );
-        }
     }
 
     useEffect(() => {
