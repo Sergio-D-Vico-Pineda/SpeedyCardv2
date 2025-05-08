@@ -49,7 +49,7 @@ export default function ShareScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Pressable onPress={() => router.dismiss(1)} style={styles.backButton}>
+                <Pressable onPress={() => router.back()} style={styles.backButton}>
                     <ArrowLeft size={24} color="#007AFF" />
                 </Pressable>
                 <Text style={styles.title}>Share Card</Text>
