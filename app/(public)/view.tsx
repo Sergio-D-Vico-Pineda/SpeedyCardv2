@@ -40,7 +40,6 @@ export default function ViewScreen() {
         }
     }
 
-
     useEffect(() => {
         const fetchCardData = async () => {
             if (!userid) return;
