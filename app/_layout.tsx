@@ -13,6 +13,7 @@ export default function RootLayout() {
       <AuthProvider>
         <CardProvider>
           <Stack screenOptions={{ headerShown: false, headerStyle: { backgroundColor: '#25292e' } }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
