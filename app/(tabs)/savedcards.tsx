@@ -4,14 +4,12 @@ import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
 import { MyCardData, SavedCard } from '@/types';
-import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
 import FloatingButton from '@/components/FloatingButton';
 import ScanQRModal from '@/modals/scanqr';
 import CrossPlatformAlert from '@/components/CrossPlatformAlert';
 
 export default function SavedCardsScreen() {
-    const { userData } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
     const { savedCards, loading, error, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
     const [cardStates, setCardStates] = useState<Record<string, MyCardData>>({});
