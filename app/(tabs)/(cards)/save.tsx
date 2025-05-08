@@ -1,9 +1,9 @@
 import { View, StyleSheet, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { useCardContext } from '@/contexts/CardContext';
-import BusinessCardSave from '@/components/business-card/BusinessCardSave';
-import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
+import BusinessCardSave from '@/components/business-card/BusinessCardSave';
+import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 
 const isColorDark = (hex: string): boolean => {
   let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;

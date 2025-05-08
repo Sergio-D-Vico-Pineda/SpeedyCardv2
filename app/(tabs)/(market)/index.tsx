@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAr
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template, categories } from '@/types';
-import FloatingButton from '@/components/FloatingButton';
 import { useMarketContext } from '@/contexts/MarketContext';
+import FloatingButton from '@/components/FloatingButton';
 
 export default function MarketplaceScreen() {
     const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, refreshAll, filteredTemplates, ownedTemplates } = useMarketContext();

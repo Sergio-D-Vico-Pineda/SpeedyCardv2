@@ -1,8 +1,7 @@
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import { db } from '@/firebaselogic';
-import { collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { useRouter } from 'expo-router';
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 
 export default function NewItem() {
@@ -11,7 +10,6 @@ export default function NewItem() {
     const [description, setDescription] = useState('');
     const [categories, setCategories] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
-    const router = useRouter();
 
     useEffect(() => {
         const fetchCategories = async () => {

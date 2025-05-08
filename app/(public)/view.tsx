@@ -2,12 +2,12 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { lockAsync, OrientationLock } from 'expo-screen-orientation';
-import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
 import { Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSavedCards } from '@/hooks/useSavedCards';
+import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 
 const isColorDark = (hex: string): boolean => {
     let c = hex.charAt(0) === '#' ? hex.substring(1) : hex;
