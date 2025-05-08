@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { MarketProvider } from "@/contexts/MarketContext";
 
-export default function RootLayout() {
+export default function MarketLayout() {
   return (
     <MarketProvider>
       <Stack screenOptions={{ headerStyle: { backgroundColor: '#fff' } }}>
