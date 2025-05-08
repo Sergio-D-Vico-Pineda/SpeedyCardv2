@@ -15,6 +15,8 @@ export default function CardsScreen() {
     const { userData } = useAuth();
     const { updateCardData } = useCardContext();
     const { cards, loading, error, fetchCards, handleRefresh, removeCard } = useCards();
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [selectedCard, setSelectedCard] = useState<{ card: MyCardData, index: number }>();
 
     function updateCardAndGotoEdit(card: MyCardData, index: number) {
         card.index = index;
@@ -23,11 +25,8 @@ export default function CardsScreen() {
     }
 
     function handleShare(index: number) {
-        router.push(`/(tabs)/(share)/?card=${index}`);
+        router.push(`/(tabs)/(share)/?card=${index}&from=cards`);
     }
-
-    const [alertVisible, setAlertVisible] = useState(false);
-    const [selectedCard, setSelectedCard] = useState<{ card: MyCardData, index: number } | null>(null);
 
     function handleLongPress(card: MyCardData, index: number, event: any) {
         setSelectedCard({ card, index });
