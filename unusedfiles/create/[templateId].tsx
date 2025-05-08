@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Check, Type, Image as ImageIcon, QrCode, ChevronLeft } from 'lucide-react-native';
-import BusinessCard from '@/components/CardEditor/BusinessCard';
-import CardElement from '@/components/CardEditor/CardElement';
-import EditPanel from '@/components/CardEditor/EditPanel';
+import BusinessCard from '@/unusedfiles/CardEditor/BusinessCard';
+import CardElement from '@/unusedfiles/CardEditor/CardElement';
+import EditPanel from '@/unusedfiles/CardEditor/EditPanel';
 
 type Element = {
   id: string;
