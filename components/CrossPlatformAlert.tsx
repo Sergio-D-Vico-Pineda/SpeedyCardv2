@@ -1,16 +1,18 @@
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 import { FC } from 'react';
-import { Platform, Alert, Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface AlertAction {
   text: string;
   onPress?: () => void;
-  style?: 'default' | 'cancel' | 'destructive';
+  color?: string;
 }
 
 interface CrossPlatformAlertProps {
   visible: boolean;
   title: string;
   message: string;
+  qrCode?: string;
   actions?: AlertAction[];
   onRequestClose?: () => void;
 }
@@ -19,25 +21,10 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
   visible,
   title,
   message,
-  actions = [{ text: 'OK', style: 'default' }],
+  qrCode,
+  actions = [{ text: 'Cancel', color: '#FF3B30' }],
   onRequestClose,
 }) => {
-  if (Platform.OS !== 'web' && visible) {
-    // For native, show native alert and hide the modal
-    Alert.alert(
-      title,
-      message,
-      actions.map(a => ({
-        text: a.text,
-        onPress: a.onPress,
-        style: a.style,
-      }))
-    );
-    if (onRequestClose) onRequestClose();
-    return null;
-  }
-
-  // For web, render a modal
   return (
     <Modal
       visible={visible}
@@ -45,9 +32,20 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
       animationType="fade"
       onRequestClose={onRequestClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={onRequestClose}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={(e) => e.stopPropagation()}
+          style={styles.container}
+        >
           <Text style={styles.title}>{title}</Text>
+          {qrCode &&
+            <QRCode value={qrCode} size={120} />
+          }
           <Text style={styles.message}>{message}</Text>
           <View style={styles.actions}>
             {actions.map((action, idx) => (
@@ -59,12 +57,12 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
                   if (onRequestClose) onRequestClose();
                 }}
               >
-                <Text style={[styles.buttonText, action.style === 'destructive' && { color: '#FF3B30' }]}>{action.text}</Text>
+                <Text style={[styles.buttonText, { color: action.color }]}>{action.text}</Text>
               </TouchableOpacity>
             ))}
           </View>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };
