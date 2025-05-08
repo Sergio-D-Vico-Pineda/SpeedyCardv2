@@ -1,4 +1,5 @@
 import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Plus, Trash, Share2, Edit, RefreshCw, Home } from 'lucide-react-native';
@@ -8,6 +9,7 @@ import { defaultCardData, MyCardData } from '@/types';
 import { useCardContext } from '@/contexts/CardContext';
 import { useAuth } from '@/contexts/AuthContext';
 import FloatingButton from '@/components/FloatingButton';
+import CrossPlatformAlert from '@/components/CrossPlatformAlert';
 
 export default function CardsScreen() {
     const { userData } = useAuth();
@@ -21,22 +23,15 @@ export default function CardsScreen() {
     }
 
     function handleShare(index: number) {
-        const url = userData ? `speedycard://view?userid=${userData.uid}&card=${index}` : 'Something wrong with the user';
-        console.log(url);
-        alert(url);
+        router.push(`/(tabs)/(share)/?card=${index}`);
     }
 
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [selectedCard, setSelectedCard] = useState<{ card: MyCardData, index: number } | null>(null);
+
     function handleLongPress(card: MyCardData, index: number, event: any) {
-        // Create menu items
-        const menuItems = [
-            { text: 'View', onClick: () => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`), color: '#007AFF', style: 'default' },
-            { text: 'Edit', onClick: () => updateCardAndGotoEdit(card, index), color: '#007AFF', style: 'default' },
-            { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
-            { text: 'Delete', onClick: () => removeCard(index), color: '#FF3B30', style: 'destructive' },
-        ];
-
-        // Make the menu appear at the touch point like effect
-
+        setSelectedCard({ card, index });
+        setAlertVisible(true);
     }
 
     useEffect(() => {
@@ -136,6 +131,19 @@ export default function CardsScreen() {
                 />
             )}
             <FloatingButton onPressAction={newCard} />
+            <CrossPlatformAlert
+                visible={alertVisible}
+                title="Card Actions"
+                // qrCode={`speedycard://view?userid=${userData?.uid}&card=${selectedCard?.index}`}
+                message={selectedCard?.card.tname || 'Select an action'}
+                actions={[
+                    { text: 'Edit', onPress: () => selectedCard && updateCardAndGotoEdit(selectedCard.card, selectedCard.index), color: '#007AFF' },
+                    { text: 'Share', onPress: () => selectedCard && handleShare(selectedCard.index), color: '#34C759' },
+                    { text: 'Delete', onPress: () => selectedCard && removeCard(selectedCard.index), color: '#FF3B30' },
+                    { text: 'Cancel', onPress: () => setAlertVisible(false), color: '#8E8E93' }
+                ]}
+                onRequestClose={() => setAlertVisible(false)}
+            />
         </SafeAreaView>
     );
 }
