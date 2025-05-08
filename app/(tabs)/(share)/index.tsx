@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Share2, ArrowLeft } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { useAuth } from '@/contexts/AuthContext';
 import { MyCardData } from '@/types';
@@ -11,31 +11,35 @@ import QRCode from 'react-native-qrcode-svg';
 
 export default function ShareScreen() {
     const { userData } = useAuth();
-    const { card } = useLocalSearchParams();
-    const { cards } = useCards();
-    const [cardData, setCardData] = useState<MyCardData>();
+    const { card, userid = userData?.uid, from } = useLocalSearchParams();
+    const { fetchSingleCard } = useCards();
+    const [cardData, setCardData] = useState<MyCardData | null>(null);
     const [shareUrl, setShareUrl] = useState<string>('');
 
-    useEffect(() => {
-        console.log('ShareScreen: card', card);
-        console.log('ShareScreen: cards', cards);
-        if (cards && card !== undefined) {
+    const fetchCard = useCallback(async () => {
+        if (card !== null) {
             const index = parseInt(card as string);
-            if (!isNaN(index) && index >= 0 && index < cards.length) {
-                setCardData(cards[index]);
-                if (userData) {
-                    setShareUrl(`speedycard://view?userid=${userData.uid}&card=${index}`);
+            if (!isNaN(index)) {
+                try {
+                    const localcard = await fetchSingleCard(userid as string, index);
+                    setCardData(localcard);
+                    if (userid) {
+                        setShareUrl(`speedycard://view?userid=${userid}&card=${index}`);
+                    }
+                } catch (error) {
+                    console.error('Error fetching card:', error);
                 }
             }
         }
+    }, [card, userid]);
 
+    useEffect(() => {
+        fetchCard();
         return () => {
-            console.log('a')
-            setCardData(undefined);
+            setCardData(null);
             setShareUrl('');
         };
-
-    }, [cards, card, userData]);
+    }, [fetchCard]);
 
     const handleShare = () => {
         if (Platform.OS === 'web') {
@@ -46,10 +50,20 @@ export default function ShareScreen() {
         }
     };
 
+    const handleBack = () => {
+        if (from === 'saved') {
+            router.replace('/savedcards')
+        } else if (from === 'cards') {
+            router.back();
+        } else {
+            router.replace('/');
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Pressable onPress={() => router.back()} style={styles.backButton}>
+                <Pressable onPress={handleBack} style={styles.backButton}>
                     <ArrowLeft size={24} color="#007AFF" />
                 </Pressable>
                 <Text style={styles.title}>Share Card</Text>

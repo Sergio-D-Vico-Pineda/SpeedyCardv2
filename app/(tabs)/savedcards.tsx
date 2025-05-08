@@ -1,19 +1,22 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, Pressable } from 'react-native';
-import FloatingButton from '@/components/FloatingButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
 import { MyCardData, SavedCard } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import ScanQRModal from '@/modals/scanqr';
 import { router } from 'expo-router';
+import FloatingButton from '@/components/FloatingButton';
+import ScanQRModal from '@/modals/scanqr';
+import CrossPlatformAlert from '@/components/CrossPlatformAlert';
 
 export default function SavedCardsScreen() {
     const { userData } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
     const { savedCards, loading, error, handleRefresh, fetchSavedCards, removeSavedCard, fetchDataCard } = useSavedCards();
     const [cardStates, setCardStates] = useState<Record<string, MyCardData>>({});
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [selectedCard, setSelectedCard] = useState<{ scard: SavedCard, index: number }>();
 
     const memoizedFetchCards = useCallback(async () => {
         if (!savedCards.length) return;
@@ -50,7 +53,7 @@ export default function SavedCardsScreen() {
                 </View>
                 <View style={styles.cardActions}>
                     {item ? <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text> : null}
-                    <Pressable onPress={() => handleShare(index)}>
+                    <Pressable onPress={() => handleShare(item)}>
                         <Share2 color="#34C759" size={26} />
                     </Pressable>
                     {Platform.OS === 'web' ? (
@@ -63,22 +66,18 @@ export default function SavedCardsScreen() {
         );
     }
 
-    function handleShare(index: number) {
-        // const url = userData ? `speedycard://cards/${userData.uid}/${index}` : 'Something wrong with the user';
-        const url = 'this is not ok'
-        console.log(url);
+    function handleShare(card: SavedCard) {
+        router.push(`/(tabs)/(share)/?card=${card.card}&userid=${card.userid}&from=saved`);
     }
+    /* const menuItems = [
+        { text: 'View', onClick: () => router.push(`/view?userid=${card.userid}&card=${card.card}&from=saved`), color: '#007AFF', style: 'default' },
+        { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
+        { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30', style: 'destructive' },
+    ]; */
 
     function handleLongPress(card: SavedCard, index: number, event: any) {
-
-        const menuItems = [
-            { text: 'View', onClick: () => router.push(`/view?userid=${card.userid}&card=${card.card}&from=saved`), color: '#007AFF', style: 'default' },
-            { text: 'Share', onClick: () => handleShare(index), color: '#34C759', style: 'default' },
-            { text: 'Delete', onClick: () => removeSavedCard(index), color: '#FF3B30', style: 'destructive' },
-        ];
-
-        // Make the menu appear at the touch point like effect
-
+        setSelectedCard({ scard: card, index });
+        setAlertVisible(true);
     }
 
     useEffect(() => {
@@ -147,6 +146,17 @@ export default function SavedCardsScreen() {
             <ScanQRModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
+            />
+            <CrossPlatformAlert
+                visible={alertVisible}
+                title="Card Actions"
+                message='Select an action'
+                actions={[
+                    { text: 'Share', onPress: () => selectedCard && handleShare(selectedCard.scard), color: '#34C759' },
+                    { text: 'Delete', onPress: () => selectedCard && removeSavedCard(selectedCard.index), color: '#FF3B30' },
+                    { text: 'Cancel', onPress: () => setAlertVisible(false), color: '#8E8E93' }
+                ]}
+                onRequestClose={() => setAlertVisible(false)}
             />
             {savedCards.length > 0 ? (
                 <FloatingButton onPressAction={() => setModalVisible(true)} />
