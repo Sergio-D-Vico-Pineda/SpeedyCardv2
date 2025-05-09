@@ -1,16 +1,22 @@
 import { View, Text, Pressable, StyleSheet, TextInput, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LogOut, ChevronRight, Save } from 'lucide-react-native';
+import { LogOut, ChevronRight, Save, Info, Edit } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { Price } from '@/components/Price';
+import CrossPlatformAlert from '@/components/CrossPlatformAlert';
 
 export default function SettingsScreen() {
-    const { userData, signOut, updateUsername } = useAuth();
+    const { userData, signOut, updateUsername, updateBalance } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [balanceLoading, setBalanceLoading] = useState(false);
     const [error, setError] = useState('');
+    const [balanceError, setBalanceError] = useState('');
     const [newUsername, setNewUsername] = useState(userData?.username || '');
+    const [newBalance, setNewBalance] = useState(userData?.balance.toString() || '0');
+
+    const [showAddMoneyAlert, setShowAddMoneyAlert] = useState(false);
 
     if (!userData) {
         return (
@@ -37,7 +43,7 @@ export default function SettingsScreen() {
                                         value={newUsername}
                                         onChangeText={setNewUsername}
                                         placeholder="Enter new username"
-                                        editable={!loading}
+                                        editable={!balanceLoading}
                                     />
                                     <Pressable
                                         style={[styles.saveButton, loading && styles.buttonDisabled]}
@@ -67,15 +73,61 @@ export default function SettingsScreen() {
                                 </View>
                             ) : (
                                 <Pressable onPress={() => setIsEditing(true)} style={styles.usernameContainer}>
-                                    <Text style={styles.userEmail}>{userData.username}</Text>
-                                    <Text style={styles.editText}>Edit</Text>
+                                    <Text style={styles.userEmail}>Username: {userData.username}</Text>
+                                    <Edit size={20} color="#3B82F6" />
                                 </Pressable>
                             )}
                             {error ? <Text style={styles.errorText}>{error}</Text> : null}
                         </View>
                         <View style={styles.userInfo}>
-                            <Text style={styles.userEmail}>Balance: <Price value={userData.balance} /></Text>
+                            <View style={styles.balanceContainer}>
+                                <Text style={styles.userEmail}>Balance: <Price value={userData.balance} /></Text>
+                                {!balanceLoading ? (
+                                    <Pressable
+                                        onPress={() => setShowAddMoneyAlert(true)}
+                                        disabled={balanceLoading}
+                                    >
+                                        <Edit size={20} color="#3B82F6" />
+                                    </Pressable>
+                                ) : (
+                                    <ActivityIndicator color="#3B82F6" size="small" />
+                                )}
+                            </View>
+                            {balanceError ? <Text style={styles.errorText}>{balanceError}</Text> : null}
                         </View>
+                        <CrossPlatformAlert
+                            visible={showAddMoneyAlert}
+                            title="Set Balance"
+                            actions={[
+                                {
+                                    text: 'Add Money', onPress: async () => {
+                                        if (balanceLoading) return;
+                                        setBalanceLoading(true);
+                                        setBalanceError('');
+                                        try {
+                                            await updateBalance(newBalance);
+                                            setShowAddMoneyAlert(false);
+                                        } catch (err) {
+                                            setBalanceError(String(err));
+                                            setNewBalance(userData.balance.toString());
+                                        } finally {
+                                            setBalanceLoading(false);
+                                        }
+                                    },
+                                    color: '#10B981',
+                                }
+                                , { text: 'Close' }
+                            ]}
+                            onRequestClose={() => setShowAddMoneyAlert(false)}>
+                            <Text style={styles.feature}>This feature is currently under development.</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={newBalance}
+                                onChangeText={setNewBalance}
+                                placeholder="Enter new balance"
+                                editable={!balanceLoading}
+                            />
+                        </CrossPlatformAlert>
                         <Pressable style={styles.option} onPress={signOut}>
                             <View style={[styles.optionIcon, styles.logoutIcon]}>
                                 <LogOut size={20} color="#EF4444" />
@@ -94,7 +146,7 @@ export default function SettingsScreen() {
                     <View style={styles.sectionContent}>
                         <View style={styles.aboutHeader}>
                             <Image
-                                source={require('@/assets/images/react-logo.png')}
+                                source={require('@/assets/images/logo-icon.png')}
                                 style={styles.aboutLogo}
                             />
                             <Text style={styles.aboutTitle}>About SpeedyCard</Text>
@@ -135,8 +187,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 12,
     },
     aboutLogo: {
-        width: 80,
-        height: 80,
+        borderRadius: 35,
+        width: 95,
+        height: 95,
         marginBottom: 10,
     },
     aboutTitle: {
@@ -196,9 +249,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    editText: {
-        color: '#3B82F6',
-        fontSize: 14,
+    balanceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     errorText: {
         color: '#EF4444',
@@ -280,5 +334,11 @@ const styles = StyleSheet.create({
     },
     mb: {
         marginBottom: 16,
+    },
+    feature: {
+        fontSize: 16,
+        marginBottom: 16,
+        textAlign: 'center',
+        color: 'red',
     }
 })
