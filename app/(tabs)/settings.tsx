@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LogOut, ChevronRight, Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
+import { Price } from '@/components/Price';
 
 export default function SettingsScreen() {
     const { userData, signOut, updateUsername } = useAuth();
@@ -73,7 +74,7 @@ export default function SettingsScreen() {
                             {error ? <Text style={styles.errorText}>{error}</Text> : null}
                         </View>
                         <View style={styles.userInfo}>
-                            <Text style={styles.userEmail}>Balance: {userData.balance}</Text>
+                            <Text style={styles.userEmail}>Balance: <Price value={userData.balance} /></Text>
                         </View>
                         <Pressable style={styles.option} onPress={signOut}>
                             <View style={[styles.optionIcon, styles.logoutIcon]}>

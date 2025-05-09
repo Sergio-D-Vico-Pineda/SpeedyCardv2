@@ -8,6 +8,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { router } from 'expo-router';
 import { db } from '@/firebaselogic';
 import { useMarketContext } from '@/contexts/MarketContext';
+import { Price } from '@/components/Price';
 
 export default function TemplateDetailsScreen() {
     const params = useSearchParams();
@@ -100,7 +101,7 @@ export default function TemplateDetailsScreen() {
             <View style={styles.detailsSection}>
                 <Text style={styles.description}>{template.description}</Text>
 
-                <Text style={styles.price}>${template.price}</Text>
+                <Text style={styles.price}><Price value={template.price} /></Text>
 
                 <Text style={styles.featuresTitle}>Features</Text>
                 <View style={styles.featuresList}>

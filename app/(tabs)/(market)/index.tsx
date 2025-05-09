@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template, categories } from '@/types';
 import { useMarketContext } from '@/contexts/MarketContext';
+import { Price } from '@/components/Price';
 import FloatingButton from '@/components/FloatingButton';
 
 export default function MarketplaceScreen() {
@@ -31,7 +32,9 @@ export default function MarketplaceScreen() {
                 {ownedTemplates.includes(template.id) ? (
                     <Text style={styles.ownedLabel}>Already Owned</Text>
                 ) : (
-                    <Text style={styles.templatePrice}>${template.price}</Text>
+                    <Text style={styles.templatePrice}>
+                        <Price value={template.price} />
+                    </Text>
                 )}
             </LinearGradient>
         </TouchableOpacity>
