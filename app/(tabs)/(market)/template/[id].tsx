@@ -9,13 +9,17 @@ import { router } from 'expo-router';
 import { db } from '@/firebaselogic';
 import { useMarketContext } from '@/contexts/MarketContext';
 import { Price } from '@/components/Price';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function TemplateDetailsScreen() {
+    const { userData, updateBalance } = useAuth();
     const params = useSearchParams();
     const id = params.get('id');
     const [template, setTemplate] = useState<Template>();
     const { ownedTemplates } = useMarketContext();
     const isOwned = ownedTemplates.includes(template?.id || '');
+    const { showToast } = useToast();
 
     useEffect(() => {
         const fetchTemplateDetails = async () => {
@@ -53,12 +57,28 @@ export default function TemplateDetailsScreen() {
     }, [id]);
 
     const handlePurchase = () => {
+        // TODO
         if (isOwned) {
-            alert(`You already own the template: ${template?.name}`);
+            console.log(`You already own the template: ${template?.name}`);
+            showToast(`You already own the template: ${template?.name}`, 'error');
             return;
         }
-        // Implement purchase logic here
-        alert(`Processing purchase for ${template?.name}`);
+        if (!template) {
+            console.log('Template not found');
+            showToast('Template not found', 'error');
+            return;
+        }
+        if (userData && userData.balance < template.price) {
+            console.log('Insufficient balance to purchase this template.');
+            showToast('Insufficient balance to purchase this template.', 'error');
+            return;
+        }
+
+        if (userData) {
+            const newBalance = userData.balance - template.price;
+            // updateBalance(newBalance.toString());
+            showToast(`You have successfully purchased the template: ${template?.name}`, 'success');
+        }
     };
 
     if (!template) {
@@ -123,6 +143,7 @@ export default function TemplateDetailsScreen() {
                     </TouchableOpacity>
                 )}
             </View>
+            {/* <ToastNotification position='top' /> */}
         </View>
     );
 }
