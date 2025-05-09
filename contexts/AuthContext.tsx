@@ -13,6 +13,7 @@ interface AuthState {
     signIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
     updateUsername: (newUsername: string) => Promise<void>;
+    updateBalance: (newBalance: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState>({} as AuthState);
@@ -174,6 +175,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
+    const updateBalance = useCallback(async (newBalance: string) => {
+        if (!state.user || !state.userData) {
+            throw new Error('No authenticated user found');
+        }
+
+        const parsedBalance = Number(newBalance);
+        if (isNaN(parsedBalance) || parsedBalance < 0) {
+            throw new Error('Invalid balance amount. Please provide a valid positive number.');
+        }
+
+        const roundedBalance = parseFloat(parsedBalance.toFixed(2));
+
+        try {
+            const userDocRef = doc(db, 'users', state.user.uid);
+            const updatedUserData = { ...state.userData, balance: roundedBalance };
+
+            await setDoc(userDocRef, updatedUserData, { merge: true });
+
+            setState(current => ({
+                ...current,
+                userData: updatedUserData
+            }));
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error during update';
+            throw new Error(`Balance update failed: ${errorMessage}`);
+        }
+    }, [state.user, state.userData]);
+
     useProtectedRoute(state.user);
 
     return (
@@ -186,7 +215,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 signIn,
                 signOut,
                 updateUsername,
+                updateBalance,
             }}>
+
             {children}
         </AuthContext.Provider>
     );
