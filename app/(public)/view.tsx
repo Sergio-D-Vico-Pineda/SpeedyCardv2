@@ -7,6 +7,7 @@ import { defaultCardData, MyCardData } from '@/types';
 import { Save } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSavedCards } from '@/hooks/useSavedCards';
+import { setStatusBarHidden } from 'expo-status-bar';
 import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 
 const isColorDark = (hex: string): boolean => {
@@ -68,8 +69,10 @@ export default function ViewScreen() {
         if (isFullscreen) {
             await lockAsync(OrientationLock.PORTRAIT_UP);
             setIsFullscreen(false);
+            setStatusBarHidden(false);
         } else {
             await lockAsync(OrientationLock.LANDSCAPE);
+            setStatusBarHidden(true);
             setIsFullscreen(true);
         }
     };
@@ -161,7 +164,6 @@ const styles = StyleSheet.create({
     },
     topcontainer: {
         flex: 1,
-        backgroundColor: '#F2F2F7',
     },
     container: {
         flex: 1,
@@ -178,14 +180,22 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     fullscreenContainer: {
+        flex: 1,
         backgroundColor: '#000',
     },
     fullscreenContent: {
-        padding: 0,
-    },
-    fullscreenCard: {
         width: '100%',
         height: '100%',
+        padding: 0,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    fullscreenCard: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         borderRadius: 0,
     },
     fullscreenButton: {
