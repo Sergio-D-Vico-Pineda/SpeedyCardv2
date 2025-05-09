@@ -25,12 +25,6 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
     ],
   }));
 
-  /* const getTextStyle = (alignment: 'left' | 'right' | 'center') => {
-    if (alignment === 'left') return styles.textLeft;
-    if (alignment === 'right') return styles.textRight;
-    return styles.textCenter;
-  }; */
-
   const getAligment = (alignment: 'left' | 'right' | 'center') => {
     if (alignment === 'left') return styles.contentLeft;
     if (alignment === 'right') return styles.contentRight;
