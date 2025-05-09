@@ -2,12 +2,18 @@ import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Share2, ArrowLeft } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useEffect, useState } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { useAuth } from '@/contexts/AuthContext';
 import { MyCardData } from '@/types';
+import { Dimensions } from 'react-native';
 import BusinessCardPreview from '@/components/business-card/BusinessCardPreview';
 import QRCode from 'react-native-qrcode-svg';
+
+const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio
+const CARD_WIDTH = Dimensions.get('window').width - 32;
+const CARD_HEIGHT = CARD_WIDTH / CARD_ASPECT_RATIO;
 
 export default function ShareScreen() {
     const { userData } = useAuth();
@@ -15,8 +21,10 @@ export default function ShareScreen() {
     const { fetchSingleCard } = useCards();
     const [cardData, setCardData] = useState<MyCardData | null>(null);
     const [shareUrl, setShareUrl] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
 
     const fetchCard = useCallback(async () => {
+        setError(null);
         if (card !== null) {
             const index = parseInt(card as string);
             if (!isNaN(index)) {
@@ -28,6 +36,7 @@ export default function ShareScreen() {
                     }
                 } catch (error) {
                     console.error('Error fetching card:', error);
+                    setError(error instanceof Error ? error.message : 'Failed to load card data');
                 }
             }
         }
@@ -38,6 +47,7 @@ export default function ShareScreen() {
         return () => {
             setCardData(null);
             setShareUrl('');
+            setError(null);
         };
     }, [fetchCard]);
 
@@ -73,21 +83,35 @@ export default function ShareScreen() {
             </View>
 
             <View style={styles.content}>
-                {cardData ? (
-                    <>
-                        <BusinessCardPreview localCardData={cardData} />
-                        <View style={styles.qrContainer}>
-                            <QRCode value={shareUrl} size={200} />
-                            <Text style={styles.qrDescription}>
-                                Scan this QR code to view and save this card
-                            </Text>
-                        </View>
-                    </>
+                {error ? (
+                    <LinearGradient
+                        colors={['#ffffff', '#f8f9fa']}
+                        style={styles.previewCard}
+                    >
+                        <Text style={styles.templateName}>Loading</Text>
+                    </LinearGradient>
+                ) : cardData ? (
+                    <BusinessCardPreview localCardData={cardData} />
                 ) : (
-                    <View style={styles.errorContainer}>
-                        <Text style={styles.errorText}>Card not found</Text>
-                    </View>
+                    <LinearGradient
+                        colors={['#ffffff', '#f8f9fa']}
+                        style={styles.previewCard}
+                    >
+                        <Text style={styles.templateName}>Loading</Text>
+                    </LinearGradient>
                 )}
+                <View style={styles.qrContainer}>
+                    {error ? (
+                        <View style={styles.errorContainer}>
+                            <Text style={styles.errorText}>{error}</Text>
+                        </View>
+                    ) : (
+                        <QRCode value={shareUrl ? shareUrl : undefined} size={200} />
+                    )}
+                    <Text style={styles.qrDescription}>
+                        Scan this QR code to view and save this card
+                    </Text>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -158,23 +182,39 @@ const styles = StyleSheet.create({
         padding: 20,
         width: '100%',
     },
-    qrTitle: { // not using
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 20,
-    },
     qrDescription: {
         fontSize: 14,
         color: '#666',
         textAlign: 'center',
         marginTop: 20,
     },
-    errorContainer: {
-        alignItems: 'center',
+    previewCard: {
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+        margin: 16,
+        borderRadius: 12,
+        padding: 24,
         justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 3,
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    },
+    templateName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: '#2d3748',
+    },
+    errorContainer: {
+        backgroundColor: '#fee2e2',
+        padding: 16,
+        borderRadius: 8,
+        margin: 16,
+        alignItems: 'center',
     },
     errorText: {
+        color: '#dc2626',
         fontSize: 16,
-        color: '#FF3B30',
+        textAlign: 'center',
     },
 });
