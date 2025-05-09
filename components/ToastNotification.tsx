@@ -94,11 +94,9 @@ const styles = StyleSheet.create({
     },
     topContainer: {
         top: 50,
-        // top: SCREEN_HEIGHT * 0.1,
     },
     bottomContainer: {
         bottom: 100,
-        // bottom: SCREEN_HEIGHT * 0.1,
     },
     toast: {
         paddingHorizontal: 16,
