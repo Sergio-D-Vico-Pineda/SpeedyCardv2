@@ -11,10 +11,11 @@ interface AlertAction {
 interface CrossPlatformAlertProps {
   visible: boolean;
   title: string;
-  message: string;
+  message?: string;
   qrCode?: string;
   actions?: AlertAction[];
   onRequestClose?: () => void;
+  children?: React.ReactNode;
 }
 
 const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
@@ -24,6 +25,7 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
   qrCode,
   actions = [{ text: 'Cancel', color: '#FF3B30' }],
   onRequestClose,
+  children,
 }) => {
   return (
     <Modal
@@ -46,7 +48,8 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
           {qrCode &&
             <QRCode value={qrCode} size={120} />
           }
-          <Text style={styles.message}>{message}</Text>
+          {message && <Text style={styles.message}>{message}</Text>}
+          {children}
           <View style={styles.actions}>
             {actions.map((action, idx) => (
               <TouchableOpacity
@@ -70,18 +73,19 @@ const CrossPlatformAlert: FC<CrossPlatformAlertProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 24,
-    minWidth: 280,
+    padding: 14,
+    width: 'auto',
     alignItems: 'center',
     boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)',
     elevation: 5,
+    overflow: 'hidden',
   },
   title: {
     fontWeight: 'bold',
@@ -96,15 +100,22 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: '100%',
+    justifyContent: 'space-between',
+    gap: 12,
   },
   button: {
-    marginLeft: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 6,
+    // margin: 8,
+    // minWidth: 80,
+    // width: 'auto',
+    // alignItems: 'center',
+    elevation: 2,
   },
   buttonText: {
+    fontWeight: 'bold',
     fontSize: 16,
     color: '#007AFF',
   },
