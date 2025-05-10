@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet, TextInput, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LogOut, ChevronRight, Save, Info, Edit } from 'lucide-react-native';
+import { LogOut, ChevronRight, Save, Edit } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { Price } from '@/components/Price';
