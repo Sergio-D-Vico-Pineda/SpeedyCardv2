@@ -39,6 +39,9 @@ export default function SaveScreen() {
                 <BusinessCardPreview />
               </View>
               <BusinessCardSave />
+              <Text style={styles.subtitle}>
+                Choose a template
+              </Text>
               <ScrollView horizontal contentContainerStyle={styles.contenttemplatecontainer} style={styles.templateContainer}>
                 {cstyles.map((template) => (
                   <TouchableOpacity
@@ -96,9 +99,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   cardpreview: {
-    width: '100%',
-    borderRadius: 12,
+    width: '103%',
+    /* borderRadius: 12, */
   },
   contenttemplatecontainer: {
     gap: 16,
