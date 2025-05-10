@@ -41,3 +41,4 @@ app-example
 .env
 firebase.js
 package-lock.json
+serviceAccountKey.json
