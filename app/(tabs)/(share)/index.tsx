@@ -85,32 +85,35 @@ export default function ShareScreen() {
             <View style={styles.content}>
                 {error ? (
                     <LinearGradient
-                        colors={['#ffffff', '#f8f9fa']}
-                        style={styles.previewCard}
+                        colors={['#fee2e2', '#fecaca']}
+                        style={[styles.previewCard, styles.errorCard]}
                     >
-                        <Text style={styles.templateName}>Loading</Text>
+                        <Text style={[styles.templateName, styles.errorText]}>There was a error loading the card</Text>
                     </LinearGradient>
                 ) : cardData ? (
                     <BusinessCardPreview localCardData={cardData} />
                 ) : (
                     <LinearGradient
-                        colors={['#ffffff', '#f8f9fa']}
-                        style={styles.previewCard}
+                        colors={['#e2e8f0', '#f1f5f9']}
+                        style={[styles.previewCard, styles.loadingCard]}
                     >
-                        <Text style={styles.templateName}>Loading</Text>
+                        <Text style={[styles.templateName, styles.loadingText]}>Loading Card...</Text>
+                        <View style={styles.loadingIndicator} />
                     </LinearGradient>
                 )}
                 <View style={styles.qrContainer}>
                     {error ? (
                         <View style={styles.errorContainer}>
-                            <Text style={styles.errorText}>{error}</Text>
+                            <Text style={styles.errorMessage}>{error}</Text>
                         </View>
                     ) : (
-                        <QRCode value={shareUrl ? shareUrl : undefined} size={200} />
+                        <>
+                            <QRCode value={shareUrl ? shareUrl : undefined} size={200} />
+                            <Text style={styles.qrDescription}>
+                                Scan this QR code to view and save this card
+                            </Text>
+                        </>
                     )}
-                    <Text style={styles.qrDescription}>
-                        Scan this QR code to view and save this card
-                    </Text>
                 </View>
             </View>
         </SafeAreaView>
@@ -198,6 +201,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 3,
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    },
+    errorCard: {
+        borderWidth: 1,
+        borderColor: '#dc2626',
+    },
+    loadingCard: {
+        borderWidth: 1,
+        borderColor: '#94a3b8',
+    },
+    errorMessage: {
+        color: '#dc2626',
+        fontSize: 14,
+        textAlign: 'center',
+    },
+    loadingText: {
+        color: '#475569',
+        marginBottom: 16,
+    },
+    loadingIndicator: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: '#94a3b8',
+        borderTopColor: '#475569',
+        transform: [{ rotate: '45deg' }],
     },
     templateName: {
         fontSize: 24,
