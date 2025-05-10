@@ -94,11 +94,12 @@ export default function ViewScreen() {
 
     const previewBgColor = localCardData?.bgcolor
         ? isColorDark(localCardData.bgcolor) ? '' : '#000'
-        : '';
+        : '#fff';
 
     return (
         <SafeAreaView style={[
             styles.topcontainer,
+            { backgroundColor: previewBgColor },
             isFullscreen && styles.fullscreenContainer
         ]}>
             {!isFullscreen && (
@@ -181,7 +182,6 @@ const styles = StyleSheet.create({
     },
     fullscreenContainer: {
         flex: 1,
-        backgroundColor: '#000',
     },
     fullscreenContent: {
         width: '100%',
