@@ -2,6 +2,7 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import { useCardContext } from '@/contexts/CardContext';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { fontMap, MyCardData } from '@/types';
+import { CardEffects } from './effects';
 
 const CARD_ASPECT_RATIO = 1.586; // Standard business card ratio
 const CARD_WIDTH = Dimensions.get('window').width - 32;
@@ -91,25 +92,29 @@ export default function BusinessCardPreview({ localCardData }: { localCardData?:
   return (
     <TouchableOpacity onPress={toggleFlip} style={styles.container}>
       <Animated.View style={[styles.card, frontAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }]}>
-          {renderFrontContent()}
-        </View>
+        <CardEffects effect={cardData.effect}>
+          <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }]}>
+            {renderFrontContent()}
+          </View>
+        </CardEffects>
       </Animated.View>
 
       <Animated.View style={[styles.card, styles.cardBack, backAnimatedStyle]}>
-        <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
-          {cardData.ilogo ? (
-            <View>
-              <Image
-                source={{ uri: cardData.ilogo }}
-                style={styles.logo}
-              />
-            </View>
-          ) : null}
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.temail}</Text>
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tphone}</Text>
-          <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.twebsite}</Text>
-        </View>
+        <CardEffects effect={cardData.effect}>
+          <View style={[styles.cardContent, { backgroundColor: cardData.bgcolor }, getAligment(cardData.align || 'center')]}>
+            {cardData.ilogo ? (
+              <View>
+                <Image
+                  source={{ uri: cardData.ilogo }}
+                  style={styles.logo}
+                />
+              </View>
+            ) : null}
+            <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.temail}</Text>
+            <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.tphone}</Text>
+            <Text style={[styles.contactInfo, { fontFamily: fontMap[cardData.font], color: cardData.color }]}>{cardData.twebsite}</Text>
+          </View>
+        </CardEffects>
       </Animated.View>
     </TouchableOpacity>
   );
