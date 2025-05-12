@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { defaultCardData } from '@/types';
-import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw, Home } from 'lucide-react-native';
+import { AlignLeft, AlignCenter, AlignRight, Plus, RotateCcw } from 'lucide-react-native';
 import { useCardContext } from '@/contexts/CardContext';
 import { useCards } from '@/hooks/useCards';
 import ColorPicker from '@/components/business-card/ColorPicker';
@@ -12,12 +12,10 @@ import EffectPicker from '@/components/business-card/EffectPicker';
 import ImageUploader from '@/components/business-card/ImageUploader';
 
 export default function EditScreen() {
-  // const { userid, card = 0 } = useLocalSearchParams(); // this is for editing via link, it will discarded
   const { cardData, updateCardData, changeDatainCard } = useCardContext();
   const { effects, fetchEffects } = useCards();
   const nameInputRef = useRef<TextInput>(null);
 
-  // Replace the existing useEffect for focus with useFocusEffect
   useFocusEffect(
     useCallback(() => {
       if (nameInputRef.current && cardData.tname === '') {
@@ -28,7 +26,7 @@ export default function EditScreen() {
 
   useEffect(() => {
     fetchEffects();
-  }, [fetchEffects]);
+  }, [fetchEffects, effects]);
 
   const handleReset = () => {
     updateCardData(defaultCardData);
@@ -56,7 +54,6 @@ export default function EditScreen() {
       </View>
       <ScrollView style={styles.container}>
         <View style={styles.section}>
-          {/* <Text style={styles.sectionTitle}>'{userid}' - '{card}'</Text> */}
           <Text style={styles.sectionTitle}>Front</Text>
           <TextInput
             ref={nameInputRef}
