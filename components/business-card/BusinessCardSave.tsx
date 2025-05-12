@@ -3,10 +3,13 @@ import { useCardContext } from '@/contexts/CardContext';
 import { View, TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData } from '@/types';
+import { useToast } from '@/contexts/ToastContext';
+import { router } from 'expo-router';
 
 export default function BusinessCardSave() {
   const { cardData, updateCardData } = useCardContext();
   const { saveCardToFirestore } = useCards();
+  const { showToast } = useToast();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +43,12 @@ export default function BusinessCardSave() {
         ) : (
           <TouchableOpacity
             style={[styles.button, styles.saveButton]}
-            onPress={saveInFirestore}
+            onPress={() => {
+              showToast('Card saved successfully.', 'success');
+              saveInFirestore()
+              router.back()
+              router.back()
+            }}
             disabled={saving}
           >
             <Text style={styles.buttonText}>
