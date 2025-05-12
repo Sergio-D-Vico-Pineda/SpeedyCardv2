@@ -1,16 +1,10 @@
-import { View, Text, StyleSheet, Animated, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { FC, useEffect, useRef } from 'react';
 import { X } from 'lucide-react-native';
 import { useToast } from '@/contexts/ToastContext';
 
-interface ToastNotificationProps {
-    position?: 'top' | 'bottom';
-}
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-const ToastNotification: FC<ToastNotificationProps> = ({ position = 'bottom' }) => {
-    const { visible, message, type, hideToast } = useToast();
+const ToastNotification: FC = () => {
+    const { visible, message, type, hideToast, position } = useToast();
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -76,7 +70,7 @@ const ToastNotification: FC<ToastNotificationProps> = ({ position = 'bottom' }) 
                 <View style={styles.contentContainer}>
                     <Text style={styles.message}>{message}</Text>
                     <TouchableOpacity onPress={hideToast} style={styles.dismissButton}>
-                        <Text style={styles.dismissButtonText}><X color={"black"} size={14} /></Text>
+                        <Text style={styles.dismissButtonText}><X size={17} /></Text>
                     </TouchableOpacity>
                 </View>
             </Animated.View>
@@ -120,11 +114,11 @@ const styles = StyleSheet.create({
     },
     dismissButton: {
         padding: 4,
+        color: '#fff',
     },
     dismissButtonText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: 'bold',
     },
 });
 
