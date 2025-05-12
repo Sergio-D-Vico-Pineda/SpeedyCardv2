@@ -21,7 +21,7 @@ export default function EffectPicker({ effect, onEffectChange, effectList }: Eff
         style={[styles.effectItem, effect === item && styles.selectedeffect]}
         onPress={() => handleEffectSelect(item)}
       >
-        <Text style={styles.effectText}>{item}</Text>
+        <Text style={styles.effectText}>{item.charAt(0).toUpperCase() + item.slice(1)}</Text>
       </TouchableOpacity>
     )
   };
@@ -33,7 +33,7 @@ export default function EffectPicker({ effect, onEffectChange, effectList }: Eff
         style={styles.effectPreview}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.effectPreviewText}>{effect || 'No effect'}</Text>
+        <Text style={styles.effectPreviewText}>{effect ? effect.charAt(0).toUpperCase() + effect.slice(1) : 'No effect'}</Text>
       </TouchableOpacity>
 
       <Modal

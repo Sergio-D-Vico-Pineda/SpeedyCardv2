@@ -39,7 +39,7 @@ interface UserData {
   balance: number;
 }
 
-const categories = ['professional', 'creative', 'business', 'effects'];
+const categories = ['effects', 'professional', 'creative', 'business'];
 
 const fonts = [
   'Inter-Regular', // 0
