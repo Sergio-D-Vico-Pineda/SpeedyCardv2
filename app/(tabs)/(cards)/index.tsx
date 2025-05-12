@@ -21,12 +21,9 @@ export default function EditScreen() {
       if (nameInputRef.current && cardData.tname === '') {
         nameInputRef.current.focus();
       }
-    }, [cardData.tname])
+      fetchEffects();
+    }, [cardData.tname, fetchEffects])
   );
-
-  useEffect(() => {
-    fetchEffects();
-  }, [fetchEffects, effects]);
 
   const handleReset = () => {
     updateCardData(defaultCardData);
