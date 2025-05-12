@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl, Platform } from 'react-native';
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Template, categories } from '@/types';
@@ -8,6 +9,7 @@ import FloatingButton from '@/components/FloatingButton';
 
 export default function MarketplaceScreen() {
     const { loading, searchQuery, selectedCategory, setSearchQuery, setSelectedCategory, refreshAll, filteredTemplates, ownedTemplates } = useMarketContext();
+    const [visible, setVisible] = useState(false);
 
     const onRefresh = async () => {
         console.log('refreshin market');
@@ -43,12 +45,12 @@ export default function MarketplaceScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Marketplace</Text>
+                <Text style={styles.title} onPress={() => setVisible(!visible)}>Marketplace</Text>
                 {Platform.OS === 'web' && (
                     <TouchableOpacity
                         onPress={onRefresh}
                     >
-                        <Text style={{ color: '#4299e1', fontWeight: '500' }}>
+                        <Text style={styles.refreshBtn}>
                             Refresh
                         </Text>
                     </TouchableOpacity>
@@ -108,7 +110,10 @@ export default function MarketplaceScreen() {
                 </ScrollView>
             )
             }
-            <FloatingButton onPressAction={newItem} />
+            {visible ? (
+                <FloatingButton onPressAction={newItem} />
+            ) : null
+            }
         </SafeAreaView>
     );
 }
@@ -218,5 +223,9 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         color: '#00bf00',
+    },
+    refreshBtn: {
+        color: '#4299e1',
+        fontWeight: '500'
     }
 });
