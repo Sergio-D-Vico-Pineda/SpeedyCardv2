@@ -63,16 +63,19 @@ export default function TemplateDetailsScreen() {
         if (!template) {
             console.log('Template not found');
             showToast('Template not found', 'error');
+            setPurchasing(false);
             return;
         }
         if (isOwned) {
             console.log(`You already own the template: ${template.name}`);
             showToast(`You already own the template: ${template.name}`, 'error');
+            setPurchasing(false);
             return;
         }
         if (userData && userData.balance < template.price) {
             console.log('Insufficient balance to purchase this template.');
             showToast('Insufficient balance to purchase this template.', 'error');
+            setPurchasing(false);
             return;
         }
 

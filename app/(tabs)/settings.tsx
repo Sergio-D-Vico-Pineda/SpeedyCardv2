@@ -2,21 +2,28 @@ import { View, Text, Pressable, StyleSheet, TextInput, ActivityIndicator, Image,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LogOut, ChevronRight, Save, Edit } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Price } from '@/components/Price';
 import CrossPlatformAlert from '@/components/CrossPlatformAlert';
+import { useFocusEffect } from 'expo-router';
 
 export default function SettingsScreen() {
     const { userData, signOut, updateUsername, updateBalance } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [balanceLoading, setBalanceLoading] = useState(false);
     const [error, setError] = useState('');
+    const [balanceLoading, setBalanceLoading] = useState(false);
     const [balanceError, setBalanceError] = useState('');
     const [newUsername, setNewUsername] = useState(userData?.username || '');
     const [newBalance, setNewBalance] = useState(userData?.balance.toString() || '0');
 
     const [showAddMoneyAlert, setShowAddMoneyAlert] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            setNewBalance(userData?.balance.toString() || '');
+        }, [])
+    )
 
     if (!userData) {
         return (
@@ -223,6 +230,7 @@ const styles = StyleSheet.create({
         borderColor: '#E5E7EB',
         borderRadius: 8,
         paddingHorizontal: 12,
+        marginBottom: 16,
         fontSize: 16,
         color: '#111827',
     },
