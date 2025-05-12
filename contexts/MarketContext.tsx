@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Template } from '@/types';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaselogic';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -17,6 +17,7 @@ interface MarketContextType {
     fetchProducts: () => Promise<void>;
     filteredTemplates: Template[];
     refreshAll: () => Promise<void>;
+    addOwnedProduct: (productId: string) => Promise<void>;
 }
 
 const MarketContext = createContext<MarketContextType | undefined>(undefined);
@@ -91,6 +92,19 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         return matchesSearch && matchesCategory;
     });
 
+    const addOwnedProduct = async (productId: string) => {
+        if (!user) return;
+        
+        const cardsRef = doc(db, 'cards', user.uid);
+        try {
+            const newOwnedTemplates = [...ownedTemplates, productId];
+            await updateDoc(cardsRef, { owned: newOwnedTemplates });
+            setOwnedTemplates(newOwnedTemplates);
+        } catch (err) {
+            console.error('Error adding owned product:', err);
+        }
+    };
+
     const exports = {
         ownedTemplates,
         setOwnedTemplates,
@@ -103,7 +117,8 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         setSelectedCategory,
         fetchProducts,
         filteredTemplates,
-        refreshAll
+        refreshAll,
+        addOwnedProduct,
     };
 
     return (

@@ -17,7 +17,7 @@ export default function TemplateDetailsScreen() {
     const params = useSearchParams();
     const id = params.get('id');
     const [template, setTemplate] = useState<Template>();
-    const { ownedTemplates } = useMarketContext();
+    const { ownedTemplates, addOwnedProduct } = useMarketContext();
     const isOwned = ownedTemplates.includes(template?.id || '');
     const { showToast } = useToast();
 
@@ -56,16 +56,16 @@ export default function TemplateDetailsScreen() {
         fetchTemplateDetails();
     }, [id]);
 
-    const handlePurchase = () => {
-        // TODO
-        if (isOwned) {
-            console.log(`You already own the template: ${template?.name}`);
-            showToast(`You already own the template: ${template?.name}`, 'error');
-            return;
-        }
+    const handlePurchase = async () => {
+
         if (!template) {
             console.log('Template not found');
             showToast('Template not found', 'error');
+            return;
+        }
+        if (isOwned) {
+            console.log(`You already own the template: ${template.name}`);
+            showToast(`You already own the template: ${template.name}`, 'error');
             return;
         }
         if (userData && userData.balance < template.price) {
@@ -76,8 +76,32 @@ export default function TemplateDetailsScreen() {
 
         if (userData) {
             const newBalance = userData.balance - template.price;
-            // updateBalance(newBalance.toString());
-            showToast(`You have successfully purchased the template: ${template?.name}`, 'success');
+
+            try {
+                console.log(`Handling the purchase...`);
+
+                updateBalance(newBalance.toString()).then(() => {
+                    console.log(`Balance updated to '${newBalance}' successfully`);
+                }).catch((error) => {
+                    console.error('Error updating balance:', error);
+                    showToast('Failed to update balance', 'error');
+                    return;
+                });
+
+                addOwnedProduct(template.id).then(() => {
+                    console.log('Template added to owned products successfully');
+                }).catch((error) => {
+                    console.error('Error adding template to owned products:', error);
+                    showToast('Failed to add template to owned products', 'error');
+                    return;
+                });
+
+                showToast(`You have successfully purchased the template: ${template?.name}`, 'success');
+            } catch (error) {
+                console.error('Error updating balance:', error);
+                showToast('Failed purchasing the item', 'error');
+                return;
+            }
         }
     };
 
