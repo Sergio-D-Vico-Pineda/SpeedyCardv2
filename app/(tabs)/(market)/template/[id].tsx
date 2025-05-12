@@ -17,6 +17,7 @@ export default function TemplateDetailsScreen() {
     const params = useSearchParams();
     const id = params.get('id');
     const [template, setTemplate] = useState<Template>();
+    const [purchasing, setPurchasing] = useState(false);
     const { ownedTemplates, addOwnedProduct } = useMarketContext();
     const isOwned = ownedTemplates.includes(template?.id || '');
     const { showToast } = useToast();
@@ -57,6 +58,7 @@ export default function TemplateDetailsScreen() {
     }, [id]);
 
     const handlePurchase = async () => {
+        setPurchasing(true);
 
         if (!template) {
             console.log('Template not found');
@@ -80,7 +82,7 @@ export default function TemplateDetailsScreen() {
             try {
                 console.log(`Handling the purchase...`);
 
-                updateBalance(newBalance.toString()).then(() => {
+                await updateBalance(newBalance.toString()).then(() => {
                     console.log(`Balance updated to '${newBalance}' successfully`);
                 }).catch((error) => {
                     console.error('Error updating balance:', error);
@@ -88,7 +90,7 @@ export default function TemplateDetailsScreen() {
                     return;
                 });
 
-                addOwnedProduct(template.id).then(() => {
+                await addOwnedProduct(template.id).then(() => {
                     console.log('Template added to owned products successfully');
                 }).catch((error) => {
                     console.error('Error adding template to owned products:', error);
@@ -100,9 +102,9 @@ export default function TemplateDetailsScreen() {
             } catch (error) {
                 console.error('Error updating balance:', error);
                 showToast('Failed purchasing the item', 'error');
-                return;
             }
         }
+        setPurchasing(false);
     };
 
     if (!template) {
@@ -160,19 +162,25 @@ export default function TemplateDetailsScreen() {
                     <Text style={styles.ownedLabel}>This item is already purchased</Text>
                 ) : (
                     <TouchableOpacity
-                        style={styles.purchaseButton}
+                        style={[styles.purchaseButton, purchasing && styles.purchaseButtonDisabled]}
                         onPress={handlePurchase}
+                        disabled={purchasing}
                     >
-                        <Text style={styles.purchaseButtonText}>Purchase Template</Text>
+                        <Text style={styles.purchaseButtonText}>
+                            {purchasing ? 'Processing...' : 'Purchase Template'}
+                        </Text>
                     </TouchableOpacity>
                 )}
             </View>
-            {/* <ToastNotification position='top' /> */}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    purchaseButtonDisabled: {
+        backgroundColor: '#93c5fd',
+        opacity: 0.7,
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -275,5 +283,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+    }
 });
