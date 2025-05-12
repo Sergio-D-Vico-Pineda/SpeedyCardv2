@@ -15,8 +15,8 @@ export function Glow() {
     useEffect(() => {
         scale.value = withRepeat(
             withSequence(
-                withTiming(1.2, { duration: 1500 }),
-                withTiming(1, { duration: 1500 })
+                withTiming(1.1, { duration: 1500 }),
+                withTiming(0.9, { duration: 3000 })
             ),
             -1,
             true
@@ -24,8 +24,8 @@ export function Glow() {
 
         opacity.value = withRepeat(
             withSequence(
-                withTiming(0.7, { duration: 1500 }),
-                withTiming(0.5, { duration: 1500 })
+                withTiming(0.5, { duration: 1500 }),
+                withTiming(0, { duration: 3000 })
             ),
             -1,
             true
@@ -45,7 +45,7 @@ export function Glow() {
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#FFD700',
+        backgroundColor: '#FFD70066',
         borderRadius: 8,
         pointerEvents: 'none',
     },
