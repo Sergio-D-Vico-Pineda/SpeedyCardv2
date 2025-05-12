@@ -8,6 +8,7 @@ interface ToastContextType {
     visible: boolean;
     message: string;
     type: ToastType;
+    position: 'top' | 'bottom';
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -36,6 +37,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 visible,
                 message,
                 type,
+                position: 'bottom',
             }}
         >
             {children}
