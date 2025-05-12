@@ -6,77 +6,53 @@ import Animated, {
   withSequence,
   withTiming,
   useSharedValue,
-  withDelay,
 } from 'react-native-reanimated';
-
-const NUM_SPARKLES = 12;
+import { LinearGradient } from 'expo-linear-gradient';
 
 export function Sparkle() {
-  const sparkles = Array.from({ length: NUM_SPARKLES }, (_, i) => {
-    const scale = useSharedValue(0);
-    const opacity = useSharedValue(0);
-    const rotate = useSharedValue(0);
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(0);
 
-    useEffect(() => {
-      const delay = i * 300;
-      const randomX = Math.random() * 300 - 150;
-      const randomY = Math.random() * 300 - 150;
-
-      scale.value = withDelay(
-        delay,
-        withRepeat(
-          withSequence(
-            withTiming(1, { duration: 400 }),
-            withTiming(0, { duration: 400 })
-          ),
-          -1
-        )
-      );
-
-      opacity.value = withDelay(
-        delay,
-        withRepeat(
-          withSequence(
-            withTiming(1, { duration: 400 }),
-            withTiming(0, { duration: 400 })
-          ),
-          -1
-        )
-      );
-
-      rotate.value = withDelay(
-        delay,
-        withRepeat(
-          withTiming(360, { duration: 1000 }),
-          -1
-        )
-      );
-
-      return () => {
-        scale.value = 0;
-        opacity.value = 0;
-        rotate.value = 0;
-      };
-    }, []);
-
-    const sparkleStyle = useAnimatedStyle(() => ({
-      transform: [
-        { scale: scale.value },
-        { rotate: `${rotate.value}deg` },
-        { translateX: Math.random() * 300 - 150 },
-        { translateY: Math.random() * 300 - 150 },
-      ],
-      opacity: opacity.value,
-    }));
-
-    return (
-      <Animated.View key={i} style={[styles.sparkle, sparkleStyle]} />
+  useEffect(() => {
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.2, { duration: 800 }),
+        withTiming(0.8, { duration: 800 })
+      ),
+      -1,
+      true
     );
-  });
+
+    opacity.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 800 }),
+        withTiming(0.4, { duration: 800 })
+      ),
+      -1,
+      true
+    );
+
+    return () => {
+      scale.value = 0;
+      opacity.value = 0;
+    };
+  }, []);
+
+  const sparkleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
 
   return (
     <View style={styles.container}>
-      {sparkles}
+      <Animated.View style={[styles.sparkle, sparkleStyle]}>
+        <LinearGradient
+          colors={['rgba(255, 215, 0, 0)', 'rgba(255, 215, 0, 0.1)', 'rgba(255, 215, 0, 0.6)', 'rgba(255, 215, 0, 1)']}
+          style={styles.gradient}
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 1, y: 1 }}
+        />
+      </Animated.View>
     </View>
   );
 }
@@ -89,9 +65,15 @@ const styles = StyleSheet.create({
   },
   sparkle: {
     position: 'absolute',
-    width: 10,
-    height: 10,
-    backgroundColor: '#FFD700',
-    borderRadius: 5,
+    width: 100,
+    height: 100,
+    overflow: 'hidden',
+    borderRadius: 45,
+    right: -30,
+    bottom: -30,
+  },
+  gradient: {
+    width: '100%',
+    height: '100%',
   },
 });
