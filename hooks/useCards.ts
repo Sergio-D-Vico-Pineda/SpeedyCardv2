@@ -36,11 +36,26 @@ function useCards() {
     }, []);
 
     const fetchEffects = useCallback(async () => {
+        console.log('fetching effects');
+        if (!user) {
+            return;
+        }
+
         try {
-            const snapshot = await getDocs(collection(db, 'effects'));
-            setEffects(snapshot.docs.map(doc => doc.data().name as string));
+            const effectsRef = doc(db, 'cards', user.uid);
+            const effectsDoc = await getDoc(effectsRef);
+
+            if (effectsDoc.exists()) {
+                const effectData = effectsDoc.data();
+                const effectArray = effectData.owned || [];
+                setEffects(effectArray);
+            } else {
+                setEffects([]);
+            }
+            setError('');
         } catch (err) {
-            console.error('Error fetching effects:', err);
+            console.error('Error fetching cards:', err);
+            setError("something went wrong, effects");
         }
     }, []);
 

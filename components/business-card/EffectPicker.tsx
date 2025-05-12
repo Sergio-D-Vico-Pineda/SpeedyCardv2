@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
-import { effects } from '@/types';
 
 interface EffectPickerProps {
   effect: string | undefined;
   onEffectChange: (effect: string | undefined) => void;
+  effectList: string[];
 }
 
-export default function EffectPicker({ effect, onEffectChange }: EffectPickerProps) {
+export default function EffectPicker({ effect, onEffectChange, effectList }: EffectPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleEffectSelect = (selectedEffect: string | undefined) => {
@@ -52,7 +52,7 @@ export default function EffectPicker({ effect, onEffectChange }: EffectPickerPro
               <Text style={styles.effectText}>No effect</Text>
             </TouchableOpacity>
             <FlatList
-              data={effects}
+              data={effectList}
               renderItem={renderEffectItem}
               keyExtractor={(item) => item}
               style={styles.effectList}

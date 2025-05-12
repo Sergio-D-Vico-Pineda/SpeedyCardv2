@@ -168,6 +168,7 @@ export default function EditScreen() {
             <EffectPicker
               effect={cardData.effect}
               onEffectChange={(effect: string | undefined) => changeDatainCard('effect', effect)}
+              effectList={effects}
             />
           )}
         </View>
