@@ -180,7 +180,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             throw new Error('No authenticated user found');
         }
 
-        const parsedBalance = Number(newBalance);
+        const sanitizedBalance = newBalance.replace(',', '.');
+
+        const parsedBalance = Number(sanitizedBalance);
         if (isNaN(parsedBalance) || parsedBalance < 0) {
             throw new Error('Invalid balance amount. Please provide a valid positive number.');
         }
