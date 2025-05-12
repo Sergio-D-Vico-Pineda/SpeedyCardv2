@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaselogic';
 import { useAuth } from '@/contexts/AuthContext';
 import { defaultCardData, type MyCardData } from '@/types';

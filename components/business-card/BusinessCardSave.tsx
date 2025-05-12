@@ -63,6 +63,7 @@ export default function BusinessCardSave() {
 
 const styles = StyleSheet.create({
   container: {
+    width: '60%',
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
