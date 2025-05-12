@@ -84,7 +84,7 @@ export default function ViewScreen() {
             console.log('Saving card...');
             console.log(`/view?userid=${userid}&card=${card}`);
             await saveToSavedCards(localCardData, { userid: userid as string, card: card as number });
-            // router.replace('/');
+            router.replace('/savedcards');
         } catch (error) {
             console.error('Error saving card:', error);
         } finally {
