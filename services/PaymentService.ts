@@ -1,12 +1,10 @@
-import { Platform } from 'react-native';
+import { PaymentMethod, Plans } from '@/types';
 
 type PaymentResult = {
     success: boolean;
     transactionId?: string;
     error?: string;
 };
-
-type PaymentMethod = 'bank_card' | 'paypal';
 
 class PaymentService {
     private static validateAmount(amount: string): { isValid: boolean; error?: string } {
@@ -79,8 +77,26 @@ class PaymentService {
         }
     }
 
+    static async processChangePlan(plan: Plans): Promise<boolean> {
+
+        // Simulate payment processing delay (1-2 seconds)
+        const processingTime = Math.random() * 1000 + 1000;
+
+        // Simulate success rate (90% success)
+        const isSuccess = Math.random() < 0.9;
+
+        // Simulate API call
+        await this.simulateApiCall(isSuccess, processingTime);
+
+        return true;
+    }
+
     static getPaymentMethods(): PaymentMethod[] {
         return ['bank_card', 'paypal'];
+    }
+
+    static getPlans(): Plans[] {
+        return ['Free', 'Pro', 'Premium', 'Ultimate'];
     }
 }
 

@@ -110,6 +110,10 @@ const styles = [
   'minimalist',
 ]
 
+type PaymentMethod = 'bank_card' | 'paypal';
+
+type Plans = 'Free' | 'Pro' | 'Premium' | 'Ultimate';
+
 const templates: Template[] = [
   {
     id: '1',
@@ -214,4 +218,6 @@ export {
   fontMap,
   effects,
   templates,
+  PaymentMethod,
+  Plans
 }
