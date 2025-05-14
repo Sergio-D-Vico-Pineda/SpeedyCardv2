@@ -1,73 +1,6 @@
-import { View, Text, Pressable, StyleSheet, ScrollView, RefreshControl, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { RefreshCw } from 'lucide-react-native';
-import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
-import AccountSection from '../../components/settings/AccountSection';
-import AboutSection from '../../components/settings/AboutSection';
+import { StyleSheet } from 'react-native';
 
-export default function SettingsScreen() {
-    const { userData, refreshUserData } = useAuth();
-    const [refreshing, setRefreshing] = useState(false);
-
-    if (!userData) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.title}>Error loading user data</Text>
-            </View>
-        )
-    }
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Settings</Text>
-                {Platform.OS === 'web' && (
-                    <Pressable
-                        style={[styles.refreshButton, refreshing && styles.refreshing]}
-                        onPress={async () => {
-                            if (refreshing) return;
-                            setRefreshing(true);
-                            try {
-                                await refreshUserData();
-                            } finally {
-                                setRefreshing(false);
-                            }
-                        }}
-                        disabled={refreshing}
-                    >
-                        <RefreshCw size={24} color={'#007AFF'} />
-                    </Pressable>
-                )}
-            </View>
-            <ScrollView
-                refreshControl={
-                    Platform.OS !== 'web' ? (
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={async () => {
-                                setRefreshing(true);
-                                try {
-                                    await refreshUserData();
-                                } finally {
-                                    setRefreshing(false);
-                                }
-                            }}
-                        />
-                    ) : undefined
-                }
-            >
-                <AccountSection
-                    userData={userData}
-                />
-                <AboutSection />
-            </ScrollView >
-        </SafeAreaView >
-
-    );
-}
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     refreshButton: {
         padding: 4,
         borderRadius: 20,
@@ -76,6 +9,7 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     editContainer: {
+        justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
@@ -251,6 +185,17 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         gap: 8,
     },
+    planMethods: {
+        width: '80%',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
+    },
+    paymentTitle: {
+        fontSize: 16,
+        color: '#111827',
+        marginBottom: 8,
+    },
     paymentMethod: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -259,6 +204,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         gap: 8,
         minWidth: '32%',
+    },
+    planMethod: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#EEF2FF',
+        padding: 10,
+        borderRadius: 8,
+        gap: 8,
+        minWidth: 115,
     },
     selectedPaymentMethod: {
         backgroundColor: '#3B82F6',
@@ -271,4 +225,4 @@ const styles = StyleSheet.create({
     selectedPaymentMethodText: {
         color: '#FFFFFF',
     }
-})
+});
