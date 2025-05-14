@@ -1,14 +1,15 @@
-import { View, Text, Pressable, StyleSheet, TextInput, ActivityIndicator, Image, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput, ActivityIndicator, Image, ScrollView, RefreshControl, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LogOut, ChevronRight, Save, Edit } from 'lucide-react-native';
+import { LogOut, ChevronRight, Save, Edit, CreditCard, RefreshCw, BanknoteArrowDown } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCallback, useState } from 'react';
 import { Price } from '@/components/Price';
 import CrossPlatformAlert from '@/components/CrossPlatformAlert';
 import { useFocusEffect } from 'expo-router';
+import PaymentService from '@/services/PaymentService';
 
 export default function SettingsScreen() {
-    const { userData, signOut, updateUsername, updateBalance } = useAuth();
+    const { userData, signOut, updateUsername, updateBalance, refreshUserData } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -18,6 +19,9 @@ export default function SettingsScreen() {
     const [newBalance, setNewBalance] = useState(userData?.balance.toString() || '0');
 
     const [showAddMoneyAlert, setShowAddMoneyAlert] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'bank_card' | 'paypal'>('bank_card');
+    const [refreshing, setRefreshing] = useState(false);
+    const paymentMethods = PaymentService.getPaymentMethods();
 
     useFocusEffect(
         useCallback(() => {
@@ -37,8 +41,41 @@ export default function SettingsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Settings</Text>
+                {Platform.OS === 'web' && (
+                    <Pressable
+                        style={[styles.refreshButton, refreshing && styles.refreshing]}
+                        onPress={async () => {
+                            if (refreshing) return;
+                            setRefreshing(true);
+                            try {
+                                await refreshUserData();
+                            } finally {
+                                setRefreshing(false);
+                            }
+                        }}
+                        disabled={refreshing}
+                    >
+                        <RefreshCw size={24} color={'#007AFF'} />
+                    </Pressable>
+                )}
             </View>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    Platform.OS !== 'web' ? (
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={async () => {
+                                setRefreshing(true);
+                                try {
+                                    await refreshUserData();
+                                } finally {
+                                    setRefreshing(false);
+                                }
+                            }}
+                        />
+                    ) : undefined
+                }
+            >
                 <View style={[styles.section, styles.mb, styles.firstSection]}>
                     <Text style={styles.sectionTitle}>Account</Text>
                     <View style={styles.sectionContent}>
@@ -94,7 +131,7 @@ export default function SettingsScreen() {
                                         onPress={() => setShowAddMoneyAlert(true)}
                                         disabled={balanceLoading}
                                     >
-                                        <Edit size={20} color="#3B82F6" />
+                                        <BanknoteArrowDown size={20} color="#3B82F6" />
                                     </Pressable>
                                 ) : (
                                     <ActivityIndicator color="#3B82F6" size="small" />
@@ -104,16 +141,21 @@ export default function SettingsScreen() {
                         </View>
                         <CrossPlatformAlert
                             visible={showAddMoneyAlert}
-                            title="Set Balance"
+                            title="Add Balance"
                             actions={[
                                 {
-                                    text: 'Add Money', onPress: async () => {
+                                    text: 'Process Payment', onPress: async () => {
                                         if (balanceLoading) return;
                                         setBalanceLoading(true);
                                         setBalanceError('');
                                         try {
-                                            await updateBalance(newBalance);
-                                            setShowAddMoneyAlert(false);
+                                            const result = await PaymentService.processPayment(newBalance);
+                                            if (result.success) {
+                                                await updateBalance(newBalance);
+                                                setShowAddMoneyAlert(false);
+                                            } else {
+                                                setBalanceError(result.error || 'Payment failed');
+                                            }
                                         } catch (err) {
                                             setBalanceError(String(err));
                                             setNewBalance(userData.balance.toString());
@@ -126,14 +168,34 @@ export default function SettingsScreen() {
                                 , { text: 'Close' }
                             ]}
                             onRequestClose={() => setShowAddMoneyAlert(false)}>
-                            <Text style={styles.feature}>This feature is currently under development.</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={newBalance}
-                                onChangeText={setNewBalance}
-                                placeholder="Enter new balance"
-                                editable={!balanceLoading}
-                            />
+                            <View style={styles.paymentContainer}>
+                                <TextInput
+                                    style={[styles.input]}
+                                    value={newBalance}
+                                    onChangeText={(value) => {
+                                        setNewBalance(value);
+                                        setBalanceError('');
+                                    }}
+                                    placeholder="Enter amount"
+                                    keyboardType="numeric"
+                                    editable={!balanceLoading}
+                                />
+                                <View style={styles.paymentMethods}>
+                                    {paymentMethods.map((method) => (
+                                        <Pressable
+                                            key={method}
+                                            style={[styles.paymentMethod, selectedPaymentMethod === method && styles.selectedPaymentMethod]}
+                                            onPress={() => setSelectedPaymentMethod(method)}
+                                            disabled={balanceLoading}
+                                        >
+                                            <CreditCard size={20} color={selectedPaymentMethod === method ? '#FFFFFF' : '#3B82F6'} />
+                                            <Text style={[styles.paymentMethodText, selectedPaymentMethod === method && styles.selectedPaymentMethodText]}>
+                                                {method.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                            </Text>
+                                        </Pressable>
+                                    ))}
+                                </View>
+                            </View>
                         </CrossPlatformAlert>
                         <Pressable style={styles.option} onPress={signOut}>
                             <View style={[styles.optionIcon, styles.logoutIcon]}>
@@ -180,12 +242,18 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+    refreshButton: {
+        padding: 4,
+        borderRadius: 20,
+    },
+    refreshing: {
+        opacity: 0.5,
+    },
     editContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
     },
-    // About section styles
     aboutHeader: {
         alignItems: 'center',
         padding: 20,
@@ -224,7 +292,8 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     input: {
-        flex: 1,
+        width: 150,
+        textAlign: 'center',
         height: 40,
         borderWidth: 1,
         borderColor: '#E5E7EB',
@@ -247,7 +316,7 @@ const styles = StyleSheet.create({
         opacity: 0.7,
     },
     cancelButton: {
-        backgroundColor: '#EF4444', // Red for cancel
+        backgroundColor: '#EF4444',
         paddingHorizontal: 8,
         paddingVertical: 8,
         borderRadius: 8,
@@ -276,6 +345,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#E5E5EA',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     title: {
         fontSize: 24,
@@ -343,10 +415,34 @@ const styles = StyleSheet.create({
     mb: {
         marginBottom: 16,
     },
-    feature: {
-        fontSize: 16,
-        marginBottom: 16,
-        textAlign: 'center',
-        color: 'red',
+    paymentContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 16,
+    },
+    paymentMethods: {
+        width: 'auto',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    paymentMethod: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#EEF2FF',
+        padding: 10,
+        borderRadius: 8,
+        gap: 8,
+        minWidth: '32%',
+    },
+    selectedPaymentMethod: {
+        backgroundColor: '#3B82F6',
+    },
+    paymentMethodText: {
+        color: '#3B82F6',
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    selectedPaymentMethodText: {
+        color: '#FFFFFF',
     }
 })
