@@ -1,52 +1,141 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Sergio-D-Vico-Pineda/SpeedyCardv2)
 
-# Welcome to your Expo app 👋
+# SpeedyCard
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+SpeedyCard is a modern digital business card application built with React Native and Expo. Create, customize, share, and manage your digital business cards with ease.
 
-## Get started
+![6c6b0ad7-daa7-424c-845d-206a8a4436c2](https://github.com/user-attachments/assets/73e82b46-bc90-4d6e-b556-16504b1fef92)
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+| Feature | Description |
+|---------|-------------|
+| Create Custom Business Cards | Design personalized digital business cards with various styles, fonts, and colors |
+| Card Templates | Choose from multiple pre-designed templates or create your own |
+| QR Code Sharing | Share your business cards instantly via QR codes |
+| Card Management | Create and manage multiple business cards for different purposes |
+| Save Others' Cards | Scan and save business cards from other users |
+| Marketplace | Browse and purchase premium card templates |
 
-2. Start the app
+## Getting Started
 
-   ```bash
-    npx expo start
-   ```
+### Prerequisites
 
-In the output, you'll find options to open the app in a
+| Prerequisite | Description |
+|--------------|-------------|
+| Node.js | LTS version recommended |
+| npm or yarn | Package managers |
+| Expo CLI | Command line interface for Expo |
+| Android Studio | For Android development |
+| Xcode | For iOS development, macOS only |
+| Git | Version control system |
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Installation
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Clone the repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/Sergio-D-Vico-Pineda/SpeedyCardv2.git
+cd SpeedyCardv2
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Set up Firebase configuration
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Create a Firebase project in the Firebase Console
+- Enable Authentication, Firestore, and Storage services
+- Create a `firebase.js` file in the project root with your Firebase configuration
 
-## Join the community
+4. Start the development server
 
-Join our community of developers creating universal apps.
+```bash
+npm start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Development
+
+### Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| npm start | Start the Expo development server |
+| npm run android | Run on Android device/emulator |
+| npm run ios | Run on iOS device/simulator (macOS only) |
+| npm run web | Start web version |
+| npm test | Run tests |
+| npm run lint | Run linter |
+| npm run reset-project | Reset the project to a clean state |
+
+## Project Structure
+
+```
+SpeedyCardv2/
+├── app/                  # Main application code
+│   ├── (public)/         # Public routes
+│   ├── (tabs)/           # Tab-based navigation
+│   └── index.tsx         # Entry point
+├── assets/               # Static assets
+│   ├── fonts/            # Custom fonts
+│   └── images/           # Images and icons
+├── components/           # Reusable components
+│   └── business-card/    # Business card components
+├── contexts/             # React contexts
+├── hooks/                # Custom React hooks
+├── modals/               # Modal components
+└── firebase.js          # Firebase configuration (not in repo)
+```
+
+## Technology Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | React Native with Expo |
+| Language | TypeScript |
+| State Management | React Context API |
+| Navigation | Expo Router |
+| Backend | Firebase (Authentication, Firestore, Storage) |
+| UI Components | React Native components with custom styling |
+| Business Card Features | QR code generation, image picking, camera integration |
+
+## Key Components
+
+### Business Card Preview
+
+The `BusinessCardPreview` component is the central element for displaying digital business cards. It supports:
+
+- Multiple card styles (minimalist, modern, default)
+- Custom fonts, colors, and layouts
+- Card flipping animation to show front and back sides
+- Profile images and logos
+
+### Firebase Integration
+
+SpeedyCard uses Firebase for:
+
+- User authentication
+- Storing and retrieving business card data
+- Saving and sharing cards between users
+- Marketplace transactions
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Expo for the amazing React Native development platform
+- Firebase for backend services
+- All contributors who have helped shape this project
