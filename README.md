@@ -24,10 +24,9 @@ SpeedyCard is a modern digital business card application built with React Native
 | Prerequisite | Description |
 |--------------|-------------|
 | Node.js | LTS version recommended |
-| npm or yarn | Package managers |
+| npm | Package managers |
 | Expo CLI | Command line interface for Expo |
 | Android Studio | For Android development |
-| Xcode | For iOS development, macOS only |
 | Git | Version control system |
 
 ### Installation
@@ -63,13 +62,11 @@ npm start
 
 | Script | Description |
 |--------|-------------|
-| npm start | Start the Expo development server |
+| npm run start | Start the Expo development server |
 | npm run android | Run on Android device/emulator |
-| npm run ios | Run on iOS device/simulator (macOS only) |
 | npm run web | Start web version |
 | npm test | Run tests |
 | npm run lint | Run linter |
-| npm run reset-project | Reset the project to a clean state |
 
 ## Project Structure
 
@@ -90,17 +87,15 @@ SpeedyCardv2/
 └── firebase.js          # Firebase configuration (not in repo)
 ```
 
-## Technology Stack
-
-| Category | Technology |
-|----------|------------|
-| Framework | React Native with Expo |
-| Language | TypeScript |
-| State Management | React Context API |
-| Navigation | Expo Router |
-| Backend | Firebase (Authentication, Firestore, Storage) |
-| UI Components | React Native components with custom styling |
-| Business Card Features | QR code generation, image picking, camera integration |
+## Technology Stack 🛠
+- Frontend : Expo/React Native
+- Navigation : Expo Router with file-based routing
+- UI Components :
+  - Expo Linear Gradient
+  - Expo Blur
+  - Custom animations
+- Authentication : Firebase
+- Storage : Firebase Firestore
 
 ## Key Components
 
@@ -121,14 +116,6 @@ SpeedyCard uses Firebase for:
 - Storing and retrieving business card data
 - Saving and sharing cards between users
 - Marketplace transactions
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
