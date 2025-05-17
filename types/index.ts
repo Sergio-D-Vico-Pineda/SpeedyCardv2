@@ -37,6 +37,7 @@ interface UserData {
   email: string;
   username: string;
   balance: number;
+  plan: Plans;
 }
 
 const categories = ['effects', 'professional', 'creative', 'business'];

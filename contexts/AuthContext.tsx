@@ -105,14 +105,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 uid: user.uid,
                 email,
                 username,
-                balance: 0
+                balance: 0,
+                plan: 'Free'
             };
 
             // Create user document without uid because it's set automatically
             await setDoc(doc(db, 'users', user.uid), {
                 email,
                 username,
-                balance: 0
+                balance: 0,
+                plan: 'Free'
             });
 
             // Initialize cards collection for the user
