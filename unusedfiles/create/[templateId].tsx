@@ -132,7 +132,6 @@ export default function TemplateScreen() {
   };
 
   const handleSave = async () => {
-    // TODO: Save to Supabase
     router.back();
   };
 
