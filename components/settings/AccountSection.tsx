@@ -14,7 +14,7 @@ export default function AccountSection({
 }: {
     userData: any;
 }) {
-    const { updateUsername, updateBalance, signOut } = useAuth();
+    const { updateUsername, updateBalance, updatePlan, signOut } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [balanceLoading, setBalanceLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function AccountSection({
     const [newBalance, setNewBalance] = useState(userData?.balance.toString() || '0');
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('bank_card');
-    const [selectedPlan, setSelectedPlan] = useState<Plans>('Ultimate');
+    const [selectedPlan, setSelectedPlan] = useState<Plans>(userData.plan);
 
     const paymentMethods = PaymentService.getPaymentMethods();
     const plans = PaymentService.getPlans();
@@ -140,7 +140,11 @@ export default function AccountSection({
                                 setPlanLoading(true);
                                 setPlanError('');
                                 try {
-                                    const result = await PaymentService.processChangePlan(newBalance);
+                                    const success = await PaymentService.processChangePlan(selectedPlan);
+                                    if (success) {
+                                        await updatePlan(selectedPlan);
+                                        setShowPlanAlert(false);
+                                    }
                                 } catch (err) {
                                     setPlanError(String(err));
                                 }
@@ -148,6 +152,10 @@ export default function AccountSection({
                                     setPlanLoading(false);
                                 }
                             }
+                        },
+                        {
+                            text: 'Cancel', onPress: () => setShowPlanAlert(false),
+                            color: '#EF4444',
                         }
                     ]}
                     onRequestClose={() => setShowPlanAlert(false)}

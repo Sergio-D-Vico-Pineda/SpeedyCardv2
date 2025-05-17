@@ -14,6 +14,7 @@ interface AuthState {
     signOut: () => Promise<void>;
     updateUsername: (newUsername: string) => Promise<void>;
     updateBalance: (newBalance: string) => Promise<void>;
+    updatePlan: (newPlan: string) => Promise<void>;
     refreshUserData: () => Promise<void>;
 }
 
@@ -195,15 +196,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         const currentBalance = state.userData.balance;
-    const sanitizedDelta = newBalance.replace(',', '.');
-    
-    const delta = Number(sanitizedDelta);
-    if (isNaN(delta) || delta < 0) {
-        throw new Error('Invalid amount to add. Please provide a valid positive number.');
-    }
-    
-    const newTotal = currentBalance + delta;
-    const roundedBalance = parseFloat(newTotal.toFixed(2));
+        const sanitizedDelta = newBalance.replace(',', '.');
+
+        const delta = Number(sanitizedDelta);
+        if (isNaN(delta) || delta < 0) {
+            throw new Error('Invalid amount to add. Please provide a valid positive number.');
+        }
+
+        const newTotal = currentBalance + delta;
+        const roundedBalance = parseFloat(newTotal.toFixed(2));
 
         try {
             const userDocRef = doc(db, 'users', state.user.uid);
@@ -218,6 +219,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error during update';
             throw new Error(`Failed to add to balance: ${errorMessage}`);
+        }
+    }, [state.user, state.userData]);
+
+    const updatePlan = useCallback(async (newPlan: string) => {
+        if (!state.user || !state.userData) {
+            throw new Error('No authenticated user found');
+        }
+
+        try {
+            const userDocRef = doc(db, 'users', state.user.uid);
+            const updatedUserData = { ...state.userData, plan: newPlan };
+
+            await setDoc(userDocRef, updatedUserData, { merge: true });
+
+            setState(current => ({
+                ...current,
+                userData: updatedUserData as UserData
+            }));
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error during update';
+            throw new Error(`Plan update failed: ${errorMessage}`);
         }
     }, [state.user, state.userData]);
 
@@ -250,6 +272,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 signOut,
                 updateUsername,
                 updateBalance,
+                updatePlan,
                 refreshUserData,
             }}>
 

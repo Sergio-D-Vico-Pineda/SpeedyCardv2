@@ -24,7 +24,7 @@ class PaymentService {
     }
 
     private static generateTransactionId(): string {
-        return `TXN_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+        return `TXN_${Math.random().toString(36).substring(2, 11)}_${Date.now()}`;
     }
 
     private static simulateApiCall(success: boolean, delay: number): Promise<void> {
@@ -56,7 +56,8 @@ class PaymentService {
             const processingTime = Math.random() * 1000 + 1000;
 
             // Simulate success rate (90% success)
-            const isSuccess = Math.random() < 0.9;
+            // const isSuccess = Math.random() < 0.9;
+            const isSuccess = true;
 
             // Simulate API call
             await this.simulateApiCall(isSuccess, processingTime);
@@ -79,11 +80,17 @@ class PaymentService {
 
     static async processChangePlan(plan: Plans): Promise<boolean> {
 
+        // Validate plan
+        if (!this.getPlans().includes(plan)) {
+            return false;
+        }
+
         // Simulate payment processing delay (1-2 seconds)
         const processingTime = Math.random() * 1000 + 1000;
 
         // Simulate success rate (90% success)
-        const isSuccess = Math.random() < 0.9;
+        // const isSuccess = Math.random() < 0.9;
+        const isSuccess = true;
 
         // Simulate API call
         await this.simulateApiCall(isSuccess, processingTime);
