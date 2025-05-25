@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';

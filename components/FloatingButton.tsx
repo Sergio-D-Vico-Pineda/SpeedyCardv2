@@ -3,11 +3,12 @@ import { Plus } from "lucide-react-native";
 
 interface Floating {
     onPressAction: () => void;
+    disabled?: boolean;
 }
 
-export default function FloatingButton({ onPressAction }: Floating) {
+export default function FloatingButton({ onPressAction, disabled = false }: Floating) {
     return (
-        <Pressable style={styles.fab} onPress={onPressAction}>
+        <Pressable style={[styles.fab, disabled && styles.fabDisabled]} onPress={onPressAction} disabled={disabled}>
             <Plus style={styles.icon} size={24} color="#FFFFFF" />
         </Pressable>
     );
@@ -30,5 +31,9 @@ const styles = StyleSheet.create({
     icon: {
         margin: 0,
         padding: 0,
-    }
+    },
+    fabDisabled: {
+        backgroundColor: '#A9A9A9',
+        opacity: 0.6,
+    },
 });
