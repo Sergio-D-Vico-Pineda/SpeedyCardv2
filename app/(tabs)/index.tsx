@@ -1,8 +1,8 @@
-import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Plus, Trash, Share2, Edit, RefreshCw, Home } from 'lucide-react-native';
+import { Plus, Share2, Edit } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { useCards } from '@/hooks/useCards';
 import { defaultCardData, MyCardData } from '@/types';
@@ -26,6 +26,29 @@ export default function CardsScreen() {
 
     function handleShare(index: number) {
         router.push(`/(tabs)/(share)/?card=${index}&from=cards`);
+    }
+
+    function handlePlan() {
+        router.push(`/(tabs)/settings?tab=plan`);
+    }
+
+    function getPlanLimit(plan: string | undefined): string {
+        switch (plan) {
+            case 'Free':
+                return '3';
+            case 'Pro':
+                return '10';
+            case 'Premium':
+                return '20';
+            case 'Ultimate':
+                return '∞';
+            default:
+                return 'Error';
+        }
+    }
+
+    function isDisabled(index: number): boolean {
+        return index >= Number(getPlanLimit(userData?.plan));
     }
 
     function handleLongPress(card: MyCardData, index: number, event: any) {
@@ -59,23 +82,11 @@ export default function CardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>My Business Cards</Text>
-                {Platform.OS === 'web' && (
-                    <>
-                        <Pressable onPress={() => {
-                            console.log('resetting');
-                            router.dismissAll()
-                        }}>
-                            <Home size={24} color="#007AFF" />
-                        </Pressable>
-                        <Pressable
-                            style={[styles.refreshButton, loading && styles.refreshing]}
-                            onPress={handleRefresh}
-                            disabled={loading}
-                        >
-                            <RefreshCw size={24} color={'#007AFF'} />
-                        </Pressable>
-                    </>
-                )}
+                <Pressable onPress={handlePlan}>
+                    <Text>
+                        {cards?.length} / {getPlanLimit(userData?.plan)}
+                    </Text>
+                </Pressable>
             </View>
 
             {loading ? (
@@ -120,11 +131,6 @@ export default function CardsScreen() {
                                         <Pressable onPress={() => handleShare(index)} disabled={isDisabled(index)}>
                                             <Share2 color="#34C759" size={26} />
                                         </Pressable>
-                                        {Platform.OS === 'web' && (
-                                            <Pressable onPress={() => removeCard(index)}>
-                                                <Trash color="#FF3B30" size={22} />
-                                            </Pressable>
-                                        )}
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -132,11 +138,13 @@ export default function CardsScreen() {
                     )}
                 />
             )}
-            <FloatingButton onPressAction={newCard} />
+            <FloatingButton
+                onPressAction={newCard}
+                disabled={userData?.plan && cards?.length >= Number(getPlanLimit(userData.plan))}
+            />
             <CrossPlatformAlert
                 visible={alertVisible}
                 title="Card Actions"
-                // qrCode={`speedycard://view?userid=${userData?.uid}&card=${selectedCard?.index}`}
                 message={selectedCard?.card.tname || 'Select an action'}
                 actions={[
                     { text: 'Edit', onPress: () => selectedCard && updateCardAndGotoEdit(selectedCard.card, selectedCard.index), color: '#007AFF' },
@@ -225,9 +233,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#666',
     },
-    cardIndex: {
-
-    },
     list: {
         flex: 1,
         paddingTop: 14,
@@ -237,5 +242,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 15,
         alignItems: 'center',
+    },
+    cardDisabled: {
+        opacity: 0.5,
+        backgroundColor: '#F2F2F7',
     },
 });
