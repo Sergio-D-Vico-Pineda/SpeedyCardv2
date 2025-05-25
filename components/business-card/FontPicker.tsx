@@ -34,7 +34,7 @@ export default function FontPicker({ font, onFontChange }: FontPickerProps) {
         style={styles.fontPreview}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={[styles.fontPreviewText, { fontFamily: fontMap[font] }]}>{font}</Text>
+        <Text style={[styles.fontPreviewText, { fontFamily: fontMap[font] || font }]}>{font}</Text>
       </TouchableOpacity>
 
       <Modal

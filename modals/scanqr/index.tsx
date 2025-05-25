@@ -36,7 +36,7 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
                 return;
             }
 
-            router.push(`/view?userid=${userid}&card=${card}`);
+            router.push(`/view?userid=${userid}&card=${card}&from=savedqr`);
             onClose();
         } else {
             console.log('Invalid QR code. Only SpeedyCard QR codes are accepted.');

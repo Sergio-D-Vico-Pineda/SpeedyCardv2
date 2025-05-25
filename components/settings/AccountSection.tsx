@@ -11,8 +11,10 @@ import { useFocusEffect } from 'expo-router';
 
 export default function AccountSection({
     userData,
+    planHighlight = false,
 }: {
     userData: any;
+    planHighlight?: boolean;
 }) {
     const { updateUsername, updateBalance, updatePlan, signOut } = useAuth();
     const [loading, setLoading] = useState(false);
@@ -106,7 +108,7 @@ export default function AccountSection({
                 </View>
                 <View style={styles.userInfo}>
                     <View style={styles.balanceContainer}>
-                        <Text style={styles.userEmail}>Plan tier: {userData.plan}</Text>
+                        <Text style={[styles.userEmail, planHighlight && { fontWeight: 'bold' }]}>Plan tier: {userData.plan}</Text>
                         {!planLoading ? (
                             <Pressable
                                 onPress={() => setShowPlanAlert(true)}
