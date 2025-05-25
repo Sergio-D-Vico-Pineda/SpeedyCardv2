@@ -48,7 +48,6 @@ export default function ViewScreen() {
             try {
                 console.log('Fetching card data...');
                 const cardtoview = await fetchSingleCard(userid as string, card as number);
-                console.log('Fetched card data:', cardtoview);
                 if (cardtoview) {
                     setlocalCardData(cardtoview);
                 } else {

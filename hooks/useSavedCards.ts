@@ -47,7 +47,6 @@ function useSavedCards() {
         try {
             let newOne = url;
             const newSavedCards = [...savedCards];
-            console.log('bruh ', newSavedCards);
             newSavedCards.push(newOne);
             await updateDoc(cardsRef, { savedcards: newSavedCards });
             setSavedCards(newSavedCards);

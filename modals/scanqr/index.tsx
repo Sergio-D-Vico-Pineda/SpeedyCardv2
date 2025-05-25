@@ -23,13 +23,10 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
 
     const handleBarCodeScanned = ({ data }: { data: string }) => {
         setReadyToScan(false);
-        console.log('QR scanned:', data);
         if (data.startsWith('speedycard://')) {
             const url = new URL(data);
             const userid = url.searchParams.get('userid');
             const card = url.searchParams.get('card') || 0;
-            console.log('userid:', userid);
-            console.log('card:', card);
             if (!userid) {
                 console.error('Invalid QR code. Missing userid parameter.');
                 alert('Invalid QR code. Missing userid parameter.');

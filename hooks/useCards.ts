@@ -36,7 +36,6 @@ function useCards() {
     }, []);
 
     const fetchEffects = useCallback(async () => {
-        console.log('fetching effects');
         if (!user) {
             return;
         }
@@ -60,7 +59,6 @@ function useCards() {
     }, []);
 
     const fetchCards = useCallback(async () => {
-        console.log('fetching cards');
         if (!user) {
             setLoading(false);
             return;
@@ -87,7 +85,6 @@ function useCards() {
     }, [user]);
 
     const handleRefresh = (): void => {
-        console.log("refreshing");
         setLoading(true);
         fetchCards();
     };
