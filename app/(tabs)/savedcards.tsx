@@ -1,6 +1,6 @@
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Platform, Pressable } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Trash, Share2, QrCode, RefreshCw } from 'lucide-react-native';
+import { Share2, QrCode } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { useSavedCards } from '@/hooks/useSavedCards';
 import { MyCardData, SavedCard } from '@/types';
@@ -54,11 +54,6 @@ export default function SavedCardsScreen() {
                     <Pressable onPress={() => handleShare(item)}>
                         <Share2 color="#34C759" size={26} />
                     </Pressable>
-                    {Platform.OS === 'web' ? (
-                        <Pressable onPress={() => removeSavedCard(index)}>
-                            <Trash color="#FF3B30" size={22} />
-                        </Pressable>
-                    ) : null}
                 </View>
             </View>
         );
@@ -99,15 +94,6 @@ export default function SavedCardsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Saved Cards</Text>
-                {Platform.OS === 'web' ? (
-                    <Pressable
-                        style={[styles.refreshButton, loading && styles.refreshing]}
-                        onPress={handleRefresh}
-                        disabled={loading}
-                    >
-                        <RefreshCw size={24} color={'#007AFF'} />
-                    </Pressable>
-                ) : null}
             </View>
 
             {loading ? (

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, ScrollView, RefreshControl, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RefreshCw } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,11 +22,12 @@ export default function SettingsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Settings</Text>
-                {Platform.OS === 'web' && (
-                    <Pressable
-                        style={[styles.refreshButton, refreshing && styles.refreshing]}
-                        onPress={async () => {
-                            if (refreshing) return;
+            </View>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={async () => {
                             setRefreshing(true);
                             try {
                                 await refreshUserData();
@@ -34,27 +35,7 @@ export default function SettingsScreen() {
                                 setRefreshing(false);
                             }
                         }}
-                        disabled={refreshing}
-                    >
-                        <RefreshCw size={24} color={'#007AFF'} />
-                    </Pressable>
-                )}
-            </View>
-            <ScrollView
-                refreshControl={
-                    Platform.OS !== 'web' ? (
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={async () => {
-                                setRefreshing(true);
-                                try {
-                                    await refreshUserData();
-                                } finally {
-                                    setRefreshing(false);
-                                }
-                            }}
-                        />
-                    ) : undefined
+                    />
                 }
             >
                 <AccountSection

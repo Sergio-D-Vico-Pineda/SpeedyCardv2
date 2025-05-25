@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, SafeAreaView, RefreshControl } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -46,15 +46,6 @@ export default function MarketplaceScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title} onPress={() => setVisible(!visible)}>Marketplace</Text>
-                {Platform.OS === 'web' && (
-                    <TouchableOpacity
-                        onPress={onRefresh}
-                    >
-                        <Text style={styles.refreshBtn}>
-                            Refresh
-                        </Text>
-                    </TouchableOpacity>
-                )}
             </View>
             <View style={styles.subheader}>
                 <View style={styles.searchBar}>

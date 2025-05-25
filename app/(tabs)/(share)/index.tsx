@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Share2, ArrowLeft } from 'lucide-react-native';
@@ -52,12 +52,7 @@ export default function ShareScreen() {
     }, [fetchCard]);
 
     const handleShare = () => {
-        if (Platform.OS === 'web') {
-            alert('Share URL:\n\n' + shareUrl);
-        } else {
-            // Handle native sharing here when implemented
-            alert('Native sharing coming soon!');
-        }
+        alert('Share URL:\n\n' + shareUrl);
     };
 
     const handleBack = () => {
