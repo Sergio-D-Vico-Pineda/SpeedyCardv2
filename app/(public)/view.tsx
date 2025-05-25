@@ -32,7 +32,7 @@ export default function ViewScreen() {
     const [saving, setSaving] = useState(false);
 
     const handleBack = () => {
-        if (from === 'saved') {
+        if (from === 'saved' || from === 'savedqr') {
             router.replace('/savedcards')
         } else if (from === 'cards') {
             router.replace('/(tabs)')
@@ -78,7 +78,14 @@ export default function ViewScreen() {
     };
 
     const handleSave = async () => {
-        if (!localCardData) return;
+        if (!localCardData || !user) return;
+
+        // Don't allow saving if the card belongs to the current user
+        if (userid === user.uid) {
+            console.log("Cannot save your own card");
+            return;
+        }
+
         try {
             setSaving(true);
             console.log('Saving card...');
@@ -130,16 +137,22 @@ export default function ViewScreen() {
                     </Text>
                 </TouchableOpacity>
                 {!isFullscreen && user && from != 'saved' && from != 'cards' && (
-                    <TouchableOpacity
-                        style={styles.saveButton}
-                        onPress={handleSave}
-                        disabled={saving}
-                    >
-                        <Save color="#fff" size={24} />
-                        <Text style={styles.saveButtonText}>
-                            {saving ? 'Saving...' : 'Save Card'}
+                    userid === user.uid ? (
+                        <Text style={[styles.saveButtonText, styles.saveButton]}>
+                            Your own card
                         </Text>
-                    </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            style={styles.saveButton}
+                            onPress={handleSave}
+                            disabled={saving}
+                        >
+                            <Save color="#fff" size={24} />
+                            <Text style={styles.saveButtonText}>
+                                {saving ? 'Saving...' : 'Save Card'}
+                            </Text>
+                        </TouchableOpacity>
+                    )
                 )}
             </View>
         </SafeAreaView>
