@@ -1,14 +1,28 @@
-import { View, Text, Pressable, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RefreshCw } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AccountSection from '../../components/settings/AccountSection';
 import AboutSection from '../../components/settings/AboutSection';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function SettingsScreen() {
     const { userData, refreshUserData } = useAuth();
     const [refreshing, setRefreshing] = useState(false);
+    const [planHighlight, setPlanHighlight] = useState(false);
+    const { tab } = useLocalSearchParams();
+
+    useEffect(() => {
+        if (tab === 'plan') {
+            setPlanHighlight(true);
+            const timer = setTimeout(() => {
+                setPlanHighlight(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        } else {
+            setPlanHighlight(false);
+        }
+    }, [tab]);
 
     if (!userData) {
         return (
@@ -40,11 +54,11 @@ export default function SettingsScreen() {
             >
                 <AccountSection
                     userData={userData}
+                    planHighlight={planHighlight}
                 />
                 <AboutSection />
             </ScrollView >
         </SafeAreaView >
-
     );
 }
 
