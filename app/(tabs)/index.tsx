@@ -100,32 +100,35 @@ export default function CardsScreen() {
                     }
 
                     renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                            onPress={() => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`)}
-                            onLongPress={(event) => handleLongPress(item, index, event)}
-                            delayLongPress={500}
-                        >
-                            <View style={styles.cardItem}>
-                                <View>
-                                    {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
-                                    {item.tbusiness ? <Text style={styles.cardDetails}>{item.tbusiness}</Text> : null}
-                                </View>
-                                <View style={styles.cardActions}>
-                                    {item && <Text style={[styles.cardIndex, styles.cardDetails]}>{index}</Text>}
-                                    <Pressable onPress={() => updateCardAndGotoEdit(item, index)}>
-                                        <Edit color="#007AFF" size={24} />
-                                    </Pressable>
-                                    <Pressable onPress={() => handleShare(index)}>
-                                        <Share2 color="#34C759" size={26} />
-                                    </Pressable>
-                                    {Platform.OS === 'web' && (
-                                        <Pressable onPress={() => removeCard(index)}>
-                                            <Trash color="#FF3B30" size={22} />
+                        <>
+                            <TouchableOpacity
+                                style={isDisabled(index) && styles.cardDisabled}
+                                onPress={() => router.push(`/view?userid=${userData?.uid}&card=${index}&from=cards`)}
+                                onLongPress={(event) => handleLongPress(item, index, event)}
+                                delayLongPress={500}
+                                disabled={isDisabled(index)}
+                            >
+                                <View style={styles.cardItem}>
+                                    <View>
+                                        {item.tname && <Text style={styles.cardTitle}>{item.tname}</Text>}
+                                        {item.tbusiness ? <Text style={styles.cardDetails}>{item.tbusiness}</Text> : null}
+                                    </View>
+                                    <View style={styles.cardActions}>
+                                        <Pressable onPress={() => updateCardAndGotoEdit(item, index)} disabled={isDisabled(index)}>
+                                            <Edit color="#007AFF" size={24} />
                                         </Pressable>
-                                    )}
+                                        <Pressable onPress={() => handleShare(index)} disabled={isDisabled(index)}>
+                                            <Share2 color="#34C759" size={26} />
+                                        </Pressable>
+                                        {Platform.OS === 'web' && (
+                                            <Pressable onPress={() => removeCard(index)}>
+                                                <Trash color="#FF3B30" size={22} />
+                                            </Pressable>
+                                        )}
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        </>
                     )}
                 />
             )}
