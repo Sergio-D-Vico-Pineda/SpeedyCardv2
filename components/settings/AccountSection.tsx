@@ -173,9 +173,14 @@ export default function AccountSection({
                                     disabled={planLoading}
                                 >
                                     <BookPlus size={20} color={selectedPlan === method ? '#FFFFFF' : '#3B82F6'} />
-                                    <Text style={[styles.paymentMethodText, selectedPlan === method && styles.selectedPaymentMethodText]}>
-                                        {method.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                                    </Text>
+                                    <View>
+                                        <Text style={[styles.paymentMethodText, selectedPlan === method && styles.selectedPaymentMethodText]}>
+                                            {method.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                        </Text>
+                                        <Text style={[styles.planPrice, selectedPlan === method && styles.selectedPaymentMethodText]}>
+                                            {method === 'Free' ? 'Free' : method === 'Pro' ? '$9.99/month' : method === 'Premium' ? '$19.99/month' : '$49.99/month'}
+                                        </Text>
+                                    </View>
                                 </Pressable>
                             ))}
                         </View>

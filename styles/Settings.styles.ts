@@ -224,5 +224,10 @@ export const styles = StyleSheet.create({
     },
     selectedPaymentMethodText: {
         color: '#FFFFFF',
-    }
+    },
+    planPrice: {
+        fontSize: 12,
+        color: '#6B7280',
+        marginTop: 2,
+    },
 });
