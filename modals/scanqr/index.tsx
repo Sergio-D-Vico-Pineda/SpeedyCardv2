@@ -11,7 +11,6 @@ interface ScanQRModalProps {
 export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const [readyToScan, setReadyToScan] = useState(false);
-    const [flash, setFlash] = useState(false);
 
     useEffect(() => {
         if (visible) {
@@ -26,7 +25,6 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
         setReadyToScan(false);
         console.log('QR scanned:', data);
         if (data.startsWith('speedycard://')) {
-            // i need to get that url href="/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1"
             const url = new URL(data);
             const userid = url.searchParams.get('userid');
             const card = url.searchParams.get('card') || 0;
@@ -46,10 +44,6 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
         }
     };
 
-    const toggleFlash = () => {
-        setFlash(!flash);
-    };
-
     return (
         <Modal
             visible={visible}
@@ -65,24 +59,15 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
                     <Text style={styles.info}>No access to camera</Text>
                 ) : (
                     readyToScan ?
-                        <>
-                            <CameraView
-                                autofocus='on'
-                                facing='back'
-                                flash={flash ? 'on' : 'off'}
-                                onBarcodeScanned={handleBarCodeScanned}
-                                barcodeScannerSettings={{
-                                    barcodeTypes: ['qr'],
-                                }}
-                                style={styles.camera}
-                            />
-                            <Pressable
-                                style={styles.button}
-                                onPress={toggleFlash}
-                            >
-                                <Text style={styles.buttonText}>Flash</Text>
-                            </Pressable>
-                        </>
+                        <CameraView
+                            autofocus='on'
+                            facing='back'
+                            onBarcodeScanned={handleBarCodeScanned}
+                            barcodeScannerSettings={{
+                                barcodeTypes: ['qr'],
+                            }}
+                            style={styles.camera}
+                        />
                         :
                         <Pressable
                             style={styles.button}
@@ -99,16 +84,6 @@ export default function ScanQRModal({ visible, onClose }: ScanQRModalProps) {
                     }}
                 >
                     <Text style={styles.buttonText}>Close</Text>
-                </Pressable>
-                <Pressable
-                    style={styles.button}
-                    onPress={() => {
-                        setReadyToScan(false);
-                        onClose();
-                        router.push('/view?userid=sb1OHT4sN1aacyLzvCk7nXZhBLb2&card=1')
-                    }}
-                >
-                    <Text style={styles.buttonText}>View a card</Text>
                 </Pressable>
             </View>
         </Modal>
